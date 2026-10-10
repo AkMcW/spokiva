@@ -13,11 +13,11 @@ import { useUser as useClerkUser } from "@clerk/nextjs";
 import { ADMIN_EMAIL, PLAN_FEATURES } from "@/lib/users";
 import { useSidebar } from "@/context/SidebarContext";
 
-type NavItem = { label: string; href: string; icon: LucideIcon; feature: string | null };
-type NavGroup = { label: string; icon: LucideIcon; items: NavItem[] };
-type NavSection = { label: string; items: NavItem[]; groups?: NavGroup[] };
+export type NavItem = { label: string; href: string; icon: LucideIcon; feature: string | null };
+export type NavGroup = { label: string; icon: LucideIcon; items: NavItem[] };
+export type NavSection = { label: string; items: NavItem[]; groups?: NavGroup[] };
 
-const navSections: NavSection[] = [
+export const navSections: NavSection[] = [
   {
     label: "Main",
     items: [
@@ -283,14 +283,6 @@ export default function DashboardSidebar() {
 
   return (
     <>
-      {/* Desktop sidebar */}
-      <div
-        className="shrink-0 hidden lg:block min-h-screen transition-all duration-200"
-        style={{ width: collapsed ? "64px" : "224px" }}
-      >
-        <SidebarInner />
-      </div>
-
       {/* Mobile drawer overlay */}
       {mobileOpen && (
         <div className="fixed inset-0 z-50 lg:hidden">

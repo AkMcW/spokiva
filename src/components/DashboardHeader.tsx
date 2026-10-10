@@ -5,6 +5,7 @@ import { UserButton, useUser } from "@clerk/nextjs";
 import { ADMIN_EMAIL, PLAN_FEATURES } from "@/lib/users";
 import { useTheme } from "@/context/ThemeContext";
 import { useSidebar } from "@/context/SidebarContext";
+import TopNavMenus from "@/components/TopNavMenus";
 
 export default function DashboardHeader() {
   const { user } = useUser();
@@ -16,10 +17,10 @@ export default function DashboardHeader() {
 
   return (
     <header
-      className="h-14 flex items-center justify-between px-4 sm:px-5 shrink-0 border-b"
+      className="h-14 flex items-center justify-between px-4 sm:px-5 shrink-0 border-b relative z-40"
       style={{ background: "var(--bg-sidebar)", borderColor: "var(--border)" }}
     >
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-3 min-w-0">
         {/* Mobile menu + logo */}
         <button
           onClick={toggleMobile}
@@ -28,13 +29,13 @@ export default function DashboardHeader() {
         >
           <Menu size={18} />
         </button>
-        <Link href="/dashboard" className="flex items-center gap-2 lg:hidden">
-          <div className="w-6 h-6 rounded-md flex items-center justify-center" style={{ background: "var(--accent)" }}>
-            <Mic2 size={13} className="text-white" />
+        <Link href="/dashboard" className="flex items-center gap-2 shrink-0 mr-2">
+          <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: "var(--accent)" }}>
+            <Mic2 size={15} className="text-white" />
           </div>
-          <span className="font-bold text-sm" style={{ color: "var(--text-primary)" }}>Spokiva</span>
+          <span className="font-bold text-sm whitespace-nowrap" style={{ color: "var(--text-primary)" }}>Spokiva AI</span>
         </Link>
-        <div className="hidden lg:block" />
+        <TopNavMenus />
       </div>
 
       <div className="flex items-center gap-2">
