@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { Bell, Mic2, ShieldCheck, Sun, Moon, Menu } from "lucide-react";
+import { Bell, Mic2, ShieldCheck, Sun, Moon, Menu, LayoutDashboard, Settings, CreditCard } from "lucide-react";
 import { UserButton, useUser } from "@clerk/nextjs";
 import { ADMIN_EMAIL, PLAN_FEATURES } from "@/lib/users";
 import { useTheme } from "@/context/ThemeContext";
@@ -33,7 +33,7 @@ export default function DashboardHeader() {
           <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: "var(--accent)" }}>
             <Mic2 size={15} className="text-white" />
           </div>
-          <span className="font-bold text-sm whitespace-nowrap" style={{ color: "var(--text-primary)" }}>Spokiva AI</span>
+          <span className="font-bold text-sm whitespace-nowrap" style={{ color: "var(--text-primary)" }}>Spokiva</span>
         </Link>
         <TopNavMenus />
       </div>
@@ -91,7 +91,16 @@ export default function DashboardHeader() {
                 userButtonPopoverCard: "shadow-lg",
               },
             }}
-          />
+          >
+            {/* Dashboard and account pages live in the user menu */}
+            <UserButton.MenuItems>
+              <UserButton.Link label="Dashboard" labelIcon={<LayoutDashboard size={15} />} href="/dashboard" />
+              <UserButton.Link label="Settings" labelIcon={<Settings size={15} />} href="/dashboard/settings" />
+              <UserButton.Link label="Billing" labelIcon={<CreditCard size={15} />} href="/pricing" />
+              <UserButton.Action label="manageAccount" />
+              <UserButton.Action label="signOut" />
+            </UserButton.MenuItems>
+          </UserButton>
         </div>
       </div>
     </header>

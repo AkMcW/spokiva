@@ -97,7 +97,7 @@ export default function Navbar() {
             </>
           ) : (
             <>
-              <Link href="/dashboard" className="text-sm font-semibold text-[#0056D2] hover:text-[#003B8E] transition-colors">
+              <Link href="/dashboard/script-writer" className="text-sm font-semibold text-[#0056D2] hover:text-[#003B8E] transition-colors">
                 Dashboard
               </Link>
               <UserButton appearance={{ elements: { avatarBox: "w-8 h-8" } }} />
@@ -134,7 +134,7 @@ export default function Navbar() {
                 </SignUpButton>
               </>
             ) : (
-              <Link href="/dashboard" onClick={() => setOpen(false)} className="block text-center py-2 bg-[#0056D2] text-white rounded font-semibold text-sm">
+              <Link href="/dashboard/script-writer" onClick={() => setOpen(false)} className="block text-center py-2 bg-[#0056D2] text-white rounded font-semibold text-sm">
                 Go to Dashboard
               </Link>
             )}

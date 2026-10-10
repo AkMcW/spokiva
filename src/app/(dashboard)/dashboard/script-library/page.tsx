@@ -2,6 +2,7 @@
 import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { PRACTICE_SCRIPTS, PracticeScript } from "@/data/practiceScripts";
+import ViewToggle, { useViewMode } from "@/components/ViewToggle";
 import { Search, Mic, Star, Filter, ChevronDown } from "lucide-react";
 
 const CATEGORIES = [
@@ -49,6 +50,7 @@ export default function ScriptLibraryPage() {
     } catch { return new Set(); }
   });
   const [showFavs, setShowFavs] = useState(false);
+  const [view, setView] = useViewMode("sf_view_script_library");
   const [selected, setSelected] = useState<PracticeScript | null>(null);
 
   const filtered = useMemo(() => {
@@ -167,6 +169,7 @@ export default function ScriptLibraryPage() {
         <span style={{ color: "var(--text-secondary)", fontSize: "0.85rem", marginLeft: "auto" }}>
           {filtered.length} script{filtered.length !== 1 ? "s" : ""}
         </span>
+        <ViewToggle mode={view} onChange={setView} />
       </div>
 
       {/* Grid */}
@@ -178,6 +181,46 @@ export default function ScriptLibraryPage() {
             style={{ marginTop: "0.75rem", color: "var(--accent)", background: "none", border: "none", cursor: "pointer", textDecoration: "underline" }}>
             Clear filters
           </button>
+        </div>
+      ) : view === "list" ? (
+        <div style={{ background: "var(--card-bg)", border: "1px solid var(--border)", borderRadius: 12, overflow: "hidden" }}>
+          {filtered.map((script, i) => (
+            <div
+              key={script.id}
+              onClick={() => setSelected(script)}
+              style={{
+                display: "flex", alignItems: "center", gap: "0.75rem", padding: "0.75rem 1rem", cursor: "pointer",
+                borderTop: i === 0 ? "none" : "1px solid var(--border)",
+              }}
+              onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-hover)"; }}
+              onMouseLeave={e => { e.currentTarget.style.background = "transparent"; }}
+            >
+              <button
+                onClick={e => { e.stopPropagation(); toggleFav(script.id); }}
+                title={favorites.has(script.id) ? "Remove from favorites" : "Add to favorites"}
+                style={{ background: "none", border: "none", cursor: "pointer", padding: 2, flexShrink: 0, color: favorites.has(script.id) ? "#f59e0b" : "var(--text-secondary)" }}
+              >
+                <Star size={15} fill={favorites.has(script.id) ? "#f59e0b" : "none"} />
+              </button>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <p style={{ fontSize: "0.9rem", fontWeight: 600, color: "var(--text-primary)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{script.title}</p>
+                <p style={{ fontSize: "0.78rem", color: "var(--text-secondary)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{script.description}</p>
+              </div>
+              <span className="hidden sm:inline" style={{ fontSize: "0.7rem", padding: "2px 8px", borderRadius: 99, flexShrink: 0, background: "var(--bg)", color: "var(--text-secondary)", border: "1px solid var(--border)" }}>
+                {CATEGORY_LABELS[script.category] || script.category}
+              </span>
+              <span style={{ fontSize: "0.7rem", padding: "2px 8px", borderRadius: 99, flexShrink: 0, background: `${DIFFICULTY_COLORS[script.difficulty]}20`, color: DIFFICULTY_COLORS[script.difficulty], fontWeight: 600, textTransform: "capitalize" }}>
+                {script.difficulty}
+              </span>
+              <button
+                onClick={e => { e.stopPropagation(); practiceScript(script); }}
+                title="Practice this script"
+                style={{ display: "flex", alignItems: "center", gap: 5, flexShrink: 0, padding: "0.4rem 0.7rem", borderRadius: 7, background: "var(--accent)", color: "#fff", border: "none", cursor: "pointer", fontSize: "0.78rem", fontWeight: 600 }}
+              >
+                <Mic size={13} /> <span className="hidden sm:inline">Practice</span>
+              </button>
+            </div>
+          ))}
         </div>
       ) : (
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: "1rem" }}>

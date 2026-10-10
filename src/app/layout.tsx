@@ -4,7 +4,7 @@ import { ThemeProvider } from "@/context/ThemeContext";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Spokiva AI — AI Communication Coach",
+  title: "Spokiva — AI Communication Coach",
   description: "Write better scripts, practice your speech, improve pronunciation, and train with realistic virtual audiences. AI-powered communication coach for work, exams, and public speaking.",
 };
 

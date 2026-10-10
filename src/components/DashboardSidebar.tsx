@@ -3,8 +3,8 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  LayoutDashboard, FileText, Mic, BarChart2, BookOpen,
-  Briefcase, Monitor, Users, Settings, CreditCard, Save, Target,
+  FileText, Mic, BarChart2, BookOpen,
+  Briefcase, Monitor, Users, CreditCard, Save, Target,
   Mic2, ShieldCheck, Bot, AudioLines, BookMarked, Zap,
   ChevronLeft, ChevronRight, ChevronDown, Library, Wand2, History, GraduationCap, ClipboardCheck,
   Landmark, FilePlus2, type LucideIcon,
@@ -20,9 +20,7 @@ export type NavSection = { label: string; items: NavItem[]; groups?: NavGroup[] 
 export const navSections: NavSection[] = [
   {
     label: "Main",
-    items: [
-      { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard, feature: null },
-    ],
+    items: [],
     groups: [
       {
         label: "Script", icon: FileText,
@@ -39,11 +37,6 @@ export const navSections: NavSection[] = [
         items: [
           { label: "Practice", href: "/dashboard/practice", icon: Mic, feature: "canUsePractice" },
           { label: "Recordings", href: "/dashboard/records", icon: AudioLines, feature: null },
-        ],
-      },
-      {
-        label: "Progress", icon: BarChart2,
-        items: [
           { label: "Session Results", href: "/dashboard/session-results", icon: History, feature: null },
           { label: "Progress", href: "/dashboard/progress", icon: BarChart2, feature: "canUseProgress" },
         ],
@@ -79,13 +72,6 @@ export const navSections: NavSection[] = [
           { label: "AI Coach", href: "/dashboard/ai-coach", icon: Bot, feature: null },
         ],
       },
-    ],
-  },
-  {
-    label: "Account",
-    items: [
-      { label: "Settings", href: "/dashboard/settings", icon: Settings, feature: null },
-      { label: "Billing", href: "/dashboard/billing", icon: CreditCard, feature: null },
     ],
   },
   {
@@ -172,7 +158,7 @@ export default function DashboardSidebar() {
             </div>
             {!isCollapsed && (
               <span className="font-bold text-sm whitespace-nowrap" style={{ color: "var(--text-primary)" }}>
-                Spokiva AI
+                Spokiva
               </span>
             )}
           </Link>

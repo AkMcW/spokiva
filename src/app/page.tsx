@@ -52,7 +52,7 @@ export default function HomePage() {
               <span className="text-[#0056D2]">Score higher. Get hired.</span>
             </h1>
             <p className="text-lg text-[#636363] mb-8 max-w-2xl mx-auto leading-relaxed">
-              Spokiva AI helps non-native English speakers practice speaking, improve pronunciation, and nail every scenario — from IELTS exams to boardroom presentations.
+              Spokiva helps non-native English speakers practice speaking, improve pronunciation, and nail every scenario — from IELTS exams to boardroom presentations.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-10">
               <Link href="/signup" className="inline-flex items-center justify-center gap-2 bg-[#0056D2] hover:bg-[#003B8E] text-white font-semibold px-8 py-3.5 rounded text-base transition-colors">

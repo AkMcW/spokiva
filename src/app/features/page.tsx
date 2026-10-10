@@ -169,7 +169,7 @@ export default function FeaturesPage() {
                 <thead>
                   <tr className="bg-[#F5F5F5]">
                     <th className="text-left px-4 py-3 text-sm font-bold text-[#1F1F1F] border border-[#E0E0E0]">Feature</th>
-                    <th className="px-4 py-3 text-sm font-bold text-[#0056D2] border border-[#E0E0E0] text-center">Spokiva AI</th>
+                    <th className="px-4 py-3 text-sm font-bold text-[#0056D2] border border-[#E0E0E0] text-center">Spokiva</th>
                     <th className="px-4 py-3 text-sm font-bold text-[#636363] border border-[#E0E0E0] text-center">Duolingo</th>
                     <th className="px-4 py-3 text-sm font-bold text-[#636363] border border-[#E0E0E0] text-center">ELSA Speak</th>
                     <th className="px-4 py-3 text-sm font-bold text-[#636363] border border-[#E0E0E0] text-center">YouTube</th>
@@ -200,7 +200,7 @@ export default function FeaturesPage() {
         <section className="bg-[#0056D2] py-14 px-4 text-center">
           <div className="max-w-2xl mx-auto">
             <h2 className="text-2xl font-bold text-white mb-4">Ready to get started?</h2>
-            <p className="text-blue-100 mb-6">Join 50,000+ speakers improving with Spokiva AI.</p>
+            <p className="text-blue-100 mb-6">Join 50,000+ speakers improving with Spokiva.</p>
             <Link
               href="/signup"
               className="inline-block bg-white text-[#0056D2] hover:bg-[#E8F1FF] font-bold px-8 py-3 rounded transition-colors"

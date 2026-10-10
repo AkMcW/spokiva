@@ -2,6 +2,7 @@
 import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { SCRIPT_MENU_OPTIONS, ScriptMenuOption } from "@/data/scriptMenuOptions";
+import ViewToggle, { useViewMode } from "@/components/ViewToggle";
 import {
   Search, Star, Loader2, Copy, Mic, Download, Save,
   Link, FileText, AlertCircle, CheckCircle, Lightbulb,
@@ -53,6 +54,7 @@ export default function ScriptGeneratorPage() {
     catch { return new Set(); }
   });
   const [showFavs, setShowFavs] = useState(false);
+  const [view, setView] = useViewMode("sf_view_script_generator");
 
   // Input state
   const [inputUrl, setInputUrl] = useState("");
@@ -254,6 +256,7 @@ export default function ScriptGeneratorPage() {
             <Star size={14} fill={showFavs ? "#fff" : "none"} /> Favorites
           </button>
           <span style={{ color: "var(--text-secondary)", fontSize: "0.85rem", marginLeft: "auto" }}>{filtered.length} option{filtered.length !== 1 ? "s" : ""}</span>
+          <ViewToggle mode={view} onChange={setView} />
         </div>
 
         {/* Grid */}
@@ -262,6 +265,38 @@ export default function ScriptGeneratorPage() {
             <p>No options match your filters.</p>
             <button onClick={() => { setSearch(""); setSourceFilter("All"); setOutputFilter("All"); setShowFavs(false); }}
               style={{ marginTop: "0.75rem", color: "var(--accent)", background: "none", border: "none", cursor: "pointer", textDecoration: "underline" }}>Clear filters</button>
+          </div>
+        ) : view === "list" ? (
+          <div style={{ background: "var(--card-bg)", border: "1px solid var(--border)", borderRadius: 12, overflow: "hidden" }}>
+            {filtered.map((opt, i) => {
+              const typeColor = INPUT_TYPE_COLORS[opt.inputType] || "#6366f1";
+              return (
+                <div key={opt.id} onClick={() => selectOption(opt)}
+                  style={{ display: "flex", alignItems: "center", gap: "0.75rem", padding: "0.75rem 1rem", cursor: "pointer", borderTop: i === 0 ? "none" : "1px solid var(--border)" }}
+                  onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-hover)"; }}
+                  onMouseLeave={e => { e.currentTarget.style.background = "transparent"; }}
+                >
+                  <button onClick={e => toggleFav(opt.id, e)} title={favorites.has(opt.id) ? "Remove from favorites" : "Add to favorites"}
+                    style={{ background: "none", border: "none", cursor: "pointer", padding: 2, flexShrink: 0, color: favorites.has(opt.id) ? "#f59e0b" : "var(--text-secondary)" }}>
+                    <Star size={15} fill={favorites.has(opt.id) ? "#f59e0b" : "none"} />
+                  </button>
+                  <span style={{ fontSize: "1.25rem", flexShrink: 0 }}>{opt.emoji}</span>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <p style={{ fontSize: "0.9rem", fontWeight: 600, color: "var(--text-primary)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{opt.title}</p>
+                    <p style={{ fontSize: "0.78rem", color: "var(--text-secondary)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{opt.description}</p>
+                  </div>
+                  <span style={{ fontSize: "0.7rem", padding: "2px 8px", borderRadius: 99, flexShrink: 0, background: `${typeColor}20`, color: typeColor, fontWeight: 600 }}>
+                    {SOURCE_FILTER_LABELS[opt.sourceFilter] || opt.inputType}
+                  </span>
+                  <span className="hidden sm:inline" style={{ fontSize: "0.7rem", padding: "2px 8px", borderRadius: 99, flexShrink: 0, background: "var(--bg)", color: "var(--text-secondary)", border: "1px solid var(--border)" }}>
+                    {OUTPUT_FILTER_LABELS[opt.outputFilter] || opt.outputFilter}
+                  </span>
+                  <span className="hidden md:inline" style={{ fontSize: "0.7rem", padding: "2px 8px", borderRadius: 99, flexShrink: 0, background: "var(--bg)", color: "var(--text-secondary)", border: "1px solid var(--border)", textTransform: "capitalize" }}>
+                    {opt.difficulty}
+                  </span>
+                </div>
+              );
+            })}
           </div>
         ) : (
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(290px, 1fr))", gap: "1rem" }}>

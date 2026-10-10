@@ -34,7 +34,7 @@ export default function Footer() {
               <div className="w-8 h-8 bg-[#0056D2] rounded-lg flex items-center justify-center">
                 <Mic2 size={18} className="text-white" />
               </div>
-              <span className="text-lg font-bold">Spokiva AI</span>
+              <span className="text-lg font-bold">Spokiva</span>
             </Link>
             <p className="text-sm text-[#9E9E9E] leading-relaxed">
               AI-powered communication coach for work, exams, and public speaking.
@@ -59,7 +59,7 @@ export default function Footer() {
         </div>
 
         <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-[#9E9E9E]">
-          <p>© 2024 Spokiva AI. All rights reserved.</p>
+          <p>© 2024 Spokiva. All rights reserved.</p>
           <div className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-[#00B37D]"></span>
             <span>All systems operational</span>
