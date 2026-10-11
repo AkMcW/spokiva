@@ -61,7 +61,7 @@ export async function deleteRecording(id: number): Promise<void> {
   });
 }
 
-// ── Cloud storage (Neon via /api/recordings) ────────────────────────────────
+// ── Cloud storage (audio in Vercel Blob, details in Neon) ───────────────────
 
 export interface CloudRecording {
   id: number;
@@ -75,31 +75,50 @@ export interface CloudRecording {
   created_at: string;
 }
 
-// Uploads a recording to the signed-in user's account. Throws on failure.
-export async function uploadRecording(record: Omit<SavedRecord, "id">): Promise<number> {
-  const form = new FormData();
-  form.append("audio", record.audioBlob, "recording");
-  form.append("mimeType", record.mimeType || record.audioBlob.type || "audio/webm");
-  form.append("scenario", record.scenario);
-  form.append("transcript", record.transcript);
-  form.append("duration", String(record.duration));
-  form.append("wpm", String(record.wpm));
-  form.append("overallScore", String(record.overallScore));
-  form.append("createdAt", record.createdAt);
-  const res = await fetch("/api/recordings", { method: "POST", body: form });
+// Uploads a recording to the signed-in user's account: the audio goes straight
+// from the browser to Vercel Blob, then its details are saved. Throws on failure.
+export async function uploadRecording(record: Omit<SavedRecord, "id">, userId: string): Promise<number> {
+  const { upload } = await import("@vercel/blob/client");
+  const mimeType = record.mimeType || record.audioBlob.type || "audio/webm";
+  const contentType = mimeType.split(";")[0];
+  const ext = contentType.includes("mp4") ? "m4a" : contentType.includes("ogg") ? "ogg" : contentType.includes("wav") ? "wav" : "webm";
+  const safeUser = userId.replace(/[^a-zA-Z0-9_-]/g, "");
+  const blob = await upload(`recordings/${safeUser}/${Date.now()}.${ext}`, record.audioBlob, {
+    access: "private",
+    handleUploadUrl: "/api/recordings/upload",
+    contentType,
+    multipart: record.audioBlob.size > 8 * 1024 * 1024,
+  });
+  const res = await fetch("/api/recordings", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      pathname: blob.pathname,
+      mimeType,
+      scenario: record.scenario,
+      transcript: record.transcript,
+      duration: record.duration,
+      wpm: record.wpm,
+      overallScore: record.overallScore,
+      createdAt: record.createdAt,
+    }),
+  });
   const data = await res.json().catch(() => ({}));
-  if (!res.ok) throw new Error(data.error ?? `Upload failed (${res.status})`);
+  if (!res.ok) throw new Error(data.error ?? `Save failed (${res.status})`);
   return data.id as number;
 }
 
 // Saves to the account, falling back to this browser if the upload fails
-// (offline, too large, signed out) so a recording is never lost.
-export async function saveRecordingPreferCloud(record: Omit<SavedRecord, "id">): Promise<"cloud" | "local"> {
-  try {
-    await uploadRecording(record);
-    return "cloud";
-  } catch {
-    await saveRecording(record);
-    return "local";
+// (offline, signed out, storage not configured) so a recording is never lost.
+export async function saveRecordingPreferCloud(record: Omit<SavedRecord, "id">, userId: string | null | undefined): Promise<"cloud" | "local"> {
+  if (userId) {
+    try {
+      await uploadRecording(record, userId);
+      return "cloud";
+    } catch (e) {
+      console.warn("Cloud upload failed, keeping recording on this device:", e);
+    }
   }
+  await saveRecording(record);
+  return "local";
 }

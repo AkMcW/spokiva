@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { Mic, Download, Trash2, Play, Square, FileAudio, BarChart2, CloudUpload, Loader2, AlertCircle } from "lucide-react";
+import { useUser } from "@clerk/nextjs";
 import {
   getAllRecordings, deleteRecording, uploadRecording,
   type SavedRecord, type CloudRecording,
@@ -21,6 +22,7 @@ function scoreColor(score: number) {
 }
 
 export default function RecordsPage() {
+  const { user } = useUser();
   const [records, setRecords] = useState<CloudRecording[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -75,6 +77,7 @@ export default function RecordsPage() {
   }
 
   async function uploadLocal() {
+    if (!user?.id) { setUploadMsg("Sign in to upload recordings to your account."); return; }
     setUploading(true);
     setUploadMsg("");
     let done = 0;
@@ -82,7 +85,7 @@ export default function RecordsPage() {
     for (const rec of local) {
       try {
         const { id, ...rest } = rec;
-        await uploadRecording(rest);
+        await uploadRecording(rest, user.id);
         await deleteRecording(id);
         done++;
       } catch (e) {
@@ -226,7 +229,7 @@ export default function RecordsPage() {
 
       <div className="bg-[var(--bg-secondary)] rounded-lg p-4 text-xs text-[var(--text-secondary)]">
         <p className="font-semibold text-[var(--text-primary)] mb-1">About saved recordings</p>
-        Recordings are saved to your Spokiva account, so they&apos;re available on any device you sign in to. If an upload ever fails (for example while offline), the recording is kept in this browser and you can upload it later from this page.
+        Recordings are saved privately to your Spokiva account, so they&apos;re available on any device you sign in to. If an upload ever fails (for example while offline), the recording is kept in this browser and you can upload it later from this page.
       </div>
     </div>
   );

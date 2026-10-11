@@ -1,11 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
+import { head, del } from "@vercel/blob";
 import { getSql, ensureRecordingsTable } from "@/lib/db";
+import { ownsPathname } from "@/lib/recordingBlob";
 
-// Vercel caps serverless request bodies at ~4.5 MB; keep uploads under that.
-const MAX_BYTES = 4 * 1024 * 1024;
-
-function int(v: FormDataEntryValue | null): number {
+function int(v: unknown): number {
   const n = Math.round(Number(v));
   return Number.isFinite(n) && n > 0 ? n : 0;
 }
@@ -31,33 +30,33 @@ export async function GET() {
   }
 }
 
-// POST — upload one recording (multipart: audio file + metadata fields)
+// POST — save metadata for a recording the browser already uploaded to Blob
+// (via /api/recordings/upload). Body: { pathname, mimeType, scenario, transcript,
+// duration, wpm, overallScore, createdAt }.
 export async function POST(req: NextRequest) {
   const { userId } = await auth();
   if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   try {
-    const form = await req.formData();
-    const audio = form.get("audio");
-    if (!(audio instanceof Blob) || audio.size === 0) {
-      return NextResponse.json({ error: "No audio provided" }, { status: 400 });
+    const b = await req.json();
+    if (!ownsPathname(userId, b.pathname)) {
+      return NextResponse.json({ error: "Invalid recording path" }, { status: 400 });
     }
-    if (audio.size > MAX_BYTES) {
-      return NextResponse.json({ error: "Recording is too large to store (max 4 MB)." }, { status: 413 });
-    }
-    const mimeType = String(form.get("mimeType") || audio.type || "audio/webm").slice(0, 100);
-    const createdAtRaw = form.get("createdAt");
-    const created = createdAtRaw ? new Date(String(createdAtRaw)) : new Date();
+    // Confirm the file really exists in Blob and take its size from there.
+    const blob = await head(b.pathname).catch(() => null);
+    if (!blob) return NextResponse.json({ error: "Uploaded file not found" }, { status: 400 });
+
+    const created = b.createdAt ? new Date(String(b.createdAt)) : new Date();
     const createdAt = isNaN(created.getTime()) ? new Date().toISOString() : created.toISOString();
-    const b64 = Buffer.from(await audio.arrayBuffer()).toString("base64");
+    const mimeType = String(b.mimeType || blob.contentType || "audio/webm").slice(0, 100);
 
     await ensureRecordingsTable();
     const s = getSql();
     const rows = await s`
-      INSERT INTO recordings (user_id, scenario, transcript, duration, wpm, overall_score, mime_type, size_bytes, audio, created_at)
+      INSERT INTO recordings (user_id, scenario, transcript, duration, wpm, overall_score, mime_type, size_bytes, blob_pathname, created_at)
       VALUES (
-        ${userId}, ${String(form.get("scenario") ?? "").slice(0, 300)}, ${String(form.get("transcript") ?? "")},
-        ${int(form.get("duration"))}, ${int(form.get("wpm"))}, ${int(form.get("overallScore"))},
-        ${mimeType}, ${audio.size}, decode(${b64}, 'base64'), ${createdAt}
+        ${userId}, ${String(b.scenario ?? "").slice(0, 300)}, ${String(b.transcript ?? "")},
+        ${int(b.duration)}, ${int(b.wpm)}, ${int(b.overallScore)},
+        ${mimeType}, ${blob.size}, ${b.pathname}, ${createdAt}
       )
       RETURNING id, created_at
     `;
@@ -68,7 +67,7 @@ export async function POST(req: NextRequest) {
   }
 }
 
-// DELETE — remove a recording by id (?id=)
+// DELETE — remove a recording (?id=): its Blob file and its row.
 export async function DELETE(req: NextRequest) {
   const { userId } = await auth();
   if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -77,7 +76,12 @@ export async function DELETE(req: NextRequest) {
   try {
     await ensureRecordingsTable();
     const s = getSql();
-    await s`DELETE FROM recordings WHERE id = ${id} AND user_id = ${userId}`;
+    const rows = await s`
+      DELETE FROM recordings WHERE id = ${id} AND user_id = ${userId}
+      RETURNING blob_pathname
+    `;
+    const pathname = rows[0]?.blob_pathname as string | null | undefined;
+    if (pathname) await del(pathname).catch((e) => console.error("Blob delete failed:", e));
     return NextResponse.json({ ok: true });
   } catch (err) {
     console.error("DELETE /api/recordings:", err);

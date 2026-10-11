@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Mic, Square, BarChart2, BookOpen, Type, ToggleLeft, ToggleRight, Video, VideoOff, Languages, Printer, Maximize2, X, Play, Pause, RotateCcw, ScrollText, Minus, Plus } from "lucide-react";
 import Link from "next/link";
+import { useUser } from "@clerk/nextjs";
 import { saveRecordingPreferCloud } from "@/lib/recordings";
 import PracticeListenShadow from "@/components/PracticeListenShadow";
 
@@ -202,6 +203,10 @@ function renderNotation(text: string, fontSize: FontSize) {
 }
 
 export default function PracticePage() {
+  const { user } = useUser();
+  // Read inside the recorder callback, so keep the latest id in a ref
+  const userIdRef = useRef<string | null>(null);
+  userIdRef.current = user?.id ?? null;
   const [state, setState] = useState<State>("idle");
   const [seconds, setSeconds] = useState(0);
   const [transcript, setTranscript] = useState("");
@@ -429,7 +434,7 @@ export default function PracticePage() {
             audioBlob,
             mimeType,
             createdAt: new Date().toISOString(),
-          });
+          }, userIdRef.current);
         } catch { /* non-critical */ }
       } catch (err) {
         const msg = err instanceof Error ? err.message : "Analysis failed";
