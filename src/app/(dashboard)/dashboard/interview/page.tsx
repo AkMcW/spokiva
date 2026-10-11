@@ -150,8 +150,8 @@ export default function InterviewPage() {
   return (
     <div className="max-w-5xl mx-auto space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-[#1F1F1F]">Interview Practice</h1>
-        <p className="text-sm text-[#636363] mt-1">Practice with STAR method guidance and real AI feedback.</p>
+        <h1 className="text-2xl font-bold text-[var(--text-primary)]">Interview Practice</h1>
+        <p className="text-sm text-[var(--text-secondary)] mt-1">Practice with STAR method guidance and real AI feedback.</p>
       </div>
 
       <div className="flex flex-wrap gap-2">
@@ -160,7 +160,7 @@ export default function InterviewPage() {
             key={s}
             onClick={() => setScenario(s)}
             className={`px-4 py-2 rounded font-semibold text-sm transition-colors ${
-              scenario === s ? "bg-[#0056D2] text-white" : "border border-[#E0E0E0] text-[#636363] hover:border-[#0056D2] hover:text-[#0056D2]"
+              scenario === s ? "bg-[var(--accent)] text-white" : "border border-[var(--border)] text-[var(--text-secondary)] hover:border-[var(--accent)] hover:text-[var(--accent)]"
             }`}
           >
             {s}
@@ -169,30 +169,30 @@ export default function InterviewPage() {
       </div>
 
       {error && (
-        <div className="bg-[#FFEBEE] border border-[#FFCDD2] rounded-lg p-3 text-xs text-[#E53935]">{error}</div>
+        <div className="bg-[var(--danger-bg)] border border-[var(--danger-border)] rounded-lg p-3 text-xs text-[#E53935]">{error}</div>
       )}
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-4">
-          <div className="bg-white border border-[#E0E0E0] rounded-lg p-6">
+          <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-6">
             <div className="flex items-center justify-between mb-3">
-              <span className="text-xs font-bold text-[#636363] uppercase tracking-wider">
+              <span className="text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider">
                 Question {qIndex + 1} of {questions[scenario].length}
               </span>
-              <button onClick={nextQuestion} className="text-xs text-[#0056D2] font-semibold hover:underline">
+              <button onClick={nextQuestion} className="text-xs text-[var(--accent)] font-semibold hover:underline">
                 Next question →
               </button>
             </div>
-            <p className="text-lg font-semibold text-[#1F1F1F]">&ldquo;{questions[scenario][qIndex]}&rdquo;</p>
+            <p className="text-lg font-semibold text-[var(--text-primary)]">&ldquo;{questions[scenario][qIndex]}&rdquo;</p>
           </div>
 
-          <div className="bg-white border border-[#E0E0E0] rounded-lg p-6 flex flex-col items-center">
+          <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-6 flex flex-col items-center">
             {recordState === "idle" && (
               <div className="text-center">
-                <button onClick={startRecording} className="w-20 h-20 rounded-full bg-[#0056D2] hover:bg-[#003B8E] text-white flex items-center justify-center mx-auto mb-3 transition-colors pulse-ring">
+                <button onClick={startRecording} className="w-20 h-20 rounded-full bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white flex items-center justify-center mx-auto mb-3 transition-colors pulse-ring">
                   <Mic size={30} />
                 </button>
-                <p className="text-sm text-[#636363]">Press to record your answer</p>
+                <p className="text-sm text-[var(--text-secondary)]">Press to record your answer</p>
               </div>
             )}
             {recordState === "recording" && (
@@ -201,10 +201,10 @@ export default function InterviewPage() {
                   <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
                   <span className="text-xs font-bold text-red-500 uppercase">Recording</span>
                 </div>
-                <p className="text-3xl font-bold text-[#1F1F1F] mb-4 font-mono">{fmtTime(seconds)}</p>
+                <p className="text-3xl font-bold text-[var(--text-primary)] mb-4 font-mono">{fmtTime(seconds)}</p>
                 <div className="flex items-end gap-1 justify-center h-10 mb-4">
                   {Array.from({ length: 8 }).map((_, i) => (
-                    <div key={i} className="wave-bar w-1.5 bg-[#0056D2] rounded-full" style={{ height: "24px" }} />
+                    <div key={i} className="wave-bar w-1.5 bg-[var(--accent)] rounded-full" style={{ height: "24px" }} />
                   ))}
                 </div>
                 <button onClick={stopRecording} className="flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white font-semibold px-5 py-2 rounded transition-colors">
@@ -214,13 +214,13 @@ export default function InterviewPage() {
             )}
             {(recordState === "transcribing" || recordState === "analyzing") && (
               <div className="text-center">
-                <BarChart2 size={36} className="text-[#0056D2] mx-auto mb-3 spin-slow" />
-                <p className="text-sm font-semibold text-[#1F1F1F] mb-1">
+                <BarChart2 size={36} className="text-[var(--accent)] mx-auto mb-3 spin-slow" />
+                <p className="text-sm font-semibold text-[var(--text-primary)] mb-1">
                   {recordState === "transcribing" ? "Transcribing..." : "Analyzing with AI..."}
                 </p>
                 <div className="flex justify-center gap-1 mt-2">
                   {[0, 1, 2].map((i) => (
-                    <div key={i} className="w-2 h-2 rounded-full bg-[#0056D2] animate-bounce" style={{ animationDelay: `${i * 0.15}s` }} />
+                    <div key={i} className="w-2 h-2 rounded-full bg-[var(--accent)] animate-bounce" style={{ animationDelay: `${i * 0.15}s` }} />
                   ))}
                 </div>
               </div>
@@ -228,8 +228,8 @@ export default function InterviewPage() {
             {recordState === "done" && feedback && (
               <div className="w-full">
                 <div className="flex items-center justify-between mb-4">
-                  <p className="font-bold text-[#1F1F1F]">AI Feedback</p>
-                  <span className="text-2xl font-bold text-[#0056D2]">{feedback.score}/100</span>
+                  <p className="font-bold text-[var(--text-primary)]">AI Feedback</p>
+                  <span className="text-2xl font-bold text-[var(--accent)]">{feedback.score}/100</span>
                 </div>
                 <div className="space-y-3">
                   {[
@@ -239,16 +239,16 @@ export default function InterviewPage() {
                     { label: "Suggestion", text: feedback.suggestion },
                   ].map((item) => (
                     <div key={item.label}>
-                      <span className="text-xs font-bold text-[#0056D2] uppercase tracking-wider">{item.label}</span>
-                      <p className="text-sm text-[#636363] mt-0.5 leading-relaxed">{item.text}</p>
+                      <span className="text-xs font-bold text-[var(--accent)] uppercase tracking-wider">{item.label}</span>
+                      <p className="text-sm text-[var(--text-secondary)] mt-0.5 leading-relaxed">{item.text}</p>
                     </div>
                   ))}
                 </div>
                 <div className="flex gap-3 mt-4">
-                  <button onClick={startRecording} className="flex items-center gap-1 bg-[#0056D2] hover:bg-[#003B8E] text-white font-semibold px-4 py-2 rounded text-sm transition-colors">
+                  <button onClick={startRecording} className="flex items-center gap-1 bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white font-semibold px-4 py-2 rounded text-sm transition-colors">
                     <Mic size={13} /> Try Again
                   </button>
-                  <button onClick={nextQuestion} className="border border-[#0056D2] text-[#0056D2] hover:bg-[#E8F1FF] font-semibold px-4 py-2 rounded text-sm transition-colors">
+                  <button onClick={nextQuestion} className="border border-[var(--accent)] text-[var(--accent)] hover:bg-[var(--accent-bg)] font-semibold px-4 py-2 rounded text-sm transition-colors">
                     Next Question
                   </button>
                 </div>
@@ -258,17 +258,17 @@ export default function InterviewPage() {
         </div>
 
         <div className="space-y-3">
-          <p className="text-sm font-bold text-[#1F1F1F]">STAR Method Tips</p>
+          <p className="text-sm font-bold text-[var(--text-primary)]">STAR Method Tips</p>
           {Object.entries(starTips).map(([letter, tips]) => (
-            <div key={letter} className="bg-white border border-[#E0E0E0] rounded-lg p-4">
+            <div key={letter} className="bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-4">
               <div className="flex items-center gap-2 mb-2">
-                <div className="w-7 h-7 bg-[#0056D2] text-white rounded flex items-center justify-center text-sm font-bold">{letter[0]}</div>
-                <span className="font-semibold text-[#1F1F1F] text-sm">{letter}</span>
+                <div className="w-7 h-7 bg-[var(--accent)] text-white rounded flex items-center justify-center text-sm font-bold">{letter[0]}</div>
+                <span className="font-semibold text-[var(--text-primary)] text-sm">{letter}</span>
               </div>
               <ul className="space-y-1">
                 {tips.map((t) => (
-                  <li key={t} className="text-xs text-[#636363] flex items-start gap-1">
-                    <span className="text-[#0056D2] font-bold mt-0.5">›</span>{t}
+                  <li key={t} className="text-xs text-[var(--text-secondary)] flex items-start gap-1">
+                    <span className="text-[var(--accent)] font-bold mt-0.5">›</span>{t}
                   </li>
                 ))}
               </ul>

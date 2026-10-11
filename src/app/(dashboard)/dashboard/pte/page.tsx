@@ -237,7 +237,7 @@ export default function PTEPage() {
       </div>
 
       {error && (
-        <div className="rounded-lg p-3 text-xs text-red-600 bg-red-50 border border-red-200">{error}</div>
+        <div className="rounded-lg p-3 text-xs text-red-600 bg-[var(--danger-bg)] border border-[var(--danger-border)]">{error}</div>
       )}
 
       {/* Task content */}
@@ -370,7 +370,7 @@ export default function PTEPage() {
             {[
               { range: "10–42", label: "Below Average", color: "#E53935" },
               { range: "43–64", label: "Developing", color: "#F5A623" },
-              { range: "65–78", label: "Competent", color: "#0056D2" },
+              { range: "65–78", label: "Competent", color: "var(--accent)" },
               { range: "79–90", label: "Expert", color: "#00B37D" },
             ].map((b) => (
               <div key={b.range} className="rounded-lg p-2" style={{ background: "var(--bg-secondary)" }}>

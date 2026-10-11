@@ -342,16 +342,16 @@ export default function ScriptWriterPage() {
   return (
     <div className="max-w-6xl mx-auto space-y-5">
       <div>
-        <h1 className="text-2xl font-bold text-[#1F1F1F]">AI Script Writer</h1>
-        <p className="text-sm text-[#636363] mt-1">Generate a polished speaking script powered by GPT-4o.</p>
+        <h1 className="text-2xl font-bold text-[var(--text-primary)]">AI Script Writer</h1>
+        <p className="text-sm text-[var(--text-secondary)] mt-1">Generate a polished speaking script powered by GPT-4o.</p>
       </div>
 
       {/* Presets */}
-      <div className="bg-white border border-[#E0E0E0] rounded-lg overflow-hidden">
-        <div className="w-full flex items-center justify-between px-5 py-3 hover:bg-[#F5F5F5] transition-colors">
+      <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-lg overflow-hidden">
+        <div className="w-full flex items-center justify-between px-5 py-3 hover:bg-[var(--bg-hover)] transition-colors">
           <button
             onClick={() => setShowPresets(!showPresets)}
-            className="flex items-center gap-2 text-sm font-bold text-[#1F1F1F] flex-1 text-left"
+            className="flex items-center gap-2 text-sm font-bold text-[var(--text-primary)] flex-1 text-left"
           >
             <Zap size={15} className="text-[#F5A623]" />
             Quick Presets — start from a template
@@ -360,25 +360,25 @@ export default function ScriptWriterPage() {
             <button
               onClick={handleShuffle}
               title="Shuffle — fill the form with a random preset"
-              className="flex items-center gap-1.5 text-xs font-semibold text-[#0056D2] hover:text-[#003B8E] transition-colors"
+              className="flex items-center gap-1.5 text-xs font-semibold text-[var(--accent)] hover:text-[var(--accent-hover)] transition-colors"
             >
               <Shuffle size={14} /> Shuffle
             </button>
             <button onClick={() => setShowPresets(!showPresets)} aria-label="Toggle presets">
-              {showPresets ? <ChevronUp size={16} className="text-[#636363]" /> : <ChevronDown size={16} className="text-[#636363]" />}
+              {showPresets ? <ChevronUp size={16} className="text-[var(--text-secondary)]" /> : <ChevronDown size={16} className="text-[var(--text-secondary)]" />}
             </button>
           </div>
         </div>
         {showPresets && (
-          <div className="px-5 pb-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 border-t border-[#E0E0E0] pt-4">
+          <div className="px-5 pb-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 border-t border-[var(--border)] pt-4">
             {PRESETS.map((p) => (
               <button
                 key={p.label}
                 onClick={() => applyPreset(p)}
-                className="flex flex-col items-start gap-1 p-3 border border-[#E0E0E0] rounded-lg hover:border-[#0056D2] hover:bg-[#E8F1FF] transition-all text-left"
+                className="flex flex-col items-start gap-1 p-3 border border-[var(--border)] rounded-lg hover:border-[var(--accent)] hover:bg-[var(--accent-bg)] transition-all text-left"
               >
                 <span className="text-lg">{p.icon}</span>
-                <span className="text-xs font-semibold text-[#1F1F1F] leading-tight">{p.label}</span>
+                <span className="text-xs font-semibold text-[var(--text-primary)] leading-tight">{p.label}</span>
               </button>
             ))}
           </div>
@@ -387,16 +387,16 @@ export default function ScriptWriterPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
         {/* Left: Form */}
-        <div className="bg-white border border-[#E0E0E0] rounded-lg p-6 space-y-4">
-          <h2 className="font-bold text-[#1F1F1F]">Configure your script</h2>
+        <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-6 space-y-4">
+          <h2 className="font-bold text-[var(--text-primary)]">Configure your script</h2>
 
           {/* Scenario */}
           <div>
-            <label className="block text-sm font-semibold text-[#1F1F1F] mb-1.5">Scenario <span className="text-[#636363] font-normal">({SCENARIOS.length} options)</span></label>
+            <label className="block text-sm font-semibold text-[var(--text-primary)] mb-1.5">Scenario <span className="text-[var(--text-secondary)] font-normal">({SCENARIOS.length} options)</span></label>
             <select
               value={form.scenario}
               onChange={(e) => setForm({ ...form, scenario: e.target.value })}
-              className="w-full px-3 py-2.5 border border-[#E0E0E0] rounded text-sm text-[#1F1F1F] focus:outline-none focus:border-[#0056D2] focus:ring-1 focus:ring-[#0056D2] bg-white"
+              className="w-full px-3 py-2.5 border border-[var(--border)] rounded text-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent)] focus:ring-1 focus:ring-[var(--accent)] bg-[var(--bg-card)]"
             >
               {SCENARIOS.map((s) => <option key={s}>{s}</option>)}
             </select>
@@ -404,34 +404,34 @@ export default function ScriptWriterPage() {
 
           {/* Goal */}
           <div>
-            <label className="block text-sm font-semibold text-[#1F1F1F] mb-1.5">Speaking goal <span className="text-[#636363] font-normal">(optional — describe what you want to say)</span></label>
+            <label className="block text-sm font-semibold text-[var(--text-primary)] mb-1.5">Speaking goal <span className="text-[var(--text-secondary)] font-normal">(optional — describe what you want to say)</span></label>
             <textarea
               value={form.goal}
               onChange={(e) => setForm({ ...form, goal: e.target.value })}
               placeholder="e.g. Give a Q3 project status update covering progress, blockers, and next steps for my engineering team."
               rows={3}
-              className="w-full px-3 py-2.5 border border-[#E0E0E0] rounded text-sm text-[#1F1F1F] placeholder-[#9E9E9E] focus:outline-none focus:border-[#0056D2] focus:ring-1 focus:ring-[#0056D2] resize-none"
+              className="w-full px-3 py-2.5 border border-[var(--border)] rounded text-sm text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--accent)] focus:ring-1 focus:ring-[var(--accent)] resize-none"
             />
           </div>
 
           {/* Audience & Tone */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-sm font-semibold text-[#1F1F1F] mb-1.5">Audience</label>
+              <label className="block text-sm font-semibold text-[var(--text-primary)] mb-1.5">Audience</label>
               <select
                 value={form.audience}
                 onChange={(e) => setForm({ ...form, audience: e.target.value })}
-                className="w-full px-3 py-2.5 border border-[#E0E0E0] rounded text-sm text-[#1F1F1F] focus:outline-none focus:border-[#0056D2] focus:ring-1 focus:ring-[#0056D2] bg-white"
+                className="w-full px-3 py-2.5 border border-[var(--border)] rounded text-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent)] focus:ring-1 focus:ring-[var(--accent)] bg-[var(--bg-card)]"
               >
                 {AUDIENCES.map((a) => <option key={a}>{a}</option>)}
               </select>
             </div>
             <div>
-              <label className="block text-sm font-semibold text-[#1F1F1F] mb-1.5">Tone</label>
+              <label className="block text-sm font-semibold text-[var(--text-primary)] mb-1.5">Tone</label>
               <select
                 value={form.tone}
                 onChange={(e) => setForm({ ...form, tone: e.target.value })}
-                className="w-full px-3 py-2.5 border border-[#E0E0E0] rounded text-sm text-[#1F1F1F] focus:outline-none focus:border-[#0056D2] focus:ring-1 focus:ring-[#0056D2] bg-white"
+                className="w-full px-3 py-2.5 border border-[var(--border)] rounded text-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent)] focus:ring-1 focus:ring-[var(--accent)] bg-[var(--bg-card)]"
               >
                 {TONES.map((t) => <option key={t}>{t}</option>)}
               </select>
@@ -440,7 +440,7 @@ export default function ScriptWriterPage() {
 
           {/* Duration */}
           <div>
-            <label className="block text-sm font-semibold text-[#1F1F1F] mb-1.5">Duration</label>
+            <label className="block text-sm font-semibold text-[var(--text-primary)] mb-1.5">Duration</label>
             <div className="flex gap-2 flex-wrap">
               {DURATIONS.map((d) => (
                 <button
@@ -448,8 +448,8 @@ export default function ScriptWriterPage() {
                   onClick={() => setForm({ ...form, duration: d })}
                   className={`px-3 py-1.5 rounded text-xs font-semibold border transition-colors ${
                     form.duration === d
-                      ? "bg-[#0056D2] text-white border-[#0056D2]"
-                      : "border-[#E0E0E0] text-[#636363] hover:border-[#0056D2] hover:text-[#0056D2]"
+                      ? "bg-[var(--accent)] text-white border-[var(--accent)]"
+                      : "border-[var(--border)] text-[var(--text-secondary)] hover:border-[var(--accent)] hover:text-[var(--accent)]"
                   }`}
                 >
                   {d}
@@ -460,14 +460,14 @@ export default function ScriptWriterPage() {
 
           {/* Speaking Style */}
           <div>
-            <label className="block text-sm font-semibold text-[#1F1F1F] mb-1.5">
+            <label className="block text-sm font-semibold text-[var(--text-primary)] mb-1.5">
               <Sparkles size={13} className="inline mr-1 text-[#F5A623]" />
               Speaking style
             </label>
             <select
               value={form.style}
               onChange={(e) => setForm({ ...form, style: e.target.value })}
-              className="w-full px-3 py-2.5 border border-[#E0E0E0] rounded text-sm text-[#1F1F1F] focus:outline-none focus:border-[#0056D2] focus:ring-1 focus:ring-[#0056D2] bg-white"
+              className="w-full px-3 py-2.5 border border-[var(--border)] rounded text-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent)] focus:ring-1 focus:ring-[var(--accent)] bg-[var(--bg-card)]"
             >
               {STYLES.map((s) => (
                 <option key={s.value} value={s.value}>
@@ -476,14 +476,14 @@ export default function ScriptWriterPage() {
               ))}
             </select>
             {form.style && (
-              <p className="text-xs text-[#0056D2] mt-1 font-medium">
+              <p className="text-xs text-[var(--accent)] mt-1 font-medium">
                 AI will write in the style of {STYLES.find(s => s.value === form.style)?.label}
               </p>
             )}
           </div>
 
           {error && (
-            <div className="bg-[#FFEBEE] border border-[#FFCDD2] rounded-lg p-3">
+            <div className="bg-[var(--danger-bg)] border border-[var(--danger-border)] rounded-lg p-3">
               <p className="text-xs text-[#E53935] font-medium">{error}</p>
             </div>
           )}
@@ -491,7 +491,7 @@ export default function ScriptWriterPage() {
           <button
             onClick={handleGenerate}
             disabled={loading}
-            className="w-full bg-[#0056D2] hover:bg-[#003B8E] disabled:opacity-60 text-white font-semibold py-3 rounded transition-colors flex items-center justify-center gap-2 text-sm"
+            className="w-full bg-[var(--accent)] hover:bg-[var(--accent-hover)] disabled:opacity-60 text-white font-semibold py-3 rounded transition-colors flex items-center justify-center gap-2 text-sm"
           >
             <Wand2 size={16} />
             {loading ? "Generating with GPT-4o..." : "Generate Script"}
@@ -499,12 +499,12 @@ export default function ScriptWriterPage() {
         </div>
 
         {/* Right: Output */}
-        <div className="bg-white border border-[#E0E0E0] rounded-lg p-6 flex flex-col">
+        <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-6 flex flex-col">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h2 className="font-bold text-[#1F1F1F]">Generated Script</h2>
+              <h2 className="font-bold text-[var(--text-primary)]">Generated Script</h2>
               {generated && (
-                <p className="text-xs text-[#636363] mt-0.5">
+                <p className="text-xs text-[var(--text-secondary)] mt-0.5">
                   {wordCount} words · ~{estimatedDuration} min read
                 </p>
               )}
@@ -513,7 +513,7 @@ export default function ScriptWriterPage() {
               <div className="flex gap-2">
                 <button
                   onClick={handleCopy}
-                  className="flex items-center gap-1 text-xs border border-[#E0E0E0] text-[#636363] hover:bg-[#F5F5F5] px-2.5 py-1.5 rounded transition-colors"
+                  className="flex items-center gap-1 text-xs border border-[var(--border)] text-[var(--text-secondary)] hover:bg-[var(--bg-hover)] px-2.5 py-1.5 rounded transition-colors"
                 >
                   <Copy size={12} />
                   {copied ? "Copied!" : "Copy"}
@@ -523,8 +523,8 @@ export default function ScriptWriterPage() {
                   disabled={saved}
                   className={`flex items-center gap-1 text-xs px-2.5 py-1.5 rounded transition-colors font-semibold ${
                     saved
-                      ? "bg-[#E6F7F2] text-[#00B37D] border border-[#00B37D]"
-                      : "bg-[#0056D2] hover:bg-[#003B8E] text-white"
+                      ? "bg-[var(--success-bg)] text-[#00B37D] border border-[#00B37D]"
+                      : "bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white"
                   }`}
                 >
                   {saved ? <CheckCircle size={12} /> : <Save size={12} />}
@@ -539,7 +539,7 @@ export default function ScriptWriterPage() {
                 </button>
                 <button
                   onClick={() => { setScript(""); setGenerated(false); setSaved(false); }}
-                  className="flex items-center gap-1 text-xs border border-[#E0E0E0] text-[#636363] hover:bg-[#F5F5F5] px-2.5 py-1.5 rounded transition-colors"
+                  className="flex items-center gap-1 text-xs border border-[var(--border)] text-[var(--text-secondary)] hover:bg-[var(--bg-hover)] px-2.5 py-1.5 rounded transition-colors"
                 >
                   <RotateCcw size={12} />
                   Reset
@@ -549,10 +549,10 @@ export default function ScriptWriterPage() {
           </div>
 
           {!generated ? (
-            <div className="flex-1 flex items-center justify-center text-center py-16 border-2 border-dashed border-[#E0E0E0] rounded-lg">
+            <div className="flex-1 flex items-center justify-center text-center py-16 border-2 border-dashed border-[var(--border)] rounded-lg">
               <div>
-                <Wand2 size={40} className="text-[#E0E0E0] mx-auto mb-3" />
-                <p className="text-sm text-[#636363] max-w-xs">
+                <Wand2 size={40} className="text-[var(--text-muted)] mx-auto mb-3" />
+                <p className="text-sm text-[var(--text-secondary)] max-w-xs">
                   {loading
                     ? "GPT-4o is writing your script..."
                     : "Configure your script settings and click Generate Script."}
@@ -560,7 +560,7 @@ export default function ScriptWriterPage() {
                 {loading && (
                   <div className="flex justify-center gap-1 mt-4">
                     {[0,1,2].map(i => (
-                      <div key={i} className="w-2 h-2 rounded-full bg-[#0056D2] animate-bounce" style={{ animationDelay: `${i * 0.15}s` }} />
+                      <div key={i} className="w-2 h-2 rounded-full bg-[var(--accent)] animate-bounce" style={{ animationDelay: `${i * 0.15}s` }} />
                     ))}
                   </div>
                 )}
@@ -568,21 +568,21 @@ export default function ScriptWriterPage() {
             </div>
           ) : (
             <>
-              <div className="flex-1 bg-[#F5F5F5] rounded-lg p-4 mb-4 overflow-y-auto max-h-96">
-                <pre className="text-sm text-[#1F1F1F] leading-relaxed whitespace-pre-wrap font-sans">{script}</pre>
+              <div className="flex-1 bg-[var(--bg-secondary)] rounded-lg p-4 mb-4 overflow-y-auto max-h-96">
+                <pre className="text-sm text-[var(--text-primary)] leading-relaxed whitespace-pre-wrap font-sans">{script}</pre>
               </div>
 
               {/* Optimize Buttons */}
               <div>
-                <p className="text-xs font-bold text-[#636363] uppercase tracking-wider mb-2">Optimize with AI</p>
+                <p className="text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-2">Optimize with AI</p>
                 <div className="flex flex-wrap gap-2">
                   {OPTIMIZE_OPTIONS.map((opt) => (
                     <button
                       key={opt.label}
                       onClick={() => handleOptimize(opt)}
                       disabled={!!optimizing}
-                      className={`text-xs border border-[#0056D2] text-[#0056D2] hover:bg-[#E8F1FF] px-3 py-1.5 rounded transition-colors font-medium disabled:opacity-50 ${
-                        optimizing === opt.label ? "bg-[#E8F1FF]" : ""
+                      className={`text-xs border border-[var(--accent)] text-[var(--accent)] hover:bg-[var(--accent-bg)] px-3 py-1.5 rounded transition-colors font-medium disabled:opacity-50 ${
+                        optimizing === opt.label ? "bg-[var(--accent-bg)]" : ""
                       }`}
                     >
                       {optimizing === opt.label ? "..." : opt.label}

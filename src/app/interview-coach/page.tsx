@@ -47,27 +47,27 @@ export default function InterviewCoachPage() {
       <Navbar />
       <main className="flex-1">
         {/* Hero */}
-        <section className="bg-[#E8F1FF] py-16 px-4">
+        <section className="bg-[var(--accent-bg)] py-16 px-4">
           <div className="max-w-4xl mx-auto">
-            <span className="inline-block bg-[#0056D2] text-white text-xs font-bold px-3 py-1 rounded-full mb-4">
+            <span className="inline-block bg-[var(--accent)] text-white text-xs font-bold px-3 py-1 rounded-full mb-4">
               Interview Coach
             </span>
-            <h1 className="text-4xl font-bold text-[#1F1F1F] mb-4">
+            <h1 className="text-4xl font-bold text-[var(--text-primary)] mb-4">
               Interview Coach
             </h1>
-            <p className="text-lg text-[#636363] mb-8 max-w-2xl leading-relaxed">
+            <p className="text-lg text-[var(--text-secondary)] mb-8 max-w-2xl leading-relaxed">
               Master the STAR method, practice common interview question types, and get AI feedback on your answers. Prepare for job interviews, MBA applications, and leadership assessments.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <Link
                 href="/signup"
-                className="inline-flex items-center gap-2 bg-[#0056D2] hover:bg-[#003B8E] text-white font-semibold px-8 py-3 rounded transition-colors"
+                className="inline-flex items-center gap-2 bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white font-semibold px-8 py-3 rounded transition-colors"
               >
                 Start Practicing Free <ArrowRight size={16} />
               </Link>
               <Link
                 href="/pricing"
-                className="inline-flex items-center gap-2 border border-[#0056D2] text-[#0056D2] hover:bg-[#E8F1FF] font-semibold px-8 py-3 rounded transition-colors"
+                className="inline-flex items-center gap-2 border border-[var(--accent)] text-[var(--accent)] hover:bg-[var(--accent-bg)] font-semibold px-8 py-3 rounded transition-colors"
               >
                 View Pricing
               </Link>
@@ -76,12 +76,12 @@ export default function InterviewCoachPage() {
         </section>
 
         {/* STAR Method */}
-        <section className="bg-white py-16 px-4">
+        <section className="bg-[var(--bg-card)] py-16 px-4">
           <div className="max-w-5xl mx-auto">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
               <div>
-                <h2 className="text-2xl font-bold text-[#1F1F1F] mb-4">The STAR Method — built in</h2>
-                <p className="text-[#636363] leading-relaxed mb-6">
+                <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-4">The STAR Method — built in</h2>
+                <p className="text-[var(--text-secondary)] leading-relaxed mb-6">
                   Spokiva structures every interview answer using the STAR framework — the gold standard for behavioral interview responses.
                 </p>
                 <div className="space-y-4">
@@ -92,12 +92,12 @@ export default function InterviewCoachPage() {
                     { letter: "R", label: "Result", desc: "Quantify the outcome. What changed? What did you achieve?" },
                   ].map((item) => (
                     <div key={item.letter} className="flex gap-4">
-                      <div className="w-10 h-10 bg-[#0056D2] text-white rounded-lg flex items-center justify-center font-bold text-lg shrink-0">
+                      <div className="w-10 h-10 bg-[var(--accent)] text-white rounded-lg flex items-center justify-center font-bold text-lg shrink-0">
                         {item.letter}
                       </div>
                       <div>
-                        <p className="font-semibold text-[#1F1F1F]">{item.label}</p>
-                        <p className="text-sm text-[#636363]">{item.desc}</p>
+                        <p className="font-semibold text-[var(--text-primary)]">{item.label}</p>
+                        <p className="text-sm text-[var(--text-secondary)]">{item.desc}</p>
                       </div>
                     </div>
                   ))}
@@ -105,9 +105,9 @@ export default function InterviewCoachPage() {
               </div>
 
               {/* STAR Example */}
-              <div className="bg-[#F5F5F5] rounded-lg border border-[#E0E0E0] p-5">
-                <p className="text-xs font-bold text-[#0056D2] uppercase tracking-wider mb-3">Sample STAR Answer</p>
-                <p className="text-sm font-semibold text-[#1F1F1F] mb-3 italic">&ldquo;{starExample.question}&rdquo;</p>
+              <div className="bg-[var(--bg-secondary)] rounded-lg border border-[var(--border)] p-5">
+                <p className="text-xs font-bold text-[var(--accent)] uppercase tracking-wider mb-3">Sample STAR Answer</p>
+                <p className="text-sm font-semibold text-[var(--text-primary)] mb-3 italic">&ldquo;{starExample.question}&rdquo;</p>
                 <div className="space-y-3">
                   {[
                     { label: "Situation", text: starExample.situation },
@@ -116,8 +116,8 @@ export default function InterviewCoachPage() {
                     { label: "Result", text: starExample.result },
                   ].map((item) => (
                     <div key={item.label}>
-                      <p className="text-xs font-bold text-[#0056D2] mb-0.5">{item.label}</p>
-                      <p className="text-xs text-[#636363] leading-relaxed">{item.text}</p>
+                      <p className="text-xs font-bold text-[var(--accent)] mb-0.5">{item.label}</p>
+                      <p className="text-xs text-[var(--text-secondary)] leading-relaxed">{item.text}</p>
                     </div>
                   ))}
                 </div>
@@ -127,22 +127,22 @@ export default function InterviewCoachPage() {
         </section>
 
         {/* Question Types */}
-        <section className="bg-[#F5F5F5] py-16 px-4">
+        <section className="bg-[var(--bg-secondary)] py-16 px-4">
           <div className="max-w-5xl mx-auto">
-            <h2 className="text-2xl font-bold text-[#1F1F1F] mb-2 text-center">Question types we cover</h2>
-            <p className="text-[#636363] text-center mb-10">Practice with hundreds of real questions across every category.</p>
+            <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-2 text-center">Question types we cover</h2>
+            <p className="text-[var(--text-secondary)] text-center mb-10">Practice with hundreds of real questions across every category.</p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               {questionTypes.map(({ type, description, examples }) => (
-                <div key={type} className="bg-white border border-[#E0E0E0] rounded-lg p-6">
+                <div key={type} className="bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-6">
                   <div className="flex items-center gap-2 mb-2">
-                    <Briefcase size={16} className="text-[#0056D2]" />
-                    <h3 className="font-bold text-[#1F1F1F]">{type}</h3>
+                    <Briefcase size={16} className="text-[var(--accent)]" />
+                    <h3 className="font-bold text-[var(--text-primary)]">{type}</h3>
                   </div>
-                  <p className="text-sm text-[#636363] mb-3 leading-relaxed">{description}</p>
+                  <p className="text-sm text-[var(--text-secondary)] mb-3 leading-relaxed">{description}</p>
                   <ul className="space-y-1">
                     {examples.map((e) => (
-                      <li key={e} className="text-xs text-[#636363] italic flex items-start gap-1">
-                        <span className="text-[#0056D2] font-bold mt-0.5">›</span>
+                      <li key={e} className="text-xs text-[var(--text-secondary)] italic flex items-start gap-1">
+                        <span className="text-[var(--accent)] font-bold mt-0.5">›</span>
                         {e}
                       </li>
                     ))}
@@ -154,19 +154,19 @@ export default function InterviewCoachPage() {
         </section>
 
         {/* Practice Modes */}
-        <section className="bg-white py-16 px-4">
+        <section className="bg-[var(--bg-card)] py-16 px-4">
           <div className="max-w-4xl mx-auto">
-            <h2 className="text-2xl font-bold text-[#1F1F1F] mb-2 text-center">Practice modes</h2>
-            <p className="text-[#636363] text-center mb-10">Choose a scenario that matches your target interview.</p>
+            <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-2 text-center">Practice modes</h2>
+            <p className="text-[var(--text-secondary)] text-center mb-10">Choose a scenario that matches your target interview.</p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {practiceModes.map(({ name, desc }) => (
-                <div key={name} className="bg-[#F5F5F5] border border-[#E0E0E0] rounded-lg p-5 flex items-start gap-4">
-                  <div className="w-8 h-8 bg-[#0056D2] rounded text-white flex items-center justify-center shrink-0">
+                <div key={name} className="bg-[var(--bg-secondary)] border border-[var(--border)] rounded-lg p-5 flex items-start gap-4">
+                  <div className="w-8 h-8 bg-[var(--accent)] rounded text-white flex items-center justify-center shrink-0">
                     <Star size={14} />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-[#1F1F1F] mb-1">{name}</h3>
-                    <p className="text-xs text-[#636363] leading-relaxed">{desc}</p>
+                    <h3 className="font-semibold text-[var(--text-primary)] mb-1">{name}</h3>
+                    <p className="text-xs text-[var(--text-secondary)] leading-relaxed">{desc}</p>
                   </div>
                 </div>
               ))}
@@ -175,9 +175,9 @@ export default function InterviewCoachPage() {
         </section>
 
         {/* Benefits */}
-        <section className="bg-[#F5F5F5] py-16 px-4">
+        <section className="bg-[var(--bg-secondary)] py-16 px-4">
           <div className="max-w-4xl mx-auto">
-            <h2 className="text-2xl font-bold text-[#1F1F1F] mb-8 text-center">What you get with Interview Coach</h2>
+            <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-8 text-center">What you get with Interview Coach</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {[
                 "AI tips displayed as you formulate your answer",
@@ -191,7 +191,7 @@ export default function InterviewCoachPage() {
               ].map((b) => (
                 <div key={b} className="flex items-start gap-2">
                   <CheckCircle size={15} className="text-[#00B37D] mt-0.5 shrink-0" />
-                  <span className="text-sm text-[#1F1F1F]">{b}</span>
+                  <span className="text-sm text-[var(--text-primary)]">{b}</span>
                 </div>
               ))}
             </div>
@@ -199,13 +199,13 @@ export default function InterviewCoachPage() {
         </section>
 
         {/* CTA */}
-        <section className="bg-[#0056D2] py-14 px-4 text-center">
+        <section className="bg-[var(--accent)] py-14 px-4 text-center">
           <div className="max-w-2xl mx-auto">
             <h2 className="text-2xl font-bold text-white mb-4">Ace your next interview</h2>
             <p className="text-blue-100 mb-6">Start free. No credit card required.</p>
             <Link
               href="/signup"
-              className="inline-flex items-center gap-2 bg-white text-[#0056D2] hover:bg-[#E8F1FF] font-bold px-8 py-3 rounded transition-colors"
+              className="inline-flex items-center gap-2 bg-[var(--bg-card)] text-[var(--accent)] hover:bg-[var(--accent-bg)] font-bold px-8 py-3 rounded transition-colors"
             >
               Start Interview Practice <ArrowRight size={16} />
             </Link>

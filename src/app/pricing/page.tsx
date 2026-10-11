@@ -139,17 +139,17 @@ export default function PricingPage() {
       <Navbar />
       <main className="flex-1">
         {/* Hero */}
-        <section className="bg-[#E8F1FF] py-16 px-4 text-center">
+        <section className="bg-[var(--accent-bg)] py-16 px-4 text-center">
           <div className="max-w-3xl mx-auto">
-            <h1 className="text-4xl font-bold text-[#1F1F1F] mb-4">Simple, transparent pricing</h1>
-            <p className="text-lg text-[#636363]">
+            <h1 className="text-4xl font-bold text-[var(--text-primary)] mb-4">Simple, transparent pricing</h1>
+            <p className="text-lg text-[var(--text-secondary)]">
               Start for free. Upgrade when you need more sessions, features, or simulation modes.
             </p>
           </div>
         </section>
 
         {/* Plans */}
-        <section className="bg-white py-16 px-4">
+        <section className="bg-[var(--bg-card)] py-16 px-4">
           <div className="max-w-7xl mx-auto">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5">
               {plans.map((plan) => (
@@ -157,8 +157,8 @@ export default function PricingPage() {
                   key={plan.name}
                   className={`rounded-lg border p-6 flex flex-col ${
                     plan.highlight
-                      ? "bg-[#0056D2] border-[#0056D2] text-white shadow-lg scale-[1.02]"
-                      : "bg-white border-[#E0E0E0]"
+                      ? "bg-[var(--accent)] border-[var(--accent)] text-white shadow-lg scale-[1.02]"
+                      : "bg-[var(--bg-card)] border-[var(--border)]"
                   }`}
                 >
                   <div className="mb-4">
@@ -166,25 +166,25 @@ export default function PricingPage() {
                       <span
                         className={`inline-block text-xs font-bold px-2 py-0.5 rounded mb-2 ${
                           plan.highlight
-                            ? "bg-white text-[#0056D2]"
+                            ? "bg-[var(--bg-card)] text-[var(--accent)]"
                             : "bg-[#F5A623] text-white"
                         }`}
                       >
                         {plan.badge}
                       </span>
                     )}
-                    <h2 className={`text-lg font-bold ${plan.highlight ? "text-white" : "text-[#1F1F1F]"}`}>
+                    <h2 className={`text-lg font-bold ${plan.highlight ? "text-white" : "text-[var(--text-primary)]"}`}>
                       {plan.name}
                     </h2>
                     <div className="flex items-baseline gap-1 mt-2">
-                      <span className={`text-3xl font-bold ${plan.highlight ? "text-white" : "text-[#1F1F1F]"}`}>
+                      <span className={`text-3xl font-bold ${plan.highlight ? "text-white" : "text-[var(--text-primary)]"}`}>
                         {plan.price}
                       </span>
-                      <span className={`text-xs ${plan.highlight ? "text-blue-200" : "text-[#636363]"}`}>
+                      <span className={`text-xs ${plan.highlight ? "text-blue-200" : "text-[var(--text-secondary)]"}`}>
                         {plan.period}
                       </span>
                     </div>
-                    <p className={`text-xs mt-1 leading-relaxed ${plan.highlight ? "text-blue-200" : "text-[#636363]"}`}>
+                    <p className={`text-xs mt-1 leading-relaxed ${plan.highlight ? "text-blue-200" : "text-[var(--text-secondary)]"}`}>
                       {plan.description}
                     </p>
                   </div>
@@ -195,9 +195,9 @@ export default function PricingPage() {
                         {f.included ? (
                           <CheckCircle size={13} className={`mt-0.5 shrink-0 ${plan.highlight ? "text-blue-200" : "text-[#00B37D]"}`} />
                         ) : (
-                          <X size={13} className={`mt-0.5 shrink-0 ${plan.highlight ? "text-blue-300" : "text-[#BDBDBD]"}`} />
+                          <X size={13} className={`mt-0.5 shrink-0 ${plan.highlight ? "text-blue-300" : "text-[var(--text-muted)]"}`} />
                         )}
-                        <span className={f.included ? (plan.highlight ? "text-blue-100" : "text-[#1F1F1F]") : (plan.highlight ? "text-blue-300" : "text-[#BDBDBD]")}>
+                        <span className={f.included ? (plan.highlight ? "text-blue-100" : "text-[var(--text-primary)]") : (plan.highlight ? "text-blue-300" : "text-[var(--text-muted)]")}>
                           {f.text}
                         </span>
                       </li>
@@ -208,8 +208,8 @@ export default function PricingPage() {
                     href={plan.ctaHref}
                     className={`block text-center py-2.5 rounded font-semibold text-sm transition-colors ${
                       plan.highlight
-                        ? "bg-white text-[#0056D2] hover:bg-[#E8F1FF]"
-                        : "bg-[#0056D2] text-white hover:bg-[#003B8E]"
+                        ? "bg-[var(--bg-card)] text-[var(--accent)] hover:bg-[var(--accent-bg)]"
+                        : "bg-[var(--accent)] text-white hover:bg-[var(--accent-hover)]"
                     }`}
                   >
                     {plan.cta}
@@ -221,14 +221,14 @@ export default function PricingPage() {
         </section>
 
         {/* FAQ */}
-        <section className="bg-[#F5F5F5] py-16 px-4">
+        <section className="bg-[var(--bg-secondary)] py-16 px-4">
           <div className="max-w-3xl mx-auto">
-            <h2 className="text-2xl font-bold text-[#1F1F1F] mb-8 text-center">Frequently asked questions</h2>
+            <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-8 text-center">Frequently asked questions</h2>
             <div className="space-y-4">
               {faqs.map((faq) => (
-                <div key={faq.q} className="bg-white rounded-lg border border-[#E0E0E0] p-6">
-                  <h3 className="font-semibold text-[#1F1F1F] mb-2">{faq.q}</h3>
-                  <p className="text-sm text-[#636363] leading-relaxed">{faq.a}</p>
+                <div key={faq.q} className="bg-[var(--bg-card)] rounded-lg border border-[var(--border)] p-6">
+                  <h3 className="font-semibold text-[var(--text-primary)] mb-2">{faq.q}</h3>
+                  <p className="text-sm text-[var(--text-secondary)] leading-relaxed">{faq.a}</p>
                 </div>
               ))}
             </div>
@@ -236,13 +236,13 @@ export default function PricingPage() {
         </section>
 
         {/* CTA */}
-        <section className="bg-[#0056D2] py-14 px-4 text-center">
+        <section className="bg-[var(--accent)] py-14 px-4 text-center">
           <div className="max-w-2xl mx-auto">
             <h2 className="text-2xl font-bold text-white mb-4">Ready to speak with confidence?</h2>
             <p className="text-blue-100 mb-6">Start free, no credit card required.</p>
             <Link
               href="/signup"
-              className="inline-block bg-white text-[#0056D2] hover:bg-[#E8F1FF] font-bold px-8 py-3 rounded transition-colors"
+              className="inline-block bg-[var(--bg-card)] text-[var(--accent)] hover:bg-[var(--accent-bg)] font-bold px-8 py-3 rounded transition-colors"
             >
               Create Free Account
             </Link>

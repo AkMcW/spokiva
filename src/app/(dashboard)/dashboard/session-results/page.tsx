@@ -42,10 +42,10 @@ interface SessionRow {
 }
 
 const ISSUE_LABELS: Record<string, { label: string; color: string; bg: string }> = {
-  skipped:      { label: "Skipped",      color: "#E53935", bg: "#FFF0F0" },
-  substituted:  { label: "Wrong word",   color: "#F5A623", bg: "#FFF8E7" },
-  filler_added: { label: "Filler added", color: "#7B61FF", bg: "#F0EEFF" },
-  repeated:     { label: "Repeated",     color: "#636363", bg: "#F5F5F5" },
+  skipped:      { label: "Skipped",      color: "#E53935", bg: "var(--danger-bg)" },
+  substituted:  { label: "Wrong word",   color: "#F5A623", bg: "var(--warning-bg)" },
+  filler_added: { label: "Filler added", color: "#7B61FF", bg: "var(--info-bg)" },
+  repeated:     { label: "Repeated",     color: "var(--text-secondary)", bg: "var(--bg-secondary)" },
 };
 
 function scoreColor(score: number) {
@@ -160,7 +160,7 @@ export default function SessionResultsPage() {
       )}
 
       {!loading && error && (
-        <div className="flex items-center gap-2 p-4 rounded-lg text-sm" style={{ background: "#FFF0F0", border: "1px solid #FFCDD2", color: "#E53935" }}>
+        <div className="flex items-center gap-2 p-4 rounded-lg text-sm" style={{ background: "var(--danger-bg)", border: "1px solid #FFCDD2", color: "#E53935" }}>
           <AlertCircle size={16} className="shrink-0" /> {error}
         </div>
       )}
@@ -221,7 +221,7 @@ export default function SessionResultsPage() {
                 disabled={deleting === session.id}
                 title="Delete this session"
                 className="shrink-0 p-2 rounded-lg border transition-colors disabled:opacity-60"
-                style={{ borderColor: "#FFCDD2", color: "#E53935" }}
+                style={{ borderColor: "var(--danger-border)", color: "#E53935" }}
               >
                 {deleting === session.id ? <Loader2 size={15} className="animate-spin" /> : <Trash2 size={15} />}
               </button>
@@ -264,7 +264,7 @@ export default function SessionResultsPage() {
                     </p>
                     <div className="space-y-2">
                       {wordErrors.map((err, i) => {
-                        const tag = ISSUE_LABELS[err.issue] ?? { label: err.issue, color: "#636363", bg: "#F5F5F5" };
+                        const tag = ISSUE_LABELS[err.issue] ?? { label: err.issue, color: "var(--text-secondary)", bg: "var(--bg-secondary)" };
                         return (
                           <div key={i} className="rounded-lg p-3" style={{ background: "var(--bg-secondary)" }}>
                             <div className="flex flex-wrap items-center gap-2 mb-1">
@@ -378,7 +378,7 @@ export default function SessionResultsPage() {
                     onClick={() => deleteSession(session.id)}
                     disabled={deleting === session.id}
                     className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded border transition-colors disabled:opacity-60"
-                    style={{ borderColor: "#FFCDD2", color: "#E53935" }}
+                    style={{ borderColor: "var(--danger-border)", color: "#E53935" }}
                   >
                     {deleting === session.id ? <Loader2 size={12} className="animate-spin" /> : <Trash2 size={12} />}
                     Delete

@@ -54,31 +54,31 @@ export default function HomePage() {
       <LandingHero />
       <div className="flex-1">
         {/* Use Case Pills */}
-        <section className="bg-white py-10 px-4 border-b border-[#E0E0E0]">
+        <section className="bg-[var(--bg-card)] py-10 px-4 border-b border-[var(--border)]">
           <div className="max-w-5xl mx-auto">
-            <p className="text-center text-sm font-semibold text-[#636363] mb-5 uppercase tracking-wider">Practice for any situation</p>
+            <p className="text-center text-sm font-semibold text-[var(--text-secondary)] mb-5 uppercase tracking-wider">Practice for any situation</p>
             <div className="flex flex-wrap gap-2 justify-center">
               {useCasePills.map((pill) => (
-                <span key={pill} className="bg-[#F5F5F5] text-[#1F1F1F] text-sm px-4 py-2 rounded-full border border-[#E0E0E0] font-medium">{pill}</span>
+                <span key={pill} className="bg-[var(--bg-secondary)] text-[var(--text-primary)] text-sm px-4 py-2 rounded-full border border-[var(--border)] font-medium">{pill}</span>
               ))}
             </div>
           </div>
         </section>
 
         {/* Problem Section */}
-        <section className="bg-[#F5F5F5] py-16 px-4">
+        <section className="bg-[var(--bg-secondary)] py-16 px-4">
           <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-3xl font-bold text-[#1F1F1F] mb-4">The problem with traditional speaking practice</h2>
-            <p className="text-[#636363] mb-10 text-lg">Most language learners practice the wrong way — repeating without feedback, reading without analysis, presenting without an audience.</p>
+            <h2 className="text-3xl font-bold text-[var(--text-primary)] mb-4">The problem with traditional speaking practice</h2>
+            <p className="text-[var(--text-secondary)] mb-10 text-lg">Most language learners practice the wrong way — repeating without feedback, reading without analysis, presenting without an audience.</p>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {[
                 { title: "No Real Feedback", desc: "Speaking alone in a mirror gives zero data on pronunciation errors, pace issues, or filler word frequency." },
                 { title: "Too Expensive", desc: "Human coaches charge $50–$150/hour. Most learners can't afford consistent sessions." },
                 { title: "No Structured Path", desc: "Random YouTube videos and apps don't provide a structured progression toward measurable speaking goals." },
               ].map((p) => (
-                <div key={p.title} className="bg-white rounded-lg p-6 border border-[#E0E0E0]">
-                  <h3 className="font-bold text-[#1F1F1F] mb-2">{p.title}</h3>
-                  <p className="text-sm text-[#636363] leading-relaxed">{p.desc}</p>
+                <div key={p.title} className="bg-[var(--bg-card)] rounded-lg p-6 border border-[var(--border)]">
+                  <h3 className="font-bold text-[var(--text-primary)] mb-2">{p.title}</h3>
+                  <p className="text-sm text-[var(--text-secondary)] leading-relaxed">{p.desc}</p>
                 </div>
               ))}
             </div>
@@ -86,20 +86,20 @@ export default function HomePage() {
         </section>
 
         {/* Features Grid */}
-        <section className="bg-white py-16 px-4">
+        <section className="bg-[var(--bg-card)] py-16 px-4">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold text-[#1F1F1F] mb-3">Everything you need to speak better</h2>
-              <p className="text-[#636363] text-lg">Six powerful tools, one AI coach.</p>
+              <h2 className="text-3xl font-bold text-[var(--text-primary)] mb-3">Everything you need to speak better</h2>
+              <p className="text-[var(--text-secondary)] text-lg">Six powerful tools, one AI coach.</p>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {features.map(({ icon: Icon, title, desc }) => (
-                <div key={title} className="bg-white border border-[#E0E0E0] rounded-lg p-6 hover:shadow-md transition-shadow">
-                  <div className="w-10 h-10 bg-[#E8F1FF] rounded-lg flex items-center justify-center mb-4">
-                    <Icon size={20} className="text-[#0056D2]" />
+                <div key={title} className="bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-6 hover:shadow-md transition-shadow">
+                  <div className="w-10 h-10 bg-[var(--accent-bg)] rounded-lg flex items-center justify-center mb-4">
+                    <Icon size={20} className="text-[var(--accent)]" />
                   </div>
-                  <h3 className="font-bold text-[#1F1F1F] mb-2">{title}</h3>
-                  <p className="text-sm text-[#636363] leading-relaxed">{desc}</p>
+                  <h3 className="font-bold text-[var(--text-primary)] mb-2">{title}</h3>
+                  <p className="text-sm text-[var(--text-secondary)] leading-relaxed">{desc}</p>
                 </div>
               ))}
             </div>
@@ -107,19 +107,19 @@ export default function HomePage() {
         </section>
 
         {/* How It Works */}
-        <section id="how-it-works" className="bg-[#F5F5F5] py-16 px-4">
+        <section id="how-it-works" className="bg-[var(--bg-secondary)] py-16 px-4">
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold text-[#1F1F1F] mb-3">How Spokiva works</h2>
-              <p className="text-[#636363] text-lg">From zero to confident speaker in four steps.</p>
+              <h2 className="text-3xl font-bold text-[var(--text-primary)] mb-3">How Spokiva works</h2>
+              <p className="text-[var(--text-secondary)] text-lg">From zero to confident speaker in four steps.</p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {steps.map((step) => (
-                <div key={step.num} className="bg-white rounded-lg p-6 border border-[#E0E0E0] flex gap-4">
-                  <span className="text-3xl font-bold text-[#0056D2] opacity-30 leading-none shrink-0">{step.num}</span>
+                <div key={step.num} className="bg-[var(--bg-card)] rounded-lg p-6 border border-[var(--border)] flex gap-4">
+                  <span className="text-3xl font-bold text-[var(--accent)] opacity-30 leading-none shrink-0">{step.num}</span>
                   <div>
-                    <h3 className="font-bold text-[#1F1F1F] mb-1">{step.title}</h3>
-                    <p className="text-sm text-[#636363] leading-relaxed">{step.desc}</p>
+                    <h3 className="font-bold text-[var(--text-primary)] mb-1">{step.title}</h3>
+                    <p className="text-sm text-[var(--text-secondary)] leading-relaxed">{step.desc}</p>
                   </div>
                 </div>
               ))}
@@ -128,23 +128,23 @@ export default function HomePage() {
         </section>
 
         {/* Testimonials */}
-        <section className="bg-white py-16 px-4">
+        <section className="bg-[var(--bg-card)] py-16 px-4">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold text-[#1F1F1F] mb-3">Real results from real speakers</h2>
-              <p className="text-[#636363] text-lg">Join 50,000+ learners who've improved with Spokiva.</p>
+              <h2 className="text-3xl font-bold text-[var(--text-primary)] mb-3">Real results from real speakers</h2>
+              <p className="text-[var(--text-secondary)] text-lg">Join 50,000+ learners who've improved with Spokiva.</p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {testimonials.map((t) => (
-                <div key={t.name} className="bg-[#F5F5F5] rounded-lg p-6 border border-[#E0E0E0]">
+                <div key={t.name} className="bg-[var(--bg-secondary)] rounded-lg p-6 border border-[var(--border)]">
                   <div className="flex gap-1 mb-3">
                     {[1,2,3,4,5].map(i => <Star key={i} size={14} className="text-[#F5A623] fill-[#F5A623]" />)}
                   </div>
-                  <p className="text-sm text-[#1F1F1F] leading-relaxed mb-4 italic">&ldquo;{t.quote}&rdquo;</p>
+                  <p className="text-sm text-[var(--text-primary)] leading-relaxed mb-4 italic">&ldquo;{t.quote}&rdquo;</p>
                   <div>
-                    <p className="font-semibold text-[#1F1F1F] text-sm">{t.name}</p>
-                    <p className="text-xs text-[#636363]">{t.role}</p>
-                    <span className="inline-block mt-2 bg-[#E6F7F2] text-[#00B37D] text-xs font-semibold px-2 py-0.5 rounded">{t.score}</span>
+                    <p className="font-semibold text-[var(--text-primary)] text-sm">{t.name}</p>
+                    <p className="text-xs text-[var(--text-secondary)]">{t.role}</p>
+                    <span className="inline-block mt-2 bg-[var(--success-bg)] text-[#00B37D] text-xs font-semibold px-2 py-0.5 rounded">{t.score}</span>
                   </div>
                 </div>
               ))}
@@ -153,46 +153,46 @@ export default function HomePage() {
         </section>
 
         {/* Pricing Preview */}
-        <section className="bg-[#F5F5F5] py-16 px-4">
+        <section className="bg-[var(--bg-secondary)] py-16 px-4">
           <div className="max-w-5xl mx-auto">
             <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold text-[#1F1F1F] mb-3">Simple, transparent pricing</h2>
-              <p className="text-[#636363] text-lg">Start free. Upgrade when you&apos;re ready.</p>
+              <h2 className="text-3xl font-bold text-[var(--text-primary)] mb-3">Simple, transparent pricing</h2>
+              <p className="text-[var(--text-secondary)] text-lg">Start free. Upgrade when you&apos;re ready.</p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {plans.map((plan) => (
-                <div key={plan.name} className={`rounded-lg p-6 border ${plan.highlight ? "bg-[#0056D2] border-[#0056D2] text-white" : "bg-white border-[#E0E0E0]"}`}>
-                  <h3 className={`font-bold text-lg mb-1 ${plan.highlight ? "text-white" : "text-[#1F1F1F]"}`}>{plan.name}</h3>
+                <div key={plan.name} className={`rounded-lg p-6 border ${plan.highlight ? "bg-[var(--accent)] border-[var(--accent)] text-white" : "bg-[var(--bg-card)] border-[var(--border)]"}`}>
+                  <h3 className={`font-bold text-lg mb-1 ${plan.highlight ? "text-white" : "text-[var(--text-primary)]"}`}>{plan.name}</h3>
                   <div className="flex items-baseline gap-1 mb-4">
-                    <span className={`text-3xl font-bold ${plan.highlight ? "text-white" : "text-[#1F1F1F]"}`}>{plan.price}</span>
-                    <span className={`text-sm ${plan.highlight ? "text-blue-200" : "text-[#636363]"}`}>/month{plan.sub || ""}</span>
+                    <span className={`text-3xl font-bold ${plan.highlight ? "text-white" : "text-[var(--text-primary)]"}`}>{plan.price}</span>
+                    <span className={`text-sm ${plan.highlight ? "text-blue-200" : "text-[var(--text-secondary)]"}`}>/month{plan.sub || ""}</span>
                   </div>
                   <ul className="space-y-2 mb-6">
                     {plan.features.map((f) => (
                       <li key={f} className="flex items-start gap-2 text-sm">
                         <CheckCircle size={14} className={`mt-0.5 shrink-0 ${plan.highlight ? "text-blue-200" : "text-[#00B37D]"}`} />
-                        <span className={plan.highlight ? "text-blue-100" : "text-[#636363]"}>{f}</span>
+                        <span className={plan.highlight ? "text-blue-100" : "text-[var(--text-secondary)]"}>{f}</span>
                       </li>
                     ))}
                   </ul>
-                  <Link href="/signup" className={`block text-center py-2.5 rounded font-semibold text-sm transition-colors ${plan.highlight ? "bg-white text-[#0056D2] hover:bg-[#E8F1FF]" : "bg-[#0056D2] text-white hover:bg-[#003B8E]"}`}>
+                  <Link href="/signup" className={`block text-center py-2.5 rounded font-semibold text-sm transition-colors ${plan.highlight ? "bg-[var(--bg-card)] text-[var(--accent)] hover:bg-[var(--accent-bg)]" : "bg-[var(--accent)] text-white hover:bg-[var(--accent-hover)]"}`}>
                     {plan.name === "Free" ? "Get Started Free" : `Choose ${plan.name}`}
                   </Link>
                 </div>
               ))}
             </div>
             <p className="text-center mt-6">
-              <Link href="/pricing" className="text-sm text-[#0056D2] font-semibold hover:underline">View full pricing details →</Link>
+              <Link href="/pricing" className="text-sm text-[var(--accent)] font-semibold hover:underline">View full pricing details →</Link>
             </p>
           </div>
         </section>
 
         {/* Final CTA */}
-        <section className="bg-[#0056D2] py-16 px-4">
+        <section className="bg-[var(--accent)] py-16 px-4">
           <div className="max-w-3xl mx-auto text-center">
             <h2 className="text-3xl font-bold text-white mb-4">Start speaking with confidence today</h2>
             <p className="text-blue-100 text-lg mb-8">Join 50,000+ learners improving their English speaking skills with AI-powered coaching.</p>
-            <Link href="/signup" className="inline-flex items-center justify-center gap-2 bg-white text-[#0056D2] hover:bg-[#E8F1FF] font-bold px-10 py-4 rounded text-base transition-colors">
+            <Link href="/signup" className="inline-flex items-center justify-center gap-2 bg-[var(--bg-card)] text-[var(--accent)] hover:bg-[var(--accent-bg)] font-bold px-10 py-4 rounded text-base transition-colors">
               Create Free Account <ArrowRight size={18} />
             </Link>
             <p className="text-blue-200 text-sm mt-4">No credit card required · Cancel anytime</p>

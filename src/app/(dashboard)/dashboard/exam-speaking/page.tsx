@@ -199,7 +199,7 @@ Stay fully in character as the patient. Be realistic and human: show your worry 
       </Card>
 
       {err && (
-        <div className="flex items-center gap-2 p-3 rounded-lg text-sm" style={{ background: "#FFF0F0", border: "1px solid #FFCDD2", color: "#E53935" }}>
+        <div className="flex items-center gap-2 p-3 rounded-lg text-sm" style={{ background: "var(--danger-bg)", border: "1px solid #FFCDD2", color: "#E53935" }}>
           <AlertCircle size={15} className="shrink-0" /> {err}
         </div>
       )}
@@ -592,7 +592,7 @@ export default function ExamSpeakingPage() {
         )}
 
         {error && (
-          <div className="flex items-center gap-2 p-3 rounded-lg text-sm" style={{ background: "#FFF0F0", border: "1px solid #FFCDD2", color: "#E53935" }}>
+          <div className="flex items-center gap-2 p-3 rounded-lg text-sm" style={{ background: "var(--danger-bg)", border: "1px solid #FFCDD2", color: "#E53935" }}>
             <AlertCircle size={15} className="shrink-0" /> {error}
           </div>
         )}

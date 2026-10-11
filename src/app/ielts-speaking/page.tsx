@@ -79,28 +79,28 @@ export default function IELTSSpeakingPage() {
       <Navbar />
       <main className="flex-1">
         {/* Hero */}
-        <section className="bg-[#E8F1FF] py-16 px-4">
+        <section className="bg-[var(--accent-bg)] py-16 px-4">
           <div className="max-w-4xl mx-auto">
             <div className="flex items-center gap-2 mb-4">
-              <span className="bg-[#0056D2] text-white text-xs font-bold px-3 py-1 rounded-full">IELTS</span>
-              <span className="text-sm text-[#636363]">Official Band 1–9 Assessment</span>
+              <span className="bg-[var(--accent)] text-white text-xs font-bold px-3 py-1 rounded-full">IELTS</span>
+              <span className="text-sm text-[var(--text-secondary)]">Official Band 1–9 Assessment</span>
             </div>
-            <h1 className="text-4xl font-bold text-[#1F1F1F] mb-4">
+            <h1 className="text-4xl font-bold text-[var(--text-primary)] mb-4">
               IELTS Speaking Coach
             </h1>
-            <p className="text-lg text-[#636363] mb-8 max-w-2xl leading-relaxed">
+            <p className="text-lg text-[var(--text-secondary)] mb-8 max-w-2xl leading-relaxed">
               Practice all three parts of the IELTS Speaking test with realistic AI-generated prompts, 1-minute prep timers, and band score estimates aligned to official examiner criteria.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <Link
                 href="/signup"
-                className="inline-flex items-center gap-2 bg-[#0056D2] hover:bg-[#003B8E] text-white font-semibold px-8 py-3 rounded transition-colors"
+                className="inline-flex items-center gap-2 bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white font-semibold px-8 py-3 rounded transition-colors"
               >
                 Start IELTS Practice <ArrowRight size={16} />
               </Link>
               <Link
                 href="/pricing"
-                className="inline-flex items-center gap-2 border border-[#0056D2] text-[#0056D2] hover:bg-[#E8F1FF] font-semibold px-8 py-3 rounded transition-colors"
+                className="inline-flex items-center gap-2 border border-[var(--accent)] text-[var(--accent)] hover:bg-[var(--accent-bg)] font-semibold px-8 py-3 rounded transition-colors"
               >
                 View Pricing
               </Link>
@@ -109,25 +109,25 @@ export default function IELTSSpeakingPage() {
         </section>
 
         {/* 3 Parts */}
-        <section className="bg-white py-16 px-4">
+        <section className="bg-[var(--bg-card)] py-16 px-4">
           <div className="max-w-5xl mx-auto">
-            <h2 className="text-2xl font-bold text-[#1F1F1F] mb-2 text-center">The three parts of IELTS Speaking</h2>
-            <p className="text-[#636363] text-center mb-10">Practice each part individually or run a complete 11–14 minute test.</p>
+            <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-2 text-center">The three parts of IELTS Speaking</h2>
+            <p className="text-[var(--text-secondary)] text-center mb-10">Practice each part individually or run a complete 11–14 minute test.</p>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {parts.map(({ part, duration, description, icon: Icon, sampleQuestions }) => (
-                <div key={part} className="bg-white border border-[#E0E0E0] rounded-lg p-6">
-                  <div className="w-10 h-10 bg-[#E8F1FF] rounded-lg flex items-center justify-center mb-4">
-                    <Icon size={20} className="text-[#0056D2]" />
+                <div key={part} className="bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-6">
+                  <div className="w-10 h-10 bg-[var(--accent-bg)] rounded-lg flex items-center justify-center mb-4">
+                    <Icon size={20} className="text-[var(--accent)]" />
                   </div>
-                  <h3 className="font-bold text-[#1F1F1F] mb-1">{part}</h3>
-                  <span className="inline-block text-xs bg-[#F5F5F5] text-[#636363] px-2 py-0.5 rounded mb-3">{duration}</span>
-                  <p className="text-sm text-[#636363] leading-relaxed mb-4">{description}</p>
+                  <h3 className="font-bold text-[var(--text-primary)] mb-1">{part}</h3>
+                  <span className="inline-block text-xs bg-[var(--bg-secondary)] text-[var(--text-secondary)] px-2 py-0.5 rounded mb-3">{duration}</span>
+                  <p className="text-sm text-[var(--text-secondary)] leading-relaxed mb-4">{description}</p>
                   <div>
-                    <p className="text-xs font-bold text-[#1F1F1F] uppercase tracking-wider mb-2">Sample Questions</p>
+                    <p className="text-xs font-bold text-[var(--text-primary)] uppercase tracking-wider mb-2">Sample Questions</p>
                     <ul className="space-y-1.5">
                       {sampleQuestions.map((q) => (
-                        <li key={q} className="text-xs text-[#636363] flex items-start gap-1.5">
-                          <span className="text-[#0056D2] font-bold mt-0.5">›</span>
+                        <li key={q} className="text-xs text-[var(--text-secondary)] flex items-start gap-1.5">
+                          <span className="text-[var(--accent)] font-bold mt-0.5">›</span>
                           {q}
                         </li>
                       ))}
@@ -140,14 +140,14 @@ export default function IELTSSpeakingPage() {
         </section>
 
         {/* Scoring Criteria Table */}
-        <section className="bg-[#F5F5F5] py-16 px-4">
+        <section className="bg-[var(--bg-secondary)] py-16 px-4">
           <div className="max-w-5xl mx-auto">
-            <h2 className="text-2xl font-bold text-[#1F1F1F] mb-2 text-center">IELTS Band Score Criteria</h2>
-            <p className="text-[#636363] text-center mb-10">Spokiva estimates your band across all four official dimensions.</p>
+            <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-2 text-center">IELTS Band Score Criteria</h2>
+            <p className="text-[var(--text-secondary)] text-center mb-10">Spokiva estimates your band across all four official dimensions.</p>
             <div className="overflow-x-auto">
-              <table className="w-full border-collapse bg-white rounded-lg overflow-hidden border border-[#E0E0E0]">
+              <table className="w-full border-collapse bg-[var(--bg-card)] rounded-lg overflow-hidden border border-[var(--border)]">
                 <thead>
-                  <tr className="bg-[#0056D2] text-white">
+                  <tr className="bg-[var(--accent)] text-white">
                     <th className="text-left px-4 py-3 text-sm font-bold">Criteria</th>
                     <th className="px-4 py-3 text-sm font-bold text-center">Band 1–2</th>
                     <th className="px-4 py-3 text-sm font-bold text-center">Band 5</th>
@@ -157,12 +157,12 @@ export default function IELTSSpeakingPage() {
                 </thead>
                 <tbody>
                   {criteria.map((row, i) => (
-                    <tr key={row.name} className={i % 2 === 0 ? "bg-white" : "bg-[#F5F5F5]"}>
-                      <td className="px-4 py-3 text-sm font-semibold text-[#1F1F1F] border-b border-[#E0E0E0]">{row.name}</td>
-                      <td className="px-4 py-3 text-xs text-[#636363] border-b border-[#E0E0E0] text-center">{row.band1}</td>
-                      <td className="px-4 py-3 text-xs text-[#636363] border-b border-[#E0E0E0] text-center">{row.band5}</td>
-                      <td className="px-4 py-3 text-xs text-[#636363] border-b border-[#E0E0E0] text-center">{row.band7}</td>
-                      <td className="px-4 py-3 text-xs text-[#00B37D] font-medium border-b border-[#E0E0E0] text-center">{row.band9}</td>
+                    <tr key={row.name} className={i % 2 === 0 ? "bg-[var(--bg-card)]" : "bg-[var(--bg-secondary)]"}>
+                      <td className="px-4 py-3 text-sm font-semibold text-[var(--text-primary)] border-b border-[var(--border)]">{row.name}</td>
+                      <td className="px-4 py-3 text-xs text-[var(--text-secondary)] border-b border-[var(--border)] text-center">{row.band1}</td>
+                      <td className="px-4 py-3 text-xs text-[var(--text-secondary)] border-b border-[var(--border)] text-center">{row.band5}</td>
+                      <td className="px-4 py-3 text-xs text-[var(--text-secondary)] border-b border-[var(--border)] text-center">{row.band7}</td>
+                      <td className="px-4 py-3 text-xs text-[#00B37D] font-medium border-b border-[var(--border)] text-center">{row.band9}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -172,9 +172,9 @@ export default function IELTSSpeakingPage() {
         </section>
 
         {/* Why Spokiva for IELTS */}
-        <section className="bg-white py-16 px-4">
+        <section className="bg-[var(--bg-card)] py-16 px-4">
           <div className="max-w-4xl mx-auto">
-            <h2 className="text-2xl font-bold text-[#1F1F1F] mb-8 text-center">Why Spokiva for IELTS?</h2>
+            <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-8 text-center">Why Spokiva for IELTS?</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {[
                 "Band score estimates aligned to official IELTS criteria",
@@ -188,7 +188,7 @@ export default function IELTSSpeakingPage() {
               ].map((item) => (
                 <div key={item} className="flex items-start gap-2">
                   <CheckCircle size={16} className="text-[#00B37D] mt-0.5 shrink-0" />
-                  <span className="text-sm text-[#1F1F1F]">{item}</span>
+                  <span className="text-sm text-[var(--text-primary)]">{item}</span>
                 </div>
               ))}
             </div>
@@ -196,13 +196,13 @@ export default function IELTSSpeakingPage() {
         </section>
 
         {/* Demo CTA */}
-        <section className="bg-[#0056D2] py-14 px-4 text-center">
+        <section className="bg-[var(--accent)] py-14 px-4 text-center">
           <div className="max-w-2xl mx-auto">
             <h2 className="text-2xl font-bold text-white mb-4">Ready to target Band 7+?</h2>
             <p className="text-blue-100 mb-6">Start practicing free. No credit card required.</p>
             <Link
               href="/signup"
-              className="inline-flex items-center gap-2 bg-white text-[#0056D2] hover:bg-[#E8F1FF] font-bold px-8 py-3 rounded transition-colors"
+              className="inline-flex items-center gap-2 bg-[var(--bg-card)] text-[var(--accent)] hover:bg-[var(--accent-bg)] font-bold px-8 py-3 rounded transition-colors"
             >
               Start Free IELTS Practice <ArrowRight size={16} />
             </Link>

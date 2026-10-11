@@ -108,15 +108,15 @@ export default function FeaturesPage() {
       <Navbar />
       <main className="flex-1">
         {/* Hero */}
-        <section className="bg-[#E8F1FF] py-16 px-4 text-center">
+        <section className="bg-[var(--accent-bg)] py-16 px-4 text-center">
           <div className="max-w-3xl mx-auto">
-            <h1 className="text-4xl font-bold text-[#1F1F1F] mb-4">Everything you need to speak better</h1>
-            <p className="text-lg text-[#636363] mb-8">
+            <h1 className="text-4xl font-bold text-[var(--text-primary)] mb-4">Everything you need to speak better</h1>
+            <p className="text-lg text-[var(--text-secondary)] mb-8">
               Six powerful AI tools covering every dimension of spoken English — from script generation to real-time pronunciation analysis.
             </p>
             <Link
               href="/signup"
-              className="inline-block bg-[#0056D2] hover:bg-[#003B8E] text-white font-semibold px-8 py-3 rounded transition-colors"
+              className="inline-block bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white font-semibold px-8 py-3 rounded transition-colors"
             >
               Start for Free
             </Link>
@@ -128,29 +128,29 @@ export default function FeaturesPage() {
           const Icon = feature.icon;
           const isEven = i % 2 === 0;
           return (
-            <section key={feature.title} className={`py-16 px-4 ${isEven ? "bg-white" : "bg-[#F5F5F5]"}`}>
+            <section key={feature.title} className={`py-16 px-4 ${isEven ? "bg-[var(--bg-card)]" : "bg-[var(--bg-secondary)]"}`}>
               <div className="max-w-5xl mx-auto">
                 <div className={`flex flex-col ${isEven ? "md:flex-row" : "md:flex-row-reverse"} gap-10 items-start`}>
                   <div className="flex-1">
-                    <div className="w-12 h-12 bg-[#E8F1FF] rounded-xl flex items-center justify-center mb-4">
-                      <Icon size={24} className="text-[#0056D2]" />
+                    <div className="w-12 h-12 bg-[var(--accent-bg)] rounded-xl flex items-center justify-center mb-4">
+                      <Icon size={24} className="text-[var(--accent)]" />
                     </div>
-                    <h2 className="text-2xl font-bold text-[#1F1F1F] mb-2">{feature.title}</h2>
-                    <p className="text-[#0056D2] font-semibold text-sm mb-3">{feature.tagline}</p>
-                    <p className="text-[#636363] leading-relaxed mb-6">{feature.description}</p>
+                    <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-2">{feature.title}</h2>
+                    <p className="text-[var(--accent)] font-semibold text-sm mb-3">{feature.tagline}</p>
+                    <p className="text-[var(--text-secondary)] leading-relaxed mb-6">{feature.description}</p>
                     <ul className="space-y-2">
                       {feature.benefits.map((b) => (
-                        <li key={b} className="flex items-start gap-2 text-sm text-[#1F1F1F]">
+                        <li key={b} className="flex items-start gap-2 text-sm text-[var(--text-primary)]">
                           <CheckCircle size={15} className="text-[#00B37D] mt-0.5 shrink-0" />
                           {b}
                         </li>
                       ))}
                     </ul>
                   </div>
-                  <div className="flex-1 bg-[#E8F1FF] rounded-xl h-64 flex items-center justify-center">
+                  <div className="flex-1 bg-[var(--accent-bg)] rounded-xl h-64 flex items-center justify-center">
                     <div className="text-center p-8">
-                      <Icon size={64} className="text-[#0056D2] opacity-20 mx-auto mb-3" />
-                      <p className="text-[#0056D2] font-semibold text-sm">{feature.title}</p>
+                      <Icon size={64} className="text-[var(--accent)] opacity-20 mx-auto mb-3" />
+                      <p className="text-[var(--accent)] font-semibold text-sm">{feature.title}</p>
                     </div>
                   </div>
                 </div>
@@ -160,31 +160,31 @@ export default function FeaturesPage() {
         })}
 
         {/* Comparison Table */}
-        <section className="bg-white py-16 px-4">
+        <section className="bg-[var(--bg-card)] py-16 px-4">
           <div className="max-w-4xl mx-auto">
-            <h2 className="text-2xl font-bold text-[#1F1F1F] mb-2 text-center">How Spokiva compares</h2>
-            <p className="text-[#636363] text-center mb-10">vs. Duolingo, ELSA Speak, and YouTube tutorials</p>
+            <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-2 text-center">How Spokiva compares</h2>
+            <p className="text-[var(--text-secondary)] text-center mb-10">vs. Duolingo, ELSA Speak, and YouTube tutorials</p>
             <div className="overflow-x-auto">
               <table className="w-full border-collapse">
                 <thead>
-                  <tr className="bg-[#F5F5F5]">
-                    <th className="text-left px-4 py-3 text-sm font-bold text-[#1F1F1F] border border-[#E0E0E0]">Feature</th>
-                    <th className="px-4 py-3 text-sm font-bold text-[#0056D2] border border-[#E0E0E0] text-center">Spokiva</th>
-                    <th className="px-4 py-3 text-sm font-bold text-[#636363] border border-[#E0E0E0] text-center">Duolingo</th>
-                    <th className="px-4 py-3 text-sm font-bold text-[#636363] border border-[#E0E0E0] text-center">ELSA Speak</th>
-                    <th className="px-4 py-3 text-sm font-bold text-[#636363] border border-[#E0E0E0] text-center">YouTube</th>
+                  <tr className="bg-[var(--bg-secondary)]">
+                    <th className="text-left px-4 py-3 text-sm font-bold text-[var(--text-primary)] border border-[var(--border)]">Feature</th>
+                    <th className="px-4 py-3 text-sm font-bold text-[var(--accent)] border border-[var(--border)] text-center">Spokiva</th>
+                    <th className="px-4 py-3 text-sm font-bold text-[var(--text-secondary)] border border-[var(--border)] text-center">Duolingo</th>
+                    <th className="px-4 py-3 text-sm font-bold text-[var(--text-secondary)] border border-[var(--border)] text-center">ELSA Speak</th>
+                    <th className="px-4 py-3 text-sm font-bold text-[var(--text-secondary)] border border-[var(--border)] text-center">YouTube</th>
                   </tr>
                 </thead>
                 <tbody>
                   {comparisonRows.map((row, i) => (
-                    <tr key={row.feature} className={i % 2 === 0 ? "bg-white" : "bg-[#F5F5F5]"}>
-                      <td className="px-4 py-3 text-sm text-[#1F1F1F] border border-[#E0E0E0]">{row.feature}</td>
+                    <tr key={row.feature} className={i % 2 === 0 ? "bg-[var(--bg-card)]" : "bg-[var(--bg-secondary)]"}>
+                      <td className="px-4 py-3 text-sm text-[var(--text-primary)] border border-[var(--border)]">{row.feature}</td>
                       {[row.spokiva, row.duolingo, row.elsa, row.youtube].map((val, j) => (
-                        <td key={j} className="px-4 py-3 border border-[#E0E0E0] text-center">
+                        <td key={j} className="px-4 py-3 border border-[var(--border)] text-center">
                           {val ? (
-                            <CheckCircle size={16} className={j === 0 ? "text-[#00B37D] mx-auto" : "text-[#636363] mx-auto"} />
+                            <CheckCircle size={16} className={j === 0 ? "text-[#00B37D] mx-auto" : "text-[var(--text-secondary)] mx-auto"} />
                           ) : (
-                            <X size={16} className="text-[#BDBDBD] mx-auto" />
+                            <X size={16} className="text-[var(--text-muted)] mx-auto" />
                           )}
                         </td>
                       ))}
@@ -197,13 +197,13 @@ export default function FeaturesPage() {
         </section>
 
         {/* CTA */}
-        <section className="bg-[#0056D2] py-14 px-4 text-center">
+        <section className="bg-[var(--accent)] py-14 px-4 text-center">
           <div className="max-w-2xl mx-auto">
             <h2 className="text-2xl font-bold text-white mb-4">Ready to get started?</h2>
             <p className="text-blue-100 mb-6">Join 50,000+ speakers improving with Spokiva.</p>
             <Link
               href="/signup"
-              className="inline-block bg-white text-[#0056D2] hover:bg-[#E8F1FF] font-bold px-8 py-3 rounded transition-colors"
+              className="inline-block bg-[var(--bg-card)] text-[var(--accent)] hover:bg-[var(--accent-bg)] font-bold px-8 py-3 rounded transition-colors"
             >
               Create Free Account
             </Link>

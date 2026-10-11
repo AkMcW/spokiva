@@ -66,8 +66,8 @@ export default function PrintReportPage() {
 
   if (!data) {
     return (
-      <div className="min-h-screen flex items-center justify-center text-[#636363]">
-        <p>No session data found. <a href="/dashboard/results" className="text-[#0056D2] underline">Go back</a></p>
+      <div className="min-h-screen flex items-center justify-center text-[var(--text-secondary)]">
+        <p>No session data found. <a href="/dashboard/results" className="text-[var(--accent)] underline">Go back</a></p>
       </div>
     );
   }
@@ -86,72 +86,72 @@ export default function PrintReportPage() {
       <div className="no-print fixed top-4 right-4 flex gap-2 z-50">
         <button
           onClick={() => window.print()}
-          className="bg-[#0056D2] text-white font-semibold px-5 py-2 rounded shadow text-sm hover:bg-[#003B8E] transition-colors"
+          className="bg-[var(--accent)] text-white font-semibold px-5 py-2 rounded shadow text-sm hover:bg-[var(--accent-hover)] transition-colors"
         >
           Print / Save PDF
         </button>
         <button
           onClick={() => window.close()}
-          className="border border-[#E0E0E0] text-[#636363] font-semibold px-4 py-2 rounded text-sm hover:bg-[#F5F5F5] transition-colors"
+          className="border border-[var(--border)] text-[var(--text-secondary)] font-semibold px-4 py-2 rounded text-sm hover:bg-[var(--bg-hover)] transition-colors"
         >
           Close
         </button>
       </div>
 
-      <div className="max-w-3xl mx-auto px-8 py-10 font-sans text-[#1F1F1F]">
+      <div className="max-w-3xl mx-auto px-8 py-10 font-sans text-[var(--text-primary)]">
         {/* Header */}
-        <div className="flex items-center justify-between border-b-2 border-[#0056D2] pb-4 mb-8">
+        <div className="flex items-center justify-between border-b-2 border-[var(--accent)] pb-4 mb-8">
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <div className="w-7 h-7 bg-[#0056D2] rounded flex items-center justify-center">
+              <div className="w-7 h-7 bg-[var(--accent)] rounded flex items-center justify-center">
                 <span className="text-white text-xs font-bold">SF</span>
               </div>
-              <span className="text-lg font-bold text-[#0056D2]">Spokiva</span>
+              <span className="text-lg font-bold text-[var(--accent)]">Spokiva</span>
             </div>
-            <p className="text-xs text-[#636363]">Speaking Practice Report</p>
+            <p className="text-xs text-[var(--text-secondary)]">Speaking Practice Report</p>
           </div>
           <div className="text-right">
             <p className="text-sm font-semibold">{today}</p>
-            {data.wpm > 0 && <p className="text-xs text-[#636363]">{data.wpm} words per minute</p>}
+            {data.wpm > 0 && <p className="text-xs text-[var(--text-secondary)]">{data.wpm} words per minute</p>}
           </div>
         </div>
 
         {/* Overall score */}
         <div className="text-center mb-8">
-          <p className="text-xs uppercase tracking-widest text-[#636363] mb-2">Overall Score</p>
+          <p className="text-xs uppercase tracking-widest text-[var(--text-secondary)] mb-2">Overall Score</p>
           <div
             className="inline-flex flex-col items-center justify-center w-28 h-28 rounded-full border-8 mb-2"
             style={{ borderColor: scoreColor(data.scores.overall) }}
           >
             <span className="text-4xl font-bold">{data.scores.overall}</span>
-            <span className="text-xs text-[#636363]">/100</span>
+            <span className="text-xs text-[var(--text-secondary)]">/100</span>
           </div>
           <p className="text-sm font-semibold" style={{ color: scoreColor(data.scores.overall) }}>
             {scoreLabel(data.scores.overall)}
           </p>
           {data.fillerWords.count > 0 && (
-            <p className="text-xs text-[#636363] mt-1">
+            <p className="text-xs text-[var(--text-secondary)] mt-1">
               {data.fillerWords.count} filler word{data.fillerWords.count !== 1 ? "s" : ""}
               {data.fillerWords.words.length > 0 && ` (${data.fillerWords.words.map(w => `"${w}"`).join(", ")})`}
             </p>
           )}
           {data.bandScore != null && (
-            <p className="text-xs text-[#636363]">Estimated IELTS Band: <strong>{data.bandScore}</strong></p>
+            <p className="text-xs text-[var(--text-secondary)]">Estimated IELTS Band: <strong>{data.bandScore}</strong></p>
           )}
         </div>
 
         {/* Score breakdown table */}
         <div className="mb-8">
-          <p className="text-sm font-bold mb-3 border-b border-[#E0E0E0] pb-1">Score Breakdown</p>
+          <p className="text-sm font-bold mb-3 border-b border-[var(--border)] pb-1">Score Breakdown</p>
           <div className="grid grid-cols-3 gap-3">
             {SCORE_KEYS.map((key) => {
               const score = data.scores[key];
               const label = key.charAt(0).toUpperCase() + key.slice(1);
               return (
-                <div key={key} className="border border-[#E0E0E0] rounded p-3 text-center">
-                  <p className="text-xs text-[#636363] mb-1">{label}</p>
+                <div key={key} className="border border-[var(--border)] rounded p-3 text-center">
+                  <p className="text-xs text-[var(--text-secondary)] mb-1">{label}</p>
                   <p className="text-2xl font-bold" style={{ color: scoreColor(score) }}>{score}</p>
-                  <div className="mt-1 h-1.5 bg-[#F5F5F5] rounded-full overflow-hidden">
+                  <div className="mt-1 h-1.5 bg-[var(--bg-secondary)] rounded-full overflow-hidden">
                     <div className="h-full rounded-full" style={{ width: `${score}%`, backgroundColor: scoreColor(score) }} />
                   </div>
                 </div>
@@ -166,7 +166,7 @@ export default function PrintReportPage() {
             <p className="text-sm font-bold mb-2 text-[#00B37D]">✓ Strengths</p>
             <ul className="space-y-1.5">
               {data.strengths.map((s, i) => (
-                <li key={i} className="text-xs text-[#636363] flex items-start gap-1.5">
+                <li key={i} className="text-xs text-[var(--text-secondary)] flex items-start gap-1.5">
                   <span className="text-[#00B37D] shrink-0 mt-0.5">•</span>{s}
                 </li>
               ))}
@@ -176,7 +176,7 @@ export default function PrintReportPage() {
             <p className="text-sm font-bold mb-2 text-[#F5A623]">↑ Improvement Areas</p>
             <ul className="space-y-1.5">
               {data.improvements.map((s, i) => (
-                <li key={i} className="text-xs text-[#636363] flex items-start gap-1.5">
+                <li key={i} className="text-xs text-[var(--text-secondary)] flex items-start gap-1.5">
                   <span className="text-[#F5A623] shrink-0 mt-0.5">•</span>{s}
                 </li>
               ))}
@@ -185,21 +185,21 @@ export default function PrintReportPage() {
         </div>
 
         {/* AI Feedback */}
-        <div className="bg-[#F0F4FF] rounded-lg p-4 mb-8">
-          <p className="text-xs font-bold text-[#0056D2] mb-2">AI Coach Feedback</p>
-          <p className="text-xs text-[#636363] leading-relaxed">{data.aiFeedback}</p>
+        <div className="bg-[var(--accent-bg)] rounded-lg p-4 mb-8">
+          <p className="text-xs font-bold text-[var(--accent)] mb-2">AI Coach Feedback</p>
+          <p className="text-xs text-[var(--text-secondary)] leading-relaxed">{data.aiFeedback}</p>
         </div>
 
         {/* Transcript */}
         {data.transcript && (
           <div className="mb-8">
-            <p className="text-sm font-bold mb-2 border-b border-[#E0E0E0] pb-1">Your Transcript</p>
-            <p className="text-xs text-[#636363] leading-relaxed">{data.transcript}</p>
+            <p className="text-sm font-bold mb-2 border-b border-[var(--border)] pb-1">Your Transcript</p>
+            <p className="text-xs text-[var(--text-secondary)] leading-relaxed">{data.transcript}</p>
           </div>
         )}
 
         {/* Footer */}
-        <div className="text-center text-[10px] text-[#9E9E9E] border-t border-[#E0E0E0] pt-4">
+        <div className="text-center text-[10px] text-[var(--text-muted)] border-t border-[var(--border)] pt-4">
           Generated by Spokiva · spokiva.app · {today}
         </div>
       </div>

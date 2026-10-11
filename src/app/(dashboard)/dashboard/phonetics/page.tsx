@@ -90,69 +90,69 @@ const minimalPairs = [
 ];
 
 const tips = [
-  { icon: <Volume2 className="w-5 h-5 text-[#0056D2]" />, title: "Listen actively", body: "Use podcasts, movies, or YouTube. Pause and mimic the exact sounds you hear, not just the words." },
-  { icon: <Mic className="w-5 h-5 text-[#0056D2]" />, title: "Record yourself", body: "Record a sentence, then listen back. Compare your vowels and consonants to a native speaker version." },
-  { icon: <BookOpen className="w-5 h-5 text-[#0056D2]" />, title: "Use IPA references", body: "When looking up words in a dictionary, always check the IPA transcription — don't guess from spelling." },
-  { icon: <Info className="w-5 h-5 text-[#0056D2]" />, title: "Focus on problem sounds", body: "Identify your top 3 problem sounds and drill minimal pairs for each daily for 5 minutes." },
+  { icon: <Volume2 className="w-5 h-5 text-[var(--accent)]" />, title: "Listen actively", body: "Use podcasts, movies, or YouTube. Pause and mimic the exact sounds you hear, not just the words." },
+  { icon: <Mic className="w-5 h-5 text-[var(--accent)]" />, title: "Record yourself", body: "Record a sentence, then listen back. Compare your vowels and consonants to a native speaker version." },
+  { icon: <BookOpen className="w-5 h-5 text-[var(--accent)]" />, title: "Use IPA references", body: "When looking up words in a dictionary, always check the IPA transcription — don't guess from spelling." },
+  { icon: <Info className="w-5 h-5 text-[var(--accent)]" />, title: "Focus on problem sounds", body: "Identify your top 3 problem sounds and drill minimal pairs for each daily for 5 minutes." },
 ];
 
 export default function PhoneticsPage() {
   return (
-    <div className="min-h-screen bg-[#F5F7FA] px-4 py-8 md:px-8">
+    <div className="min-h-screen bg-[var(--bg-secondary)] px-4 py-8 md:px-8">
       {/* Header */}
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-2">
-          <div className="w-10 h-10 rounded-xl bg-[#0056D2] flex items-center justify-center">
+          <div className="w-10 h-10 rounded-xl bg-[var(--accent)] flex items-center justify-center">
             <BookOpen className="w-5 h-5 text-white" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-[#1F1F1F]">Phonetic Knowledge</h1>
-            <p className="text-[#636363] text-sm">Master English sounds for clearer, more confident speech</p>
+            <h1 className="text-2xl font-bold text-[var(--text-primary)]">Phonetic Knowledge</h1>
+            <p className="text-[var(--text-secondary)] text-sm">Master English sounds for clearer, more confident speech</p>
           </div>
         </div>
       </div>
 
       {/* IPA Vowel Chart */}
       <section className="mb-8">
-        <h2 className="text-lg font-semibold text-[#1F1F1F] mb-4">IPA Vowel Chart</h2>
+        <h2 className="text-lg font-semibold text-[var(--text-primary)] mb-4">IPA Vowel Chart</h2>
 
         {/* Short Vowels */}
-        <div className="bg-white rounded-2xl border border-[#E0E0E0] p-6 mb-4">
-          <h3 className="text-sm font-semibold text-[#0056D2] uppercase tracking-wide mb-4">Short Vowels</h3>
+        <div className="bg-[var(--bg-card)] rounded-2xl border border-[var(--border)] p-6 mb-4">
+          <h3 className="text-sm font-semibold text-[var(--accent)] uppercase tracking-wide mb-4">Short Vowels</h3>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
             {shortVowels.map((v) => (
-              <div key={v.symbol} className="bg-[#F5F7FA] rounded-xl p-3 border border-[#E0E0E0]">
-                <span className="text-2xl font-bold text-[#0056D2] block mb-1">{v.symbol}</span>
-                <span className="text-sm font-semibold text-[#1F1F1F] block">"{v.example}"</span>
-                <span className="text-xs text-[#636363]">{v.hint}</span>
+              <div key={v.symbol} className="bg-[var(--bg-secondary)] rounded-xl p-3 border border-[var(--border)]">
+                <span className="text-2xl font-bold text-[var(--accent)] block mb-1">{v.symbol}</span>
+                <span className="text-sm font-semibold text-[var(--text-primary)] block">"{v.example}"</span>
+                <span className="text-xs text-[var(--text-secondary)]">{v.hint}</span>
               </div>
             ))}
           </div>
         </div>
 
         {/* Long Vowels */}
-        <div className="bg-white rounded-2xl border border-[#E0E0E0] p-6 mb-4">
-          <h3 className="text-sm font-semibold text-[#0056D2] uppercase tracking-wide mb-4">Long Vowels</h3>
+        <div className="bg-[var(--bg-card)] rounded-2xl border border-[var(--border)] p-6 mb-4">
+          <h3 className="text-sm font-semibold text-[var(--accent)] uppercase tracking-wide mb-4">Long Vowels</h3>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
             {longVowels.map((v) => (
-              <div key={v.symbol} className="bg-[#F5F7FA] rounded-xl p-3 border border-[#E0E0E0]">
-                <span className="text-2xl font-bold text-[#0056D2] block mb-1">{v.symbol}</span>
-                <span className="text-sm font-semibold text-[#1F1F1F] block">"{v.example}"</span>
-                <span className="text-xs text-[#636363]">{v.hint}</span>
+              <div key={v.symbol} className="bg-[var(--bg-secondary)] rounded-xl p-3 border border-[var(--border)]">
+                <span className="text-2xl font-bold text-[var(--accent)] block mb-1">{v.symbol}</span>
+                <span className="text-sm font-semibold text-[var(--text-primary)] block">"{v.example}"</span>
+                <span className="text-xs text-[var(--text-secondary)]">{v.hint}</span>
               </div>
             ))}
           </div>
         </div>
 
         {/* Diphthongs */}
-        <div className="bg-white rounded-2xl border border-[#E0E0E0] p-6">
-          <h3 className="text-sm font-semibold text-[#0056D2] uppercase tracking-wide mb-4">Diphthongs</h3>
+        <div className="bg-[var(--bg-card)] rounded-2xl border border-[var(--border)] p-6">
+          <h3 className="text-sm font-semibold text-[var(--accent)] uppercase tracking-wide mb-4">Diphthongs</h3>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
             {diphthongs.map((v) => (
-              <div key={v.symbol} className="bg-[#F5F7FA] rounded-xl p-3 border border-[#E0E0E0]">
-                <span className="text-2xl font-bold text-[#0056D2] block mb-1">{v.symbol}</span>
-                <span className="text-sm font-semibold text-[#1F1F1F] block">"{v.example}"</span>
-                <span className="text-xs text-[#636363]">{v.hint}</span>
+              <div key={v.symbol} className="bg-[var(--bg-secondary)] rounded-xl p-3 border border-[var(--border)]">
+                <span className="text-2xl font-bold text-[var(--accent)] block mb-1">{v.symbol}</span>
+                <span className="text-sm font-semibold text-[var(--text-primary)] block">"{v.example}"</span>
+                <span className="text-xs text-[var(--text-secondary)]">{v.hint}</span>
               </div>
             ))}
           </div>
@@ -161,23 +161,23 @@ export default function PhoneticsPage() {
 
       {/* Consonant Chart */}
       <section className="mb-8">
-        <h2 className="text-lg font-semibold text-[#1F1F1F] mb-4">Key Problem Consonants</h2>
-        <div className="bg-white rounded-2xl border border-[#E0E0E0] overflow-hidden">
-          <div className="hidden md:grid grid-cols-4 bg-[#F5F7FA] border-b border-[#E0E0E0] px-6 py-3">
-            <span className="text-xs font-semibold text-[#636363] uppercase">Symbol</span>
-            <span className="text-xs font-semibold text-[#636363] uppercase">Name</span>
-            <span className="text-xs font-semibold text-[#636363] uppercase">Example</span>
-            <span className="text-xs font-semibold text-[#636363] uppercase">How to produce</span>
+        <h2 className="text-lg font-semibold text-[var(--text-primary)] mb-4">Key Problem Consonants</h2>
+        <div className="bg-[var(--bg-card)] rounded-2xl border border-[var(--border)] overflow-hidden">
+          <div className="hidden md:grid grid-cols-4 bg-[var(--bg-secondary)] border-b border-[var(--border)] px-6 py-3">
+            <span className="text-xs font-semibold text-[var(--text-secondary)] uppercase">Symbol</span>
+            <span className="text-xs font-semibold text-[var(--text-secondary)] uppercase">Name</span>
+            <span className="text-xs font-semibold text-[var(--text-secondary)] uppercase">Example</span>
+            <span className="text-xs font-semibold text-[var(--text-secondary)] uppercase">How to produce</span>
           </div>
           {consonants.map((c, i) => (
             <div
               key={c.symbol}
-              className={`grid grid-cols-1 md:grid-cols-4 gap-2 md:gap-0 px-6 py-4 ${i < consonants.length - 1 ? "border-b border-[#E0E0E0]" : ""}`}
+              className={`grid grid-cols-1 md:grid-cols-4 gap-2 md:gap-0 px-6 py-4 ${i < consonants.length - 1 ? "border-b border-[var(--border)]" : ""}`}
             >
-              <span className="text-xl font-bold text-[#0056D2]">{c.symbol}</span>
-              <span className="text-sm font-semibold text-[#1F1F1F] md:self-center">{c.name}</span>
-              <span className="text-sm text-[#1F1F1F] md:self-center italic">"{c.example}"</span>
-              <span className="text-sm text-[#636363] md:self-center">{c.tip}</span>
+              <span className="text-xl font-bold text-[var(--accent)]">{c.symbol}</span>
+              <span className="text-sm font-semibold text-[var(--text-primary)] md:self-center">{c.name}</span>
+              <span className="text-sm text-[var(--text-primary)] md:self-center italic">"{c.example}"</span>
+              <span className="text-sm text-[var(--text-secondary)] md:self-center">{c.tip}</span>
             </div>
           ))}
         </div>
@@ -185,18 +185,18 @@ export default function PhoneticsPage() {
 
       {/* Common Mistakes */}
       <section className="mb-8">
-        <h2 className="text-lg font-semibold text-[#1F1F1F] mb-4">Common Mistakes by Speaker Background</h2>
+        <h2 className="text-lg font-semibold text-[var(--text-primary)] mb-4">Common Mistakes by Speaker Background</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {commonMistakes.map((group) => (
-            <div key={group.group} className="bg-white rounded-2xl border border-[#E0E0E0] p-5">
+            <div key={group.group} className="bg-[var(--bg-card)] rounded-2xl border border-[var(--border)] p-5">
               <div className="flex items-center gap-2 mb-4">
                 <span className="text-2xl">{group.icon}</span>
-                <h3 className="text-sm font-semibold text-[#1F1F1F]">{group.group}</h3>
+                <h3 className="text-sm font-semibold text-[var(--text-primary)]">{group.group}</h3>
               </div>
               <ul className="space-y-2">
                 {group.mistakes.map((m, i) => (
-                  <li key={i} className="flex items-start gap-2 text-sm text-[#636363]">
-                    <span className="mt-1 w-1.5 h-1.5 rounded-full bg-[#0056D2] flex-shrink-0" />
+                  <li key={i} className="flex items-start gap-2 text-sm text-[var(--text-secondary)]">
+                    <span className="mt-1 w-1.5 h-1.5 rounded-full bg-[var(--accent)] flex-shrink-0" />
                     {m}
                   </li>
                 ))}
@@ -208,30 +208,30 @@ export default function PhoneticsPage() {
 
       {/* Minimal Pairs Drills */}
       <section className="mb-8">
-        <h2 className="text-lg font-semibold text-[#1F1F1F] mb-4">
+        <h2 className="text-lg font-semibold text-[var(--text-primary)] mb-4">
           <span className="flex items-center gap-2">
-            <Mic className="w-5 h-5 text-[#0056D2]" />
+            <Mic className="w-5 h-5 text-[var(--accent)]" />
             Practice Drills — Minimal Pairs
           </span>
         </h2>
-        <div className="bg-white rounded-2xl border border-[#E0E0E0] overflow-hidden">
-          <div className="grid grid-cols-3 bg-[#F5F7FA] border-b border-[#E0E0E0] px-6 py-3">
-            <span className="text-xs font-semibold text-[#636363] uppercase">Word A</span>
-            <span className="text-xs font-semibold text-[#636363] uppercase">Word B</span>
-            <span className="text-xs font-semibold text-[#636363] uppercase">Contrast</span>
+        <div className="bg-[var(--bg-card)] rounded-2xl border border-[var(--border)] overflow-hidden">
+          <div className="grid grid-cols-3 bg-[var(--bg-secondary)] border-b border-[var(--border)] px-6 py-3">
+            <span className="text-xs font-semibold text-[var(--text-secondary)] uppercase">Word A</span>
+            <span className="text-xs font-semibold text-[var(--text-secondary)] uppercase">Word B</span>
+            <span className="text-xs font-semibold text-[var(--text-secondary)] uppercase">Contrast</span>
           </div>
           {minimalPairs.map((pair, i) => (
             <div
               key={i}
-              className={`grid grid-cols-3 px-6 py-3 ${i < minimalPairs.length - 1 ? "border-b border-[#E0E0E0]" : ""} ${i % 2 === 0 ? "" : "bg-[#FAFAFA]"}`}
+              className={`grid grid-cols-3 px-6 py-3 ${i < minimalPairs.length - 1 ? "border-b border-[var(--border)]" : ""} ${i % 2 === 0 ? "" : "bg-[var(--bg-secondary)]"}`}
             >
-              <span className="text-sm font-semibold text-[#1F1F1F]">{pair.a}</span>
-              <span className="text-sm font-semibold text-[#1F1F1F]">{pair.b}</span>
-              <span className="text-xs text-[#0056D2] font-mono self-center">{pair.symbols}</span>
+              <span className="text-sm font-semibold text-[var(--text-primary)]">{pair.a}</span>
+              <span className="text-sm font-semibold text-[var(--text-primary)]">{pair.b}</span>
+              <span className="text-xs text-[var(--accent)] font-mono self-center">{pair.symbols}</span>
             </div>
           ))}
         </div>
-        <p className="mt-3 text-xs text-[#636363] flex items-center gap-1">
+        <p className="mt-3 text-xs text-[var(--text-secondary)] flex items-center gap-1">
           <Info className="w-3.5 h-3.5" />
           Say each pair aloud 5× slowly, then 5× at normal speed. Focus on the vowel or consonant difference.
         </p>
@@ -239,21 +239,21 @@ export default function PhoneticsPage() {
 
       {/* Tips for Clear Speech */}
       <section className="mb-4">
-        <h2 className="text-lg font-semibold text-[#1F1F1F] mb-4">
+        <h2 className="text-lg font-semibold text-[var(--text-primary)] mb-4">
           <span className="flex items-center gap-2">
-            <Volume2 className="w-5 h-5 text-[#0056D2]" />
+            <Volume2 className="w-5 h-5 text-[var(--accent)]" />
             Tips for Clear Speech
           </span>
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {tips.map((tip, i) => (
-            <div key={i} className="bg-white rounded-2xl border border-[#E0E0E0] p-5 flex gap-4">
-              <div className="w-9 h-9 rounded-xl bg-[#EEF4FF] flex items-center justify-center flex-shrink-0">
+            <div key={i} className="bg-[var(--bg-card)] rounded-2xl border border-[var(--border)] p-5 flex gap-4">
+              <div className="w-9 h-9 rounded-xl bg-[var(--accent-bg)] flex items-center justify-center flex-shrink-0">
                 {tip.icon}
               </div>
               <div>
-                <h3 className="text-sm font-semibold text-[#1F1F1F] mb-1">{tip.title}</h3>
-                <p className="text-sm text-[#636363]">{tip.body}</p>
+                <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-1">{tip.title}</h3>
+                <p className="text-sm text-[var(--text-secondary)]">{tip.body}</p>
               </div>
             </div>
           ))}

@@ -55,7 +55,7 @@ const CHALLENGES: Challenge[] = [
     difficulty: "Very High",
     icon: Flame,
     color: "#E53935",
-    bgColor: "#FFEBEE",
+    bgColor: "var(--danger-bg)",
     twoPhase: true,
     prepTime: 15,
     speakTime: "60s pitch + 45s response",
@@ -74,7 +74,7 @@ const CHALLENGES: Challenge[] = [
     difficulty: "High",
     icon: Briefcase,
     color: "#7B61FF",
-    bgColor: "#F0EEFF",
+    bgColor: "var(--info-bg)",
     twoPhase: false,
     prepTime: 20,
     speakTime: "90s hard limit",
@@ -94,7 +94,7 @@ const CHALLENGES: Challenge[] = [
     difficulty: "High",
     icon: AlertTriangle,
     color: "#F5A623",
-    bgColor: "#FFF8E7",
+    bgColor: "var(--warning-bg)",
     twoPhase: false,
     prepTime: 15,
     speakTime: "60–90s",
@@ -113,8 +113,8 @@ const CHALLENGES: Challenge[] = [
     tagline: "Sensitive topics. Real stakes.",
     difficulty: "Very High",
     icon: MessageSquare,
-    color: "#0056D2",
-    bgColor: "#EEF2FF",
+    color: "var(--accent)",
+    bgColor: "var(--accent-bg)",
     twoPhase: false,
     prepTime: 20,
     speakTime: "60–90s",
@@ -134,7 +134,7 @@ const CHALLENGES: Challenge[] = [
     difficulty: "Very High",
     icon: Users,
     color: "#00B37D",
-    bgColor: "#E6F7F2",
+    bgColor: "var(--success-bg)",
     twoPhase: true,
     prepTime: 20,
     speakTime: "60s argument + 45s rebuttal",
@@ -154,7 +154,7 @@ const CHALLENGES: Challenge[] = [
     difficulty: "High",
     icon: Shield,
     color: "#009688",
-    bgColor: "#E0F2F1",
+    bgColor: "var(--success-bg)",
     twoPhase: true,
     prepTime: 10,
     speakTime: "30s intro + 45s objection response",
@@ -174,7 +174,7 @@ const CHALLENGES: Challenge[] = [
     difficulty: "High",
     icon: BarChart,
     color: "#0288D1",
-    bgColor: "#E1F5FE",
+    bgColor: "var(--info-bg)",
     twoPhase: false,
     prepTime: 25,
     speakTime: "60–90s",
@@ -190,9 +190,9 @@ const CHALLENGES: Challenge[] = [
 ];
 
 const DIFF_COLOR: Record<Difficulty, { text: string; bg: string }> = {
-  Medium: { text: "#00B37D", bg: "#E6F7F2" },
-  High: { text: "#F5A623", bg: "#FFF8E7" },
-  "Very High": { text: "#E53935", bg: "#FFEBEE" },
+  Medium: { text: "#00B37D", bg: "var(--success-bg)" },
+  High: { text: "#F5A623", bg: "var(--warning-bg)" },
+  "Very High": { text: "#E53935", bg: "var(--danger-bg)" },
 };
 
 // ─── Helper ───────────────────────────────────────────────────────────────────
@@ -538,7 +538,7 @@ export default function ChallengesPage() {
         </span>
       </div>
 
-      {error && <div className="rounded-lg p-3 text-xs text-red-600 bg-red-50 border border-red-200">{error}</div>}
+      {error && <div className="rounded-lg p-3 text-xs text-red-600 bg-[var(--danger-bg)] border border-[var(--danger-border)]">{error}</div>}
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         {/* Scenario card */}

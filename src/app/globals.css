@@ -16,43 +16,72 @@
 
 * { box-sizing: border-box; }
 
-/* ── Light mode (default) ── */
-:root {
-  --bg: #ffffff;
-  --bg-secondary: #F7F7F8;
-  --bg-card: #ffffff;
-  --bg-sidebar: #ffffff;
-  --bg-hover: #F5F5F5;
-  --bg-active: #EEF2FF;
-  --border: #E5E5E5;
-  --text-primary: #111111;
-  --text-secondary: #6B6B6B;
-  --text-muted: #9E9E9E;
-  --accent: #0056D2;
-  --accent-bg: #EEF2FF;
-  --accent-glow: rgba(0, 86, 210, 0.12);
-  --shadow-card: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
-  --shadow-glow: 0 0 0 1px rgba(0, 86, 210, 0.15), 0 4px 16px rgba(0, 86, 210, 0.08);
+/* ── Reading themes ──────────────────────────────────────────────────────────
+   Five soft, eye-friendly palettes. No pure white or pure black; body text
+   meets WCAG AA (>= 4.5:1) on every background. "paper" is the default.
+   Selected via <html data-theme="…">, applied before first paint (layout.tsx). */
+:root, [data-theme="paper"] {
+  --bg: #F7F5F0; --bg-secondary: #EFECE5; --bg-card: #FCFBF8; --bg-sidebar: #F7F5F0;
+  --bg-hover: #ECE8DF; --bg-active: #E3EAF3; --border: #E2DDD2;
+  --text-primary: #2A2824; --text-secondary: #5E5A52; --text-muted: #8C877D;
+  --accent: #2F66A8; --accent-hover: #24528A; --accent-bg: #E3EAF3; --on-accent: #ffffff;
+  --success-bg: #E4F0E6; --success-text: #2E6B45; --warning-bg: #F6EBD7; --warning-text: #7A5418;
+  --danger-bg: #F7E3E0; --danger-border: #EBC4BE; --info-bg: #ECE7F5;
+  --accent-glow: rgba(47, 102, 168, 0.14);
+  --shadow-card: 0 1px 3px rgba(60, 50, 30, 0.06), 0 1px 2px rgba(60, 50, 30, 0.04);
+  --shadow-glow: 0 0 0 1px rgba(47, 102, 168, 0.16), 0 4px 16px rgba(47, 102, 168, 0.08);
+  color-scheme: light;
 }
-
-/* ── Dark mode (ElevenLabs-inspired) ── */
-[data-theme="dark"] {
-  --bg: #0A0A0B;
-  --bg-secondary: #111114;
-  --bg-card: #18181C;
-  --bg-sidebar: #111114;
-  --bg-hover: #1E1E24;
-  --bg-active: #1E2640;
-  --border: #2A2A35;
-  --text-primary: #F2F2F5;
-  --text-secondary: #9898A8;
-  --text-muted: #55555F;
-  --accent: #4F8EF7;
-  --accent-bg: #1A2340;
-  --accent-glow: rgba(79, 142, 247, 0.15);
-  --shadow-card: 0 1px 3px rgba(0,0,0,0.4), 0 1px 2px rgba(0,0,0,0.3);
-  --shadow-glow: 0 0 0 1px rgba(79, 142, 247, 0.2), 0 4px 24px rgba(79, 142, 247, 0.12);
+[data-theme="sepia"] {
+  --bg: #F3EAD7; --bg-secondary: #EADFC8; --bg-card: #F8F1E3; --bg-sidebar: #F1E7D2;
+  --bg-hover: #E6D9BE; --bg-active: #E9DCC0; --border: #DCCDAE;
+  --text-primary: #3E3326; --text-secondary: #6B5B45; --text-muted: #96856B;
+  --accent: #8A5A2B; --accent-hover: #6F4720; --accent-bg: #EBDDC4; --on-accent: #ffffff;
+  --success-bg: #E3E8CF; --success-text: #4E6B2E; --warning-bg: #F0DDB8; --warning-text: #7A4E10;
+  --danger-bg: #F2D9CC; --danger-border: #E2BBA6; --info-bg: #E7DDD0;
+  --accent-glow: rgba(138, 90, 43, 0.16);
+  --shadow-card: 0 1px 3px rgba(80, 55, 20, 0.08), 0 1px 2px rgba(80, 55, 20, 0.05);
+  --shadow-glow: 0 0 0 1px rgba(138, 90, 43, 0.18), 0 4px 16px rgba(138, 90, 43, 0.10);
+  color-scheme: light;
 }
+[data-theme="sage"] {
+  --bg: #EEF2EB; --bg-secondary: #E4EAE0; --bg-card: #F5F8F3; --bg-sidebar: #EEF2EB;
+  --bg-hover: #DFE7DA; --bg-active: #DCE8DF; --border: #D3DCCD;
+  --text-primary: #263028; --text-secondary: #4F5C51; --text-muted: #7E8A80;
+  --accent: #3D6E54; --accent-hover: #2F5843; --accent-bg: #DCE8DF; --on-accent: #ffffff;
+  --success-bg: #DCEBDD; --success-text: #2C6040; --warning-bg: #EFE6CC; --warning-text: #6E5216;
+  --danger-bg: #F0DEDA; --danger-border: #DDBFB8; --info-bg: #E2E5EE;
+  --accent-glow: rgba(61, 110, 84, 0.16);
+  --shadow-card: 0 1px 3px rgba(30, 50, 35, 0.07), 0 1px 2px rgba(30, 50, 35, 0.04);
+  --shadow-glow: 0 0 0 1px rgba(61, 110, 84, 0.18), 0 4px 16px rgba(61, 110, 84, 0.09);
+  color-scheme: light;
+}
+[data-theme="slate"] {
+  --bg: #232833; --bg-secondary: #1E222B; --bg-card: #2A303C; --bg-sidebar: #1F232C;
+  --bg-hover: #323947; --bg-active: #34405A; --border: #3A4150;
+  --text-primary: #D9DEE7; --text-secondary: #A5ADBB; --text-muted: #7A8292;
+  --accent: #6690C8; --accent-hover: #7A9FD2; --accent-bg: #2F3B52; --on-accent: #ffffff;
+  --success-bg: #233A30; --success-text: #8FCFA8; --warning-bg: #3B3324; --warning-text: #E2C17E;
+  --danger-bg: #3D2A2C; --danger-border: #5C3C3F; --info-bg: #2F2D44;
+  --accent-glow: rgba(102, 144, 200, 0.18);
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.35), 0 1px 2px rgba(0, 0, 0, 0.25);
+  --shadow-glow: 0 0 0 1px rgba(102, 144, 200, 0.22), 0 4px 20px rgba(102, 144, 200, 0.12);
+  color-scheme: dark;
+}
+[data-theme="ember"] {
+  --bg: #221E1A; --bg-secondary: #1C1915; --bg-card: #2A2520; --bg-sidebar: #1E1A16;
+  --bg-hover: #332D27; --bg-active: #3D3226; --border: #3B342C;
+  --text-primary: #E5DDD0; --text-secondary: #B3A895; --text-muted: #857A6A;
+  --accent: #C08350; --accent-hover: #CF935F; --accent-bg: #3A2E22; --on-accent: #ffffff;
+  --success-bg: #26322A; --success-text: #9FC9A4; --warning-bg: #3A3022; --warning-text: #E0BE82;
+  --danger-bg: #3C2826; --danger-border: #5A3B37; --info-bg: #2E2A38;
+  --accent-glow: rgba(192, 131, 80, 0.18);
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.4), 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-glow: 0 0 0 1px rgba(192, 131, 80, 0.22), 0 4px 20px rgba(192, 131, 80, 0.12);
+  color-scheme: dark;
+}
+/* Aliases: --card-bg was referenced by several pages but never defined. */
+:root { --card-bg: var(--bg-card); }
 
 body {
   font-family: var(--font-sans);
@@ -61,7 +90,15 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   line-height: 1.6;
+  text-rendering: optimizeLegibility;
   transition: background 0.2s, color 0.2s;
+}
+::selection { background: var(--accent-bg); color: var(--text-primary); }
+
+/* Form controls follow the theme. In @layer base so utility classes still win. */
+@layer base {
+  input, textarea, select { background-color: var(--bg-card); color: var(--text-primary); }
+  input::placeholder, textarea::placeholder { color: var(--text-muted); }
 }
 
 /* Semantic utility classes */
@@ -128,8 +165,8 @@ body {
   box-shadow: var(--shadow-glow);
 }
 
-/* Scrollbar (dark mode) */
-[data-theme="dark"] ::-webkit-scrollbar { width: 6px; height: 6px; }
-[data-theme="dark"] ::-webkit-scrollbar-track { background: transparent; }
-[data-theme="dark"] ::-webkit-scrollbar-thumb { background: #2A2A35; border-radius: 3px; }
-[data-theme="dark"] ::-webkit-scrollbar-thumb:hover { background: #3A3A48; }
+/* Soft scrollbars that follow the theme */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }

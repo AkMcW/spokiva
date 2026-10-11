@@ -105,11 +105,11 @@ const THINK_PROMPTS: string[] = [
 
 // ─── Score config ─────────────────────────────────────────────────────────────
 const SCORE_META: { key: string; label: string; color: string }[] = [
-  { key: "fluency", label: "Fluency", color: "#0056D2" },
+  { key: "fluency", label: "Fluency", color: "var(--accent)" },
   { key: "precision", label: "Precision", color: "#7B61FF" },
-  { key: "complexity", label: "Complexity", color: "#0056D2" },
+  { key: "complexity", label: "Complexity", color: "var(--accent)" },
   { key: "naturalness", label: "Naturalness", color: "#00B37D" },
-  { key: "pronunciationClarity", label: "Pronunciation Clarity", color: "#0056D2" },
+  { key: "pronunciationClarity", label: "Pronunciation Clarity", color: "var(--accent)" },
   { key: "intonation", label: "Intonation", color: "#F5A623" },
   { key: "rhythm", label: "Rhythm", color: "#F5A623" },
   { key: "vocabularyRange", label: "Vocabulary Range", color: "#7B61FF" },
@@ -771,7 +771,7 @@ export default function C2FluencyLabPage() {
         </Card>
 
         {error && (
-          <div className="flex items-center gap-2 p-3 rounded-lg text-sm" style={{ background: "#FFF0F0", border: "1px solid #FFCDD2", color: "#E53935" }}>
+          <div className="flex items-center gap-2 p-3 rounded-lg text-sm" style={{ background: "var(--danger-bg)", border: "1px solid #FFCDD2", color: "#E53935" }}>
             <AlertCircle size={15} className="shrink-0" /> {error}
           </div>
         )}
@@ -835,7 +835,7 @@ export default function C2FluencyLabPage() {
 
             <Card>
               <div className="flex items-center justify-between gap-2 mb-1">
-                <p className="text-[10px] font-bold uppercase tracking-wider" style={{ color: "#00875A" }}>C2 model answer</p>
+                <p className="text-[10px] font-bold uppercase tracking-wider" style={{ color: "var(--success-text)" }}>C2 model answer</p>
                 <ListenButton text={thinkFeedback.betterAnswer} label="Listen" />
               </div>
               <p className="text-sm font-medium mb-3" style={{ color: "var(--text-primary)" }}>“{thinkFeedback.betterAnswer}”</p>
@@ -899,7 +899,7 @@ export default function C2FluencyLabPage() {
         </Card>
 
         {error && (
-          <div className="flex items-center gap-2 p-3 rounded-lg text-sm" style={{ background: "#FFF0F0", border: "1px solid #FFCDD2", color: "#E53935" }}>
+          <div className="flex items-center gap-2 p-3 rounded-lg text-sm" style={{ background: "var(--danger-bg)", border: "1px solid #FFCDD2", color: "#E53935" }}>
             <AlertCircle size={15} className="shrink-0" /> {error}
           </div>
         )}
@@ -1039,12 +1039,12 @@ export default function C2FluencyLabPage() {
                 <p className="text-[10px] font-bold uppercase tracking-wider mb-1" style={{ color: "var(--text-secondary)" }}>You said</p>
                 <p className="text-sm italic" style={{ color: "var(--text-secondary)" }}>“{r.nativeRewrite.original}”</p>
               </div>
-              <div className="rounded-lg p-3" style={{ background: "#E6F7F2", border: "1px solid #00B37D" }}>
+              <div className="rounded-lg p-3" style={{ background: "var(--success-bg)", border: "1px solid #00B37D" }}>
                 <div className="flex items-center justify-between gap-2 mb-1">
-                  <p className="text-[10px] font-bold uppercase tracking-wider" style={{ color: "#00875A" }}>C2-level version</p>
+                  <p className="text-[10px] font-bold uppercase tracking-wider" style={{ color: "var(--success-text)" }}>C2-level version</p>
                   <ListenButton text={r.nativeRewrite.c2Version} label="Listen" />
                 </div>
-                <p className="text-sm font-medium" style={{ color: "#0A5C42" }}>“{r.nativeRewrite.c2Version}”</p>
+                <p className="text-sm font-medium" style={{ color: "var(--success-text)" }}>“{r.nativeRewrite.c2Version}”</p>
               </div>
               {r.nativeRewrite.whyBetter?.length > 0 && (
                 <ul className="space-y-1">
@@ -1089,9 +1089,9 @@ export default function C2FluencyLabPage() {
             <div className="space-y-2">
               {r.collocationFixes.map((c, i) => (
                 <div key={i} className="text-sm flex flex-wrap items-center gap-2">
-                  <span className="px-2 py-0.5 rounded" style={{ background: "#FFF0F0", color: "#E53935" }}>{c.instead}</span>
+                  <span className="px-2 py-0.5 rounded" style={{ background: "var(--danger-bg)", color: "#E53935" }}>{c.instead}</span>
                   <span style={{ color: "var(--text-secondary)" }}>→</span>
-                  <span className="px-2 py-0.5 rounded font-semibold" style={{ background: "#E6F7F2", color: "#00875A" }}>{c.use}</span>
+                  <span className="px-2 py-0.5 rounded font-semibold" style={{ background: "var(--success-bg)", color: "var(--success-text)" }}>{c.use}</span>
                   {c.note && <span className="text-xs" style={{ color: "var(--text-secondary)" }}>· {c.note}</span>}
                 </div>
               ))}

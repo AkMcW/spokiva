@@ -31,12 +31,12 @@ export default function Footer() {
           {/* Brand */}
           <div>
             <Link href="/" className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 bg-[#0056D2] rounded-lg flex items-center justify-center">
+              <div className="w-8 h-8 bg-[var(--accent)] rounded-lg flex items-center justify-center">
                 <Mic2 size={18} className="text-white" />
               </div>
               <span className="text-lg font-bold">Spokiva</span>
             </Link>
-            <p className="text-sm text-[#9E9E9E] leading-relaxed">
+            <p className="text-sm text-[var(--text-muted)] leading-relaxed">
               AI-powered communication coach for work, exams, and public speaking.
             </p>
           </div>
@@ -44,11 +44,11 @@ export default function Footer() {
           {/* Links */}
           {Object.entries(footerLinks).map(([section, links]) => (
             <div key={section}>
-              <h4 className="text-xs font-bold uppercase tracking-wider text-[#9E9E9E] mb-4">{section}</h4>
+              <h4 className="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)] mb-4">{section}</h4>
               <ul className="space-y-2.5">
                 {links.map((link) => (
                   <li key={link.label}>
-                    <Link href={link.href} className="text-sm text-[#BDBDBD] hover:text-white transition-colors">
+                    <Link href={link.href} className="text-sm text-[var(--text-muted)] hover:text-white transition-colors">
                       {link.label}
                     </Link>
                   </li>
@@ -58,7 +58,7 @@ export default function Footer() {
           ))}
         </div>
 
-        <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-[#9E9E9E]">
+        <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-[var(--text-muted)]">
           <p>© 2024 Spokiva. All rights reserved.</p>
           <div className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-[#00B37D]"></span>

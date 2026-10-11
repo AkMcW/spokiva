@@ -1,15 +1,14 @@
 "use client";
 import Link from "next/link";
-import { Bell, Mic2, ShieldCheck, Sun, Moon, Menu, LayoutDashboard, Settings, CreditCard } from "lucide-react";
+import { Bell, Mic2, ShieldCheck, Menu, LayoutDashboard, Settings, CreditCard } from "lucide-react";
 import { UserButton, useUser } from "@clerk/nextjs";
 import { ADMIN_EMAIL, PLAN_FEATURES } from "@/lib/users";
-import { useTheme } from "@/context/ThemeContext";
 import { useSidebar } from "@/context/SidebarContext";
 import TopNavMenus from "@/components/TopNavMenus";
+import ThemePicker from "@/components/ThemePicker";
 
 export default function DashboardHeader() {
   const { user } = useUser();
-  const { theme, toggle: toggleTheme } = useTheme();
   const { toggleMobile } = useSidebar();
   const email = user?.primaryEmailAddress?.emailAddress ?? "";
   const isAdmin = email === ADMIN_EMAIL;
@@ -39,17 +38,8 @@ export default function DashboardHeader() {
       </div>
 
       <div className="flex items-center gap-2">
-        {/* Theme toggle */}
-        <button
-          onClick={toggleTheme}
-          className="p-2 rounded-lg transition-all duration-150"
-          style={{ color: "var(--text-secondary)", background: "transparent" }}
-          onMouseEnter={(e) => (e.currentTarget.style.background = "var(--bg-hover)")}
-          onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
-          title={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
-        >
-          {theme === "dark" ? <Sun size={17} /> : <Moon size={17} />}
-        </button>
+        {/* Reading theme */}
+        <ThemePicker />
 
         {/* Notifications */}
         <button
@@ -75,7 +65,7 @@ export default function DashboardHeader() {
               {isAdmin && (
                 <span
                   className="text-[9px] font-bold px-1.5 py-0.5 rounded-full flex items-center gap-0.5"
-                  style={{ background: "#FFF0F0", color: "#E53935" }}
+                  style={{ background: "var(--danger-bg)", color: "#E53935" }}
                 >
                   <ShieldCheck size={9} /> ADMIN
                 </span>

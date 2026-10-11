@@ -24,7 +24,7 @@ export default function ScoreRing({ score, size = 80, strokeWidth = 7, label }: 
             cy={size / 2}
             r={radius}
             fill="none"
-            stroke="#E0E0E0"
+            style={{ stroke: "var(--border)" }}
             strokeWidth={strokeWidth}
           />
           <circle
@@ -41,10 +41,10 @@ export default function ScoreRing({ score, size = 80, strokeWidth = 7, label }: 
           />
         </svg>
         <div className="absolute inset-0 flex items-center justify-center">
-          <span className="text-base font-bold text-[#1F1F1F]">{safeScore}</span>
+          <span className="text-base font-bold text-[var(--text-primary)]">{safeScore}</span>
         </div>
       </div>
-      {label && <span className="text-xs text-[#636363] font-medium text-center">{label}</span>}
+      {label && <span className="text-xs text-[var(--text-secondary)] font-medium text-center">{label}</span>}
     </div>
   );
 }

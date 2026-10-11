@@ -92,7 +92,7 @@ export default function SavedScriptsPage() {
       </div>
 
       {error && (
-        <div className="rounded-lg p-3 text-sm text-red-600 bg-red-50 border border-red-200">{error}</div>
+        <div className="rounded-lg p-3 text-sm text-red-600 bg-[var(--danger-bg)] border border-[var(--danger-border)]">{error}</div>
       )}
 
       {/* Search */}

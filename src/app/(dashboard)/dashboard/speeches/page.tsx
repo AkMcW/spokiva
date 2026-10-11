@@ -110,8 +110,8 @@ export default function SpeechesPage() {
           <div className="flex items-center gap-2 mb-1">
             <span className="text-xs font-bold px-2 py-0.5 rounded-full" style={{ background: "var(--accent-bg)", color: "var(--accent)" }}>#{s.num}</span>
             {s.publicDomain
-              ? <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full" style={{ background: "#E6F7F2", color: "#00875A" }}>Public domain</span>
-              : <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full flex items-center gap-1" style={{ background: "#FFF8E7", color: "#B7791F" }}><Lock size={9} /> In copyright</span>}
+              ? <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full" style={{ background: "var(--success-bg)", color: "var(--success-text)" }}>Public domain</span>
+              : <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full flex items-center gap-1" style={{ background: "var(--warning-bg)", color: "var(--warning-text)" }}><Lock size={9} /> In copyright</span>}
           </div>
           <h1 className="text-2xl font-bold" style={{ color: "var(--text-primary)" }}>{s.title}</h1>
           <p className="text-sm font-semibold mt-0.5" style={{ color: "var(--accent)" }}>{s.speaker}</p>
@@ -276,8 +276,8 @@ export default function SpeechesPage() {
             <div className="flex items-center gap-2 flex-wrap">
               <h2 className="font-bold" style={{ color: "var(--text-primary)" }}>{s.title}</h2>
               {s.publicDomain
-                ? <span className="text-[9px] font-semibold px-1.5 py-0.5 rounded-full" style={{ background: "#E6F7F2", color: "#00875A" }}>Full text</span>
-                : <span className="text-[9px] font-semibold px-1.5 py-0.5 rounded-full flex items-center gap-0.5" style={{ background: "#FFF8E7", color: "#B7791F" }}><Lock size={8} /> Link</span>}
+                ? <span className="text-[9px] font-semibold px-1.5 py-0.5 rounded-full" style={{ background: "var(--success-bg)", color: "var(--success-text)" }}>Full text</span>
+                : <span className="text-[9px] font-semibold px-1.5 py-0.5 rounded-full flex items-center gap-0.5" style={{ background: "var(--warning-bg)", color: "var(--warning-text)" }}><Lock size={8} /> Link</span>}
             </div>
             <p className="text-sm font-semibold" style={{ color: "var(--accent)" }}>{s.speaker}</p>
             <p className="text-xs mt-0.5" style={{ color: "var(--text-secondary)" }}>{s.date} · {s.place} · {s.topic}</p>

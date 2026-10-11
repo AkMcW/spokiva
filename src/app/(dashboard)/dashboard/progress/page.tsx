@@ -37,9 +37,9 @@ function fmtDate(iso: string) {
 
 function ScoreBadge({ score }: { score: number }) {
   const cls =
-    score >= 80 ? "bg-[#E6F7F2] text-[#00B37D]" :
-    score >= 65 ? "bg-[#FFF8EC] text-[#F5A623]" :
-    "bg-red-50 text-red-600";
+    score >= 80 ? "bg-[var(--success-bg)] text-[#00B37D]" :
+    score >= 65 ? "bg-[var(--warning-bg)] text-[#F5A623]" :
+    "bg-[var(--danger-bg)] text-red-600";
   return <span className={`inline-block px-2 py-0.5 rounded text-xs font-bold ${cls}`}>{score}</span>;
 }
 

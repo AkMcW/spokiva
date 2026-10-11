@@ -194,18 +194,18 @@ export default function PracticeListenShadow({ text }: { text: string }) {
   const isLast = idx >= sentences.length - 1;
 
   return (
-    <div className="bg-white border border-[#E0E0E0] rounded-lg p-6">
+    <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-6">
       <div className="flex items-center justify-between flex-wrap gap-3 mb-4">
-        <h2 className="font-bold text-[#1F1F1F] flex items-center gap-2">
-          <Volume2 size={17} className="text-[#0056D2]" /> Listen &amp; Shadow
+        <h2 className="font-bold text-[var(--text-primary)] flex items-center gap-2">
+          <Volume2 size={17} className="text-[var(--accent)]" /> Listen &amp; Shadow
         </h2>
-        <div className="flex items-center gap-1 border border-[#E0E0E0] rounded overflow-hidden text-xs font-semibold">
+        <div className="flex items-center gap-1 border border-[var(--border)] rounded overflow-hidden text-xs font-semibold">
           <button onClick={() => { stopAll(); setMode("listen"); }}
-            className={`px-3 py-1.5 transition-colors ${mode === "listen" ? "bg-[#0056D2] text-white" : "text-[#636363] hover:bg-[#F5F5F5]"}`}>
+            className={`px-3 py-1.5 transition-colors ${mode === "listen" ? "bg-[var(--accent)] text-white" : "text-[var(--text-secondary)] hover:bg-[var(--bg-hover)]"}`}>
             AI Speak
           </button>
           <button onClick={() => { stopAll(); setMode("shadow"); }}
-            className={`px-3 py-1.5 transition-colors ${mode === "shadow" ? "bg-[#0056D2] text-white" : "text-[#636363] hover:bg-[#F5F5F5]"}`}>
+            className={`px-3 py-1.5 transition-colors ${mode === "shadow" ? "bg-[var(--accent)] text-white" : "text-[var(--text-secondary)] hover:bg-[var(--bg-hover)]"}`}>
             Shadowing
           </button>
         </div>
@@ -213,7 +213,7 @@ export default function PracticeListenShadow({ text }: { text: string }) {
 
       {/* Voice ID */}
       <div className="mb-4 relative">
-        <label className="block text-xs font-semibold text-[#636363] mb-1">
+        <label className="block text-xs font-semibold text-[var(--text-secondary)] mb-1">
           ElevenLabs Voice ID <span className="font-normal">(optional — leave blank for the default voice)</span>
         </label>
         <div className="flex gap-2">
@@ -221,11 +221,11 @@ export default function PracticeListenShadow({ text }: { text: string }) {
             value={voiceId}
             onChange={(e) => setVoiceId(e.target.value)}
             placeholder="e.g. 21m00Tcm4TlvDq8ikWAM"
-            className="flex-1 min-w-0 px-3 py-2 border border-[#E0E0E0] rounded text-sm text-[#1F1F1F] placeholder-[#9E9E9E] focus:outline-none focus:border-[#0056D2] focus:ring-1 focus:ring-[#0056D2]"
+            className="flex-1 min-w-0 px-3 py-2 border border-[var(--border)] rounded text-sm text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--accent)] focus:ring-1 focus:ring-[var(--accent)]"
           />
           <button
             onClick={toggleVoices}
-            className="flex items-center gap-1.5 border border-[#E0E0E0] text-[#636363] hover:bg-[#F5F5F5] font-semibold px-3 py-2 rounded text-sm transition-colors shrink-0"
+            className="flex items-center gap-1.5 border border-[var(--border)] text-[var(--text-secondary)] hover:bg-[var(--bg-hover)] font-semibold px-3 py-2 rounded text-sm transition-colors shrink-0"
             title="Choose from your ElevenLabs voices"
           >
             <Users size={15} /> My Voices <ChevronDown size={13} className={`transition-transform ${showVoices ? "rotate-180" : ""}`} />
@@ -234,21 +234,21 @@ export default function PracticeListenShadow({ text }: { text: string }) {
 
         {/* Voice picker balloon */}
         {showVoices && (
-          <div className="absolute right-0 z-30 mt-2 w-full sm:w-96 bg-white border border-[#E0E0E0] rounded-xl shadow-xl overflow-hidden">
-            <div className="flex items-center justify-between px-4 py-2.5 border-b border-[#E0E0E0]">
-              <span className="text-sm font-bold text-[#1F1F1F]">Your ElevenLabs Voices</span>
-              <button onClick={() => setShowVoices(false)} className="text-[#9E9E9E] hover:text-[#E53935]"><X size={16} /></button>
+          <div className="absolute right-0 z-30 mt-2 w-full sm:w-96 bg-[var(--bg-card)] border border-[var(--border)] rounded-xl shadow-xl overflow-hidden">
+            <div className="flex items-center justify-between px-4 py-2.5 border-b border-[var(--border)]">
+              <span className="text-sm font-bold text-[var(--text-primary)]">Your ElevenLabs Voices</span>
+              <button onClick={() => setShowVoices(false)} className="text-[var(--text-muted)] hover:text-[#E53935]"><X size={16} /></button>
             </div>
 
             {voicesConfigured && voices && voices.length > 0 && (
               <div className="px-3 pt-2.5">
                 <div className="relative">
-                  <Search size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[#9E9E9E]" />
+                  <Search size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[var(--text-muted)]" />
                   <input
                     value={voiceSearch}
                     onChange={(e) => setVoiceSearch(e.target.value)}
                     placeholder="Search voices…"
-                    className="w-full pl-8 pr-3 py-1.5 border border-[#E0E0E0] rounded text-sm text-[#1F1F1F] placeholder-[#9E9E9E] focus:outline-none focus:border-[#0056D2]"
+                    className="w-full pl-8 pr-3 py-1.5 border border-[var(--border)] rounded text-sm text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--accent)]"
                   />
                 </div>
               </div>
@@ -256,13 +256,13 @@ export default function PracticeListenShadow({ text }: { text: string }) {
 
             <div className="max-h-72 overflow-y-auto p-2">
               {voicesLoading && (
-                <div className="flex items-center gap-2 text-sm text-[#636363] px-2 py-6 justify-center">
-                  <Loader2 size={15} className="animate-spin text-[#0056D2]" /> Loading your voices…
+                <div className="flex items-center gap-2 text-sm text-[var(--text-secondary)] px-2 py-6 justify-center">
+                  <Loader2 size={15} className="animate-spin text-[var(--accent)]" /> Loading your voices…
                 </div>
               )}
 
               {!voicesLoading && !voicesConfigured && (
-                <div className="px-3 py-4 text-xs text-[#636363] leading-relaxed">
+                <div className="px-3 py-4 text-xs text-[var(--text-secondary)] leading-relaxed">
                   ElevenLabs isn&apos;t connected on the server, so your voice library can&apos;t be listed. You can still paste a Voice ID manually, or the default voice will be used.
                 </div>
               )}
@@ -272,26 +272,26 @@ export default function PracticeListenShadow({ text }: { text: string }) {
               )}
 
               {!voicesLoading && voicesConfigured && voices && voices.length === 0 && !voicesErr && (
-                <div className="px-3 py-4 text-xs text-[#636363]">No voices found in your ElevenLabs account.</div>
+                <div className="px-3 py-4 text-xs text-[var(--text-secondary)]">No voices found in your ElevenLabs account.</div>
               )}
 
               {!voicesLoading && filteredVoices.map((v) => (
                 <div key={v.id}
-                  className={`flex items-center gap-2 px-2.5 py-2 rounded-lg cursor-pointer transition-colors ${voiceId === v.id ? "bg-[#E8F1FF]" : "hover:bg-[#F5F5F5]"}`}
+                  className={`flex items-center gap-2 px-2.5 py-2 rounded-lg cursor-pointer transition-colors ${voiceId === v.id ? "bg-[var(--accent-bg)]" : "hover:bg-[var(--bg-hover)]"}`}
                   onClick={() => selectVoice(v)}>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-1.5">
-                      <span className="text-sm font-semibold text-[#1F1F1F] truncate">{v.name}</span>
-                      {v.category && <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-[#F0F0F0] text-[#636363] capitalize shrink-0">{v.category}</span>}
+                      <span className="text-sm font-semibold text-[var(--text-primary)] truncate">{v.name}</span>
+                      {v.category && <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-[var(--bg-secondary)] text-[var(--text-secondary)] capitalize shrink-0">{v.category}</span>}
                       {voiceId === v.id && <CheckCircle size={13} className="text-[#00B37D] shrink-0" />}
                     </div>
-                    {v.description && <p className="text-[11px] text-[#9E9E9E] truncate">{v.description}</p>}
-                    <p className="text-[10px] text-[#B0B0B0] font-mono truncate">{v.id}</p>
+                    {v.description && <p className="text-[11px] text-[var(--text-muted)] truncate">{v.description}</p>}
+                    <p className="text-[10px] text-[var(--text-muted)] font-mono truncate">{v.id}</p>
                   </div>
                   {v.previewUrl && (
                     <button
                       onClick={(e) => { e.stopPropagation(); previewVoice(v.previewUrl); }}
-                      className="p-1.5 rounded-full text-[#0056D2] hover:bg-[#E8F1FF] shrink-0"
+                      className="p-1.5 rounded-full text-[var(--accent)] hover:bg-[var(--accent-bg)] shrink-0"
                       title="Preview voice">
                       <Play size={14} />
                     </button>
@@ -304,37 +304,37 @@ export default function PracticeListenShadow({ text }: { text: string }) {
       </div>
 
       {err && (
-        <div className="bg-[#FFEBEE] border border-[#FFCDD2] rounded-lg p-3 mb-4 text-xs text-[#E53935]">{err}</div>
+        <div className="bg-[var(--danger-bg)] border border-[var(--danger-border)] rounded-lg p-3 mb-4 text-xs text-[#E53935]">{err}</div>
       )}
 
       {/* ── AI Speak (listen) ── */}
       {mode === "listen" && (
         <div>
-          <p className="text-xs text-[#636363] mb-3">Generate a spoken version of your whole script — listen back, download it, or copy the text.</p>
+          <p className="text-xs text-[var(--text-secondary)] mb-3">Generate a spoken version of your whole script — listen back, download it, or copy the text.</p>
           <div className="flex flex-wrap gap-2">
             {!audioB64 ? (
               <button onClick={generateListen} disabled={loading}
-                className="flex items-center gap-2 bg-[#0056D2] hover:bg-[#003B8E] text-white font-semibold px-4 py-2 rounded text-sm transition-colors disabled:opacity-70">
+                className="flex items-center gap-2 bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white font-semibold px-4 py-2 rounded text-sm transition-colors disabled:opacity-70">
                 {loading ? <><Loader2 size={15} className="animate-spin" /> Generating…</> : <><Volume2 size={15} /> Let AI speak</>}
               </button>
             ) : (
               <>
                 <button onClick={() => playListen()}
-                  className="flex items-center gap-2 bg-[#0056D2] hover:bg-[#003B8E] text-white font-semibold px-4 py-2 rounded text-sm transition-colors">
+                  className="flex items-center gap-2 bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white font-semibold px-4 py-2 rounded text-sm transition-colors">
                   {playing ? <><Pause size={15} /> Pause</> : <><Play size={15} /> Play</>}
                 </button>
                 <button onClick={generateListen} disabled={loading}
-                  className="flex items-center gap-2 border border-[#E0E0E0] text-[#636363] hover:bg-[#F5F5F5] font-semibold px-4 py-2 rounded text-sm transition-colors disabled:opacity-70">
+                  className="flex items-center gap-2 border border-[var(--border)] text-[var(--text-secondary)] hover:bg-[var(--bg-hover)] font-semibold px-4 py-2 rounded text-sm transition-colors disabled:opacity-70">
                   {loading ? <Loader2 size={15} className="animate-spin" /> : <RotateCcw size={15} />} Regenerate
                 </button>
                 <button onClick={download}
-                  className="flex items-center gap-2 border border-[#E0E0E0] text-[#636363] hover:bg-[#F5F5F5] font-semibold px-4 py-2 rounded text-sm transition-colors">
+                  className="flex items-center gap-2 border border-[var(--border)] text-[var(--text-secondary)] hover:bg-[var(--bg-hover)] font-semibold px-4 py-2 rounded text-sm transition-colors">
                   <Download size={15} /> Save audio
                 </button>
               </>
             )}
             <button onClick={copyText}
-              className="flex items-center gap-2 border border-[#E0E0E0] text-[#636363] hover:bg-[#F5F5F5] font-semibold px-4 py-2 rounded text-sm transition-colors">
+              className="flex items-center gap-2 border border-[var(--border)] text-[var(--text-secondary)] hover:bg-[var(--bg-hover)] font-semibold px-4 py-2 rounded text-sm transition-colors">
               {copied ? <><CheckCircle size={15} className="text-[#00B37D]" /> Copied</> : <><Copy size={15} /> Copy text</>}
             </button>
           </div>
@@ -344,51 +344,51 @@ export default function PracticeListenShadow({ text }: { text: string }) {
       {/* ── Shadowing ── */}
       {mode === "shadow" && (
         <div>
-          <p className="text-xs text-[#636363] mb-3 flex items-start gap-1.5">
-            <Info size={13} className="mt-0.5 shrink-0 text-[#0056D2]" />
+          <p className="text-xs text-[var(--text-secondary)] mb-3 flex items-start gap-1.5">
+            <Info size={13} className="mt-0.5 shrink-0 text-[var(--accent)]" />
             Listen to one sentence, it auto-pauses, you repeat it aloud, then hit Continue for the next.
           </p>
 
           {sentences.length === 0 ? (
-            <p className="text-sm text-[#9E9E9E]">No script text to shadow.</p>
+            <p className="text-sm text-[var(--text-muted)]">No script text to shadow.</p>
           ) : !started ? (
             <button onClick={startShadow}
-              className="flex items-center gap-2 bg-[#0056D2] hover:bg-[#003B8E] text-white font-semibold px-4 py-2 rounded text-sm transition-colors">
+              className="flex items-center gap-2 bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white font-semibold px-4 py-2 rounded text-sm transition-colors">
               <Repeat size={15} /> Start shadowing ({sentences.length} sentences)
             </button>
           ) : (
             <div>
               {/* Progress */}
               <div className="flex items-center justify-between mb-2">
-                <span className="text-xs font-semibold text-[#636363]">Sentence {idx + 1} of {sentences.length}</span>
+                <span className="text-xs font-semibold text-[var(--text-secondary)]">Sentence {idx + 1} of {sentences.length}</span>
                 <div className="flex items-center gap-1">
-                  {shadowLoading && <Loader2 size={13} className="animate-spin text-[#0056D2]" />}
-                  {shadowPlaying && <span className="text-[10px] font-bold text-[#0056D2] uppercase tracking-wider">Playing…</span>}
+                  {shadowLoading && <Loader2 size={13} className="animate-spin text-[var(--accent)]" />}
+                  {shadowPlaying && <span className="text-[10px] font-bold text-[var(--accent)] uppercase tracking-wider">Playing…</span>}
                   {!shadowPlaying && !shadowLoading && <span className="text-[10px] font-bold text-[#00B37D] uppercase tracking-wider">Your turn — repeat it</span>}
                 </div>
               </div>
-              <div className="h-1.5 rounded-full bg-[#F0F0F0] mb-4">
-                <div className="h-1.5 rounded-full bg-[#0056D2] transition-all duration-300" style={{ width: `${((idx + 1) / sentences.length) * 100}%` }} />
+              <div className="h-1.5 rounded-full bg-[var(--bg-secondary)] mb-4">
+                <div className="h-1.5 rounded-full bg-[var(--accent)] transition-all duration-300" style={{ width: `${((idx + 1) / sentences.length) * 100}%` }} />
               </div>
 
               {/* Current sentence */}
-              <div className="bg-[#F0F7FF] border border-[#CFE3FF] rounded-lg p-4 mb-4">
-                <p className="text-base text-[#1F1F1F] leading-relaxed">{sentences[idx]}</p>
+              <div className="bg-[var(--accent-bg)] border border-[var(--border)] rounded-lg p-4 mb-4">
+                <p className="text-base text-[var(--text-primary)] leading-relaxed">{sentences[idx]}</p>
               </div>
 
               {/* Controls */}
               <div className="flex flex-wrap items-center gap-2">
                 <button onClick={() => playSentence(idx)} disabled={shadowLoading}
-                  className="flex items-center gap-2 border border-[#0056D2] text-[#0056D2] hover:bg-[#E8F1FF] font-semibold px-4 py-2 rounded text-sm transition-colors disabled:opacity-70">
+                  className="flex items-center gap-2 border border-[var(--accent)] text-[var(--accent)] hover:bg-[var(--accent-bg)] font-semibold px-4 py-2 rounded text-sm transition-colors disabled:opacity-70">
                   {shadowPlaying ? <Pause size={15} /> : <Play size={15} />} Replay
                 </button>
                 <button onClick={goPrev} disabled={idx <= 0}
-                  className="flex items-center gap-1.5 border border-[#E0E0E0] text-[#636363] hover:bg-[#F5F5F5] font-semibold px-3 py-2 rounded text-sm transition-colors disabled:opacity-40">
+                  className="flex items-center gap-1.5 border border-[var(--border)] text-[var(--text-secondary)] hover:bg-[var(--bg-hover)] font-semibold px-3 py-2 rounded text-sm transition-colors disabled:opacity-40">
                   <ArrowLeft size={15} /> Prev
                 </button>
                 {!isLast ? (
                   <button onClick={goNext}
-                    className="flex items-center gap-2 bg-[#0056D2] hover:bg-[#003B8E] text-white font-semibold px-4 py-2 rounded text-sm transition-colors">
+                    className="flex items-center gap-2 bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white font-semibold px-4 py-2 rounded text-sm transition-colors">
                     Continue <ArrowRight size={15} />
                   </button>
                 ) : (
@@ -398,7 +398,7 @@ export default function PracticeListenShadow({ text }: { text: string }) {
                   </button>
                 )}
                 <button onClick={() => { stopAll(); setStarted(false); setIdx(0); }}
-                  className="text-xs text-[#636363] hover:text-[#E53935] transition-colors ml-1">
+                  className="text-xs text-[var(--text-secondary)] hover:text-[#E53935] transition-colors ml-1">
                   Reset
                 </button>
               </div>

@@ -104,7 +104,7 @@ export default function AddScriptPage() {
       </div>
 
       {error && (
-        <div className="flex items-center gap-2 p-3 rounded-lg text-sm" style={{ background: "#FFF0F0", border: "1px solid #FFCDD2", color: "#E53935" }}>
+        <div className="flex items-center gap-2 p-3 rounded-lg text-sm" style={{ background: "var(--danger-bg)", border: "1px solid #FFCDD2", color: "#E53935" }}>
           <AlertCircle size={15} className="shrink-0" /> {error}
         </div>
       )}

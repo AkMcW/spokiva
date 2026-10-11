@@ -347,7 +347,7 @@ Give 2-3 sentences of honest, specific feedback. Start with what works, then wha
       )}
 
       {error && (
-        <div className="flex items-start gap-2 p-3 rounded-lg text-sm" style={{ background: "#FFF0F0", color: "#E53935", border: "1px solid #FFD0D0" }}>
+        <div className="flex items-start gap-2 p-3 rounded-lg text-sm" style={{ background: "var(--danger-bg)", color: "#E53935", border: "1px solid #FFD0D0" }}>
           <AlertCircle size={16} className="shrink-0 mt-0.5" /> {error}
         </div>
       )}
@@ -545,9 +545,9 @@ Give 2-3 sentences of honest, specific feedback. Start with what works, then wha
           </div>
 
           {setup.mode === "pressure" && (
-            <div className="rounded-lg p-4 text-sm" style={{ background: "#FFF8E7", border: "1px solid #F5A623" }}>
-              <p className="font-bold mb-1" style={{ color: "#B37400" }}>Pressure Mode Active</p>
-              <p style={{ color: "#7A5000" }}>After your pitch, you&apos;ll face 3 tough questions. Answer as if it&apos;s real. The AI will score strictly.</p>
+            <div className="rounded-lg p-4 text-sm" style={{ background: "var(--warning-bg)", border: "1px solid #F5A623" }}>
+              <p className="font-bold mb-1" style={{ color: "var(--warning-text)" }}>Pressure Mode Active</p>
+              <p style={{ color: "var(--warning-text)" }}>After your pitch, you&apos;ll face 3 tough questions. Answer as if it&apos;s real. The AI will score strictly.</p>
             </div>
           )}
 
@@ -566,7 +566,7 @@ Give 2-3 sentences of honest, specific feedback. Start with what works, then wha
       {/* ── Step 5: Recording ── */}
       {flow === "recording" && (
         <div className="rounded-xl p-6 text-center" style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
-          <div className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse" style={{ background: "#FFF0F0" }}>
+          <div className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse" style={{ background: "var(--danger-bg)" }}>
             <Mic size={32} style={{ color: "#E53935" }} />
           </div>
           <p className="text-3xl font-mono font-bold mb-1" style={{ color: "var(--text-primary)" }}>{fmt(seconds)}</p>
@@ -749,21 +749,21 @@ Give 2-3 sentences of honest, specific feedback. Start with what works, then wha
 
           {/* Strengths & Improvements */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="rounded-xl p-4" style={{ background: "#E6F7F2", border: "1px solid #B2E8D6" }}>
+            <div className="rounded-xl p-4" style={{ background: "var(--success-bg)", border: "1px solid #B2E8D6" }}>
               <p className="text-xs font-bold mb-3" style={{ color: "#00B37D" }}>What Works</p>
               <ul className="space-y-2">
                 {result.strengths.map((s, i) => (
-                  <li key={i} className="flex items-start gap-2 text-sm" style={{ color: "#1F4D3C" }}>
+                  <li key={i} className="flex items-start gap-2 text-sm" style={{ color: "var(--success-text)" }}>
                     <CheckCircle size={14} className="shrink-0 mt-0.5" style={{ color: "#00B37D" }} /> {s}
                   </li>
                 ))}
               </ul>
             </div>
-            <div className="rounded-xl p-4" style={{ background: "#FFF8E7", border: "1px solid #FFE4A0" }}>
-              <p className="text-xs font-bold mb-3" style={{ color: "#B37400" }}>Improve These</p>
+            <div className="rounded-xl p-4" style={{ background: "var(--warning-bg)", border: "1px solid #FFE4A0" }}>
+              <p className="text-xs font-bold mb-3" style={{ color: "var(--warning-text)" }}>Improve These</p>
               <ul className="space-y-2">
                 {result.improvements.map((s, i) => (
-                  <li key={i} className="flex items-start gap-2 text-sm" style={{ color: "#5C3A00" }}>
+                  <li key={i} className="flex items-start gap-2 text-sm" style={{ color: "var(--warning-text)" }}>
                     <AlertCircle size={14} className="shrink-0 mt-0.5" style={{ color: "#F5A623" }} /> {s}
                   </li>
                 ))}
@@ -791,7 +791,7 @@ Give 2-3 sentences of honest, specific feedback. Start with what works, then wha
               <p className="text-xs font-bold mb-2" style={{ color: "var(--text-secondary)" }}>Filler Words Detected ({result.fillerWords.count})</p>
               <div className="flex flex-wrap gap-2">
                 {result.fillerWords.words.map((w, i) => (
-                  <span key={i} className="text-xs px-2 py-0.5 rounded-full font-medium" style={{ background: "#FFF0F0", color: "#E53935" }}>{w}</span>
+                  <span key={i} className="text-xs px-2 py-0.5 rounded-full font-medium" style={{ background: "var(--danger-bg)", color: "#E53935" }}>{w}</span>
                 ))}
               </div>
             </div>

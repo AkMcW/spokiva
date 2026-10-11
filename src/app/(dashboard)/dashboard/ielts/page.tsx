@@ -253,17 +253,17 @@ export default function IELTSPage() {
   return (
     <div className="max-w-4xl mx-auto space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-[#1F1F1F]">IELTS Speaking Practice</h1>
-        <p className="text-sm text-[#636363] mt-1">Practice all three parts with real AI band score estimates.</p>
+        <h1 className="text-2xl font-bold text-[var(--text-primary)]">IELTS Speaking Practice</h1>
+        <p className="text-sm text-[var(--text-secondary)] mt-1">Practice all three parts with real AI band score estimates.</p>
       </div>
 
-      <div className="flex gap-1 bg-[#F5F5F5] rounded-lg p-1 w-fit">
+      <div className="flex gap-1 bg-[var(--bg-secondary)] rounded-lg p-1 w-fit">
         {(["1", "2", "3"] as Part[]).map((p) => (
           <button
             key={p}
             onClick={() => setActivePart(p)}
             className={`px-5 py-2 rounded text-sm font-semibold transition-colors ${
-              activePart === p ? "bg-white text-[#0056D2] shadow-sm" : "text-[#636363] hover:text-[#1F1F1F]"
+              activePart === p ? "bg-[var(--bg-card)] text-[var(--accent)] shadow-sm" : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
             }`}
           >
             Part {p}
@@ -272,18 +272,18 @@ export default function IELTSPage() {
       </div>
 
       {error && (
-        <div className="bg-[#FFEBEE] border border-[#FFCDD2] rounded-lg p-3 text-xs text-[#E53935]">{error}</div>
+        <div className="bg-[var(--danger-bg)] border border-[var(--danger-border)] rounded-lg p-3 text-xs text-[#E53935]">{error}</div>
       )}
 
       {activePart === "1" && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="bg-white border border-[#E0E0E0] rounded-lg p-6">
-            <p className="text-xs font-bold text-[#636363] uppercase tracking-wider mb-2">Part 1 · Personal Questions · 4–5 min</p>
-            <p className="text-sm text-[#636363] mb-4">Answer naturally. Aim for 2–3 sentences per answer.</p>
-            <div className="bg-[#E8F1FF] rounded-lg p-4 mb-4">
-              <p className="text-sm font-semibold text-[#1F1F1F] italic">&ldquo;{part1Questions[q1Index]}&rdquo;</p>
+          <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-6">
+            <p className="text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-2">Part 1 · Personal Questions · 4–5 min</p>
+            <p className="text-sm text-[var(--text-secondary)] mb-4">Answer naturally. Aim for 2–3 sentences per answer.</p>
+            <div className="bg-[var(--accent-bg)] rounded-lg p-4 mb-4">
+              <p className="text-sm font-semibold text-[var(--text-primary)] italic">&ldquo;{part1Questions[q1Index]}&rdquo;</p>
             </div>
-            <button onClick={() => setQ1Index((i) => (i + 1) % part1Questions.length)} className="text-xs text-[#0056D2] font-semibold hover:underline">
+            <button onClick={() => setQ1Index((i) => (i + 1) % part1Questions.length)} className="text-xs text-[var(--accent)] font-semibold hover:underline">
               Next question →
             </button>
           </div>
@@ -293,24 +293,24 @@ export default function IELTSPage() {
 
       {activePart === "2" && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="bg-white border border-[#E0E0E0] rounded-lg p-6">
-            <p className="text-xs font-bold text-[#636363] uppercase tracking-wider mb-2">Part 2 · Cue Card · 1 min prep + 1–2 min talk</p>
-            <p className="text-sm font-bold text-[#1F1F1F] mb-3">{currentCard.topic}</p>
-            <p className="text-xs text-[#636363] mb-2 font-semibold">You should say:</p>
+          <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-6">
+            <p className="text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-2">Part 2 · Cue Card · 1 min prep + 1–2 min talk</p>
+            <p className="text-sm font-bold text-[var(--text-primary)] mb-3">{currentCard.topic}</p>
+            <p className="text-xs text-[var(--text-secondary)] mb-2 font-semibold">You should say:</p>
             <ul className="space-y-1 mb-4">
               {currentCard.points.map((pt) => (
-                <li key={pt} className="text-sm text-[#636363] flex items-start gap-1.5">
-                  <span className="text-[#0056D2] font-bold">›</span>{pt}
+                <li key={pt} className="text-sm text-[var(--text-secondary)] flex items-start gap-1.5">
+                  <span className="text-[var(--accent)] font-bold">›</span>{pt}
                 </li>
               ))}
             </ul>
             {recordState === "prep" && (
-              <div className="bg-[#FFF8EC] border border-[#F5A623] rounded-lg p-3 flex items-center gap-2">
+              <div className="bg-[var(--warning-bg)] border border-[#F5A623] rounded-lg p-3 flex items-center gap-2">
                 <Clock size={16} className="text-[#F5A623]" />
                 <span className="text-sm font-bold text-[#F5A623]">Prep time: {fmtTime(prepTimer)}</span>
               </div>
             )}
-            <button onClick={() => { reset(); setCardIndex((i) => (i + 1) % part2Cards.length); }} className="text-xs text-[#0056D2] font-semibold hover:underline mt-3 block">
+            <button onClick={() => { reset(); setCardIndex((i) => (i + 1) % part2Cards.length); }} className="text-xs text-[var(--accent)] font-semibold hover:underline mt-3 block">
               Different card →
             </button>
           </div>
@@ -320,13 +320,13 @@ export default function IELTSPage() {
 
       {activePart === "3" && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="bg-white border border-[#E0E0E0] rounded-lg p-6">
-            <p className="text-xs font-bold text-[#636363] uppercase tracking-wider mb-2">Part 3 · Discussion · 4–5 min</p>
-            <p className="text-sm text-[#636363] mb-4">Give extended, analytical answers with reasons and examples.</p>
-            <div className="bg-[#E8F1FF] rounded-lg p-4 mb-4">
-              <p className="text-sm font-semibold text-[#1F1F1F] italic">&ldquo;{part3Questions[q3Index]}&rdquo;</p>
+          <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-6">
+            <p className="text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-2">Part 3 · Discussion · 4–5 min</p>
+            <p className="text-sm text-[var(--text-secondary)] mb-4">Give extended, analytical answers with reasons and examples.</p>
+            <div className="bg-[var(--accent-bg)] rounded-lg p-4 mb-4">
+              <p className="text-sm font-semibold text-[var(--text-primary)] italic">&ldquo;{part3Questions[q3Index]}&rdquo;</p>
             </div>
-            <button onClick={() => setQ3Index((i) => (i + 1) % part3Questions.length)} className="text-xs text-[#0056D2] font-semibold hover:underline">
+            <button onClick={() => setQ3Index((i) => (i + 1) % part3Questions.length)} className="text-xs text-[var(--accent)] font-semibold hover:underline">
               Next question →
             </button>
           </div>
@@ -335,8 +335,8 @@ export default function IELTSPage() {
       )}
 
       {recordState === "done" && result && (
-        <div className="bg-white border border-[#E0E0E0] rounded-lg p-6">
-          <h2 className="font-bold text-[#1F1F1F] mb-4">Estimated Band Scores</h2>
+        <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-6">
+          <h2 className="font-bold text-[var(--text-primary)] mb-4">Estimated Band Scores</h2>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-4">
             {[
               { label: "Fluency", val: result.fluency },
@@ -344,17 +344,17 @@ export default function IELTSPage() {
               { label: "Grammar", val: result.grammar },
               { label: "Pronunciation", val: result.pronunciation },
             ].map(({ label, val }) => (
-              <div key={label} className="text-center bg-[#F5F5F5] rounded-lg p-4">
-                <p className="text-2xl font-bold text-[#0056D2]">{val.toFixed(1)}</p>
-                <p className="text-xs text-[#636363] mt-1">{label}</p>
+              <div key={label} className="text-center bg-[var(--bg-secondary)] rounded-lg p-4">
+                <p className="text-2xl font-bold text-[var(--accent)]">{val.toFixed(1)}</p>
+                <p className="text-xs text-[var(--text-secondary)] mt-1">{label}</p>
               </div>
             ))}
           </div>
-          <div className="bg-[#E8F1FF] rounded-lg p-4">
-            <p className="text-sm font-semibold text-[#0056D2] mb-1">Overall Estimate: Band {result.overall.toFixed(1)}</p>
-            {result.feedback && <p className="text-xs text-[#636363] leading-relaxed">{result.feedback}</p>}
+          <div className="bg-[var(--accent-bg)] rounded-lg p-4">
+            <p className="text-sm font-semibold text-[var(--accent)] mb-1">Overall Estimate: Band {result.overall.toFixed(1)}</p>
+            {result.feedback && <p className="text-xs text-[var(--text-secondary)] leading-relaxed">{result.feedback}</p>}
           </div>
-          <button onClick={reset} className="mt-4 text-xs border border-[#0056D2] text-[#0056D2] hover:bg-[#E8F1FF] px-4 py-1.5 rounded font-semibold transition-colors">
+          <button onClick={reset} className="mt-4 text-xs border border-[var(--accent)] text-[var(--accent)] hover:bg-[var(--accent-bg)] px-4 py-1.5 rounded font-semibold transition-colors">
             Practice Again
           </button>
         </div>
@@ -362,15 +362,15 @@ export default function IELTSPage() {
 
       {/* Model answer rewrite */}
       {recordState === "done" && (
-        <div className="bg-white border border-[#E0E0E0] rounded-lg p-6">
-          <h2 className="font-bold text-[#1F1F1F] mb-1 flex items-center gap-2">
-            <Sparkles size={17} className="text-[#0056D2]" /> Recommended Model Answer
+        <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-6">
+          <h2 className="font-bold text-[var(--text-primary)] mb-1 flex items-center gap-2">
+            <Sparkles size={17} className="text-[var(--accent)]" /> Recommended Model Answer
           </h2>
-          <p className="text-xs text-[#636363] mb-4">A Band 8.5–9 rewrite of your answer with a clear, correct structure — keep practicing with this version.</p>
+          <p className="text-xs text-[var(--text-secondary)] mb-4">A Band 8.5–9 rewrite of your answer with a clear, correct structure — keep practicing with this version.</p>
 
           {rewriteLoading && (
-            <div className="flex items-center gap-2 text-sm text-[#636363] py-6 justify-center">
-              <Loader2 size={16} className="animate-spin text-[#0056D2]" /> Building your model answer…
+            <div className="flex items-center gap-2 text-sm text-[var(--text-secondary)] py-6 justify-center">
+              <Loader2 size={16} className="animate-spin text-[var(--accent)]" /> Building your model answer…
             </div>
           )}
 
@@ -378,23 +378,23 @@ export default function IELTSPage() {
             <>
               {userTranscript && (
                 <details className="mb-4">
-                  <summary className="text-xs font-semibold text-[#636363] cursor-pointer">View what you said</summary>
-                  <p className="text-xs text-[#636363] leading-relaxed mt-2 bg-[#F5F5F5] rounded-lg p-3">{userTranscript}</p>
+                  <summary className="text-xs font-semibold text-[var(--text-secondary)] cursor-pointer">View what you said</summary>
+                  <p className="text-xs text-[var(--text-secondary)] leading-relaxed mt-2 bg-[var(--bg-secondary)] rounded-lg p-3">{userTranscript}</p>
                 </details>
               )}
 
-              <div className="bg-[#F0F7FF] border border-[#CFE3FF] rounded-lg p-4 mb-4">
-                <p className="text-[10px] font-bold uppercase tracking-wider text-[#0056D2] mb-2">Model Answer</p>
-                <p className="text-sm text-[#1F1F1F] leading-relaxed whitespace-pre-wrap">{rewrite.rewrite}</p>
+              <div className="bg-[var(--accent-bg)] border border-[var(--border)] rounded-lg p-4 mb-4">
+                <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--accent)] mb-2">Model Answer</p>
+                <p className="text-sm text-[var(--text-primary)] leading-relaxed whitespace-pre-wrap">{rewrite.rewrite}</p>
               </div>
 
               {rewrite.tips.length > 0 && (
                 <div className="mb-4">
-                  <p className="text-xs font-bold text-[#1F1F1F] mb-2 flex items-center gap-1.5"><Lightbulb size={13} className="text-[#F5A623]" /> Structure tips</p>
+                  <p className="text-xs font-bold text-[var(--text-primary)] mb-2 flex items-center gap-1.5"><Lightbulb size={13} className="text-[#F5A623]" /> Structure tips</p>
                   <ul className="space-y-1.5">
                     {rewrite.tips.map((t, i) => (
-                      <li key={i} className="text-xs text-[#636363] flex items-start gap-2">
-                        <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-[#0056D2] shrink-0" /> {t}
+                      <li key={i} className="text-xs text-[var(--text-secondary)] flex items-start gap-2">
+                        <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-[var(--accent)] shrink-0" /> {t}
                       </li>
                     ))}
                   </ul>
@@ -403,11 +403,11 @@ export default function IELTSPage() {
 
               <div className="flex flex-wrap gap-3">
                 <button onClick={practiceRewrite}
-                  className="flex items-center gap-1.5 bg-[#0056D2] hover:bg-[#003B8E] text-white font-semibold px-4 py-2 rounded text-sm transition-colors">
+                  className="flex items-center gap-1.5 bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white font-semibold px-4 py-2 rounded text-sm transition-colors">
                   <Mic2 size={14} /> Practice this answer
                 </button>
                 <button onClick={saveRewriteScript} disabled={savedRewrite}
-                  className="flex items-center gap-1.5 border border-[#0056D2] text-[#0056D2] hover:bg-[#E8F1FF] font-semibold px-4 py-2 rounded text-sm transition-colors disabled:opacity-70">
+                  className="flex items-center gap-1.5 border border-[var(--accent)] text-[var(--accent)] hover:bg-[var(--accent-bg)] font-semibold px-4 py-2 rounded text-sm transition-colors disabled:opacity-70">
                   {savedRewrite ? <><CheckCircle size={14} className="text-[#00B37D]" /> Saved</> : <><Save size={14} /> Save for practice</>}
                 </button>
               </div>
@@ -416,8 +416,8 @@ export default function IELTSPage() {
 
           {!rewriteLoading && !rewrite && (
             <div className="flex items-center justify-between gap-3">
-              <p className="text-sm text-[#636363]">Couldn&apos;t build a model answer.</p>
-              <button onClick={() => fetchRewrite(userTranscript)} className="text-xs font-semibold text-[#0056D2] hover:underline">Try again</button>
+              <p className="text-sm text-[var(--text-secondary)]">Couldn&apos;t build a model answer.</p>
+              <button onClick={() => fetchRewrite(userTranscript)} className="text-xs font-semibold text-[var(--accent)] hover:underline">Try again</button>
             </div>
           )}
         </div>
@@ -432,20 +432,20 @@ function RecordPanel({
   state: RecordState; timer: string; onStart: () => void; onStop: () => void; onReset: () => void; startLabel?: string;
 }) {
   return (
-    <div className="bg-white border border-[#E0E0E0] rounded-lg p-6 flex flex-col items-center justify-center min-h-52">
+    <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-6 flex flex-col items-center justify-center min-h-52">
       {state === "idle" && (
         <div className="text-center">
-          <button onClick={onStart} className="w-20 h-20 rounded-full bg-[#0056D2] hover:bg-[#003B8E] text-white flex items-center justify-center mx-auto mb-4 transition-colors pulse-ring">
+          <button onClick={onStart} className="w-20 h-20 rounded-full bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white flex items-center justify-center mx-auto mb-4 transition-colors pulse-ring">
             <Mic size={30} />
           </button>
-          <p className="text-sm text-[#636363]">{startLabel ?? "Start Recording"}</p>
+          <p className="text-sm text-[var(--text-secondary)]">{startLabel ?? "Start Recording"}</p>
         </div>
       )}
       {state === "prep" && (
         <div className="text-center">
           <Clock size={40} className="text-[#F5A623] mx-auto mb-2" />
-          <p className="text-sm font-semibold text-[#1F1F1F]">Preparation time</p>
-          <p className="text-xs text-[#636363]">Speaking will start automatically</p>
+          <p className="text-sm font-semibold text-[var(--text-primary)]">Preparation time</p>
+          <p className="text-xs text-[var(--text-secondary)]">Speaking will start automatically</p>
         </div>
       )}
       {state === "recording" && (
@@ -454,10 +454,10 @@ function RecordPanel({
             <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
             <span className="text-xs font-bold text-red-500 uppercase">Recording</span>
           </div>
-          <p className="text-3xl font-bold text-[#1F1F1F] mb-4 font-mono">{timer}</p>
+          <p className="text-3xl font-bold text-[var(--text-primary)] mb-4 font-mono">{timer}</p>
           <div className="flex items-end gap-1 justify-center h-10 mb-4">
             {Array.from({ length: 8 }).map((_, i) => (
-              <div key={i} className="wave-bar w-1.5 bg-[#0056D2] rounded-full" style={{ height: "24px" }} />
+              <div key={i} className="wave-bar w-1.5 bg-[var(--accent)] rounded-full" style={{ height: "24px" }} />
             ))}
           </div>
           <button onClick={onStop} className="flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white font-semibold px-5 py-2 rounded transition-colors">
@@ -467,13 +467,13 @@ function RecordPanel({
       )}
       {(state === "transcribing" || state === "analyzing") && (
         <div className="text-center">
-          <BarChart2 size={36} className="text-[#0056D2] mx-auto mb-3 spin-slow" />
-          <p className="text-sm font-semibold text-[#1F1F1F] mb-1">
+          <BarChart2 size={36} className="text-[var(--accent)] mx-auto mb-3 spin-slow" />
+          <p className="text-sm font-semibold text-[var(--text-primary)] mb-1">
             {state === "transcribing" ? "Transcribing..." : "Analyzing with AI..."}
           </p>
           <div className="flex justify-center gap-1 mt-2">
             {[0, 1, 2].map((i) => (
-              <div key={i} className="w-2 h-2 rounded-full bg-[#0056D2] animate-bounce" style={{ animationDelay: `${i * 0.15}s` }} />
+              <div key={i} className="w-2 h-2 rounded-full bg-[var(--accent)] animate-bounce" style={{ animationDelay: `${i * 0.15}s` }} />
             ))}
           </div>
         </div>
@@ -481,8 +481,8 @@ function RecordPanel({
       {state === "done" && (
         <div className="text-center">
           <p className="font-bold text-[#00B37D] mb-2">Analysis complete!</p>
-          <p className="text-xs text-[#636363] mb-4">Scroll down to see your band scores.</p>
-          <button onClick={onReset} className="text-xs border border-[#0056D2] text-[#0056D2] hover:bg-[#E8F1FF] px-4 py-1.5 rounded transition-colors font-semibold">
+          <p className="text-xs text-[var(--text-secondary)] mb-4">Scroll down to see your band scores.</p>
+          <button onClick={onReset} className="text-xs border border-[var(--accent)] text-[var(--accent)] hover:bg-[var(--accent-bg)] px-4 py-1.5 rounded transition-colors font-semibold">
             Practice Again
           </button>
         </div>

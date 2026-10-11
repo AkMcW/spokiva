@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { ClerkProvider } from "@clerk/nextjs";
-import { ThemeProvider } from "@/context/ThemeContext";
+import { ThemeProvider, THEME_PREPAINT } from "@/context/ThemeContext";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -15,8 +15,10 @@ export default function RootLayout({
 }) {
   return (
     <ClerkProvider>
-      <html lang="en" className="h-full" suppressHydrationWarning>
+      <html lang="en" className="h-full" data-theme="paper" suppressHydrationWarning>
         <head>
+          {/* Apply the saved reading theme before first paint (no flash) */}
+          <script dangerouslySetInnerHTML={{ __html: THEME_PREPAINT }} />
           <link
             href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap"
             rel="stylesheet"

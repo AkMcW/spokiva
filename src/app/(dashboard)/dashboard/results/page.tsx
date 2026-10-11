@@ -121,16 +121,16 @@ function scoreLabel(score: number) {
 
 function Delta({ cur, prev }: { cur: number; prev: number }) {
   const diff = cur - prev;
-  if (Math.abs(diff) < 1) return <Minus size={12} className="text-[#9E9E9E]" />;
+  if (Math.abs(diff) < 1) return <Minus size={12} className="text-[var(--text-muted)]" />;
   if (diff > 0) return <span className="flex items-center gap-0.5 text-[#00B37D] text-xs font-bold"><TrendingUp size={12} />+{Math.round(diff)}</span>;
   return <span className="flex items-center gap-0.5 text-red-400 text-xs font-bold"><TrendingDown size={12} />{Math.round(diff)}</span>;
 }
 
 const ISSUE_LABELS: Record<string, { label: string; color: string; bg: string }> = {
-  skipped:     { label: "Skipped",     color: "#E53935", bg: "#FFF0F0" },
-  substituted: { label: "Wrong word",  color: "#F5A623", bg: "#FFF8E7" },
-  filler_added:{ label: "Filler added",color: "#7B61FF", bg: "#F0EEFF" },
-  repeated:    { label: "Repeated",    color: "#636363", bg: "#F5F5F5" },
+  skipped:     { label: "Skipped",     color: "#E53935", bg: "var(--danger-bg)" },
+  substituted: { label: "Wrong word",  color: "#F5A623", bg: "var(--warning-bg)" },
+  filler_added:{ label: "Filler added",color: "#7B61FF", bg: "var(--info-bg)" },
+  repeated:    { label: "Repeated",    color: "var(--text-secondary)", bg: "var(--bg-secondary)" },
 };
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
@@ -232,7 +232,7 @@ export default function ResultsPage() {
               disabled={saveState === "saving" || saveState === "saved"}
               className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded border transition-colors disabled:opacity-80"
               style={saveState === "saved"
-                ? { background: "#E6F7F2", color: "#00B37D", borderColor: "#00B37D" }
+                ? { background: "var(--success-bg)", color: "#00B37D", borderColor: "#00B37D" }
                 : { background: "var(--accent)", color: "#fff", borderColor: "var(--accent)" }}
             >
               {saveState === "saving" ? <><Loader2 size={13} className="animate-spin" /> Saving...</>
@@ -252,7 +252,7 @@ export default function ResultsPage() {
       </div>
 
       {isFallback && (
-        <div className="flex items-center gap-2 p-3 rounded-lg text-sm" style={{ background: "#FFF8E6", border: "1px solid #F5A623", color: "#7A5500" }}>
+        <div className="flex items-center gap-2 p-3 rounded-lg text-sm" style={{ background: "var(--warning-bg)", border: "1px solid #F5A623", color: "var(--warning-text)" }}>
           <Mic size={14} className="shrink-0" />
           No recent session found — showing sample results. Complete a practice session to see your real scores.
         </div>
@@ -343,7 +343,7 @@ export default function ResultsPage() {
               <p className="text-xs font-semibold mb-1.5" style={{ color: "var(--text-secondary)" }}>Words missed from script</p>
               <div className="flex flex-wrap gap-1.5">
                 {sc.missedWords.map((w, i) => (
-                  <span key={i} className="text-xs px-2 py-0.5 rounded-full font-medium" style={{ background: "#FFF0F0", color: "#E53935" }}>{w}</span>
+                  <span key={i} className="text-xs px-2 py-0.5 rounded-full font-medium" style={{ background: "var(--danger-bg)", color: "#E53935" }}>{w}</span>
                 ))}
               </div>
             </div>
@@ -353,7 +353,7 @@ export default function ResultsPage() {
               <p className="text-xs font-semibold mb-1.5" style={{ color: "var(--text-secondary)" }}>Words added (not in script)</p>
               <div className="flex flex-wrap gap-1.5">
                 {sc.addedWords.map((w, i) => (
-                  <span key={i} className="text-xs px-2 py-0.5 rounded-full font-medium" style={{ background: "#F0EEFF", color: "#7B61FF" }}>{w}</span>
+                  <span key={i} className="text-xs px-2 py-0.5 rounded-full font-medium" style={{ background: "var(--info-bg)", color: "#7B61FF" }}>{w}</span>
                 ))}
               </div>
             </div>
@@ -372,7 +372,7 @@ export default function ResultsPage() {
           </div>
           <div className="divide-y" style={{ borderColor: "var(--border)" }}>
             {wordErrors.map((err, i) => {
-              const tag = ISSUE_LABELS[err.issue] ?? { label: err.issue, color: "#636363", bg: "#F5F5F5" };
+              const tag = ISSUE_LABELS[err.issue] ?? { label: err.issue, color: "var(--text-secondary)", bg: "var(--bg-secondary)" };
               return (
                 <div key={i} className="px-5 py-4">
                   <div className="flex flex-wrap items-center gap-2 mb-2">

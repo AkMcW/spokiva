@@ -75,7 +75,7 @@ function addPhonetics(text: string): React.ReactNode[] {
     if (ipa) {
       return (
         <span key={i} className="relative inline-block group cursor-help">
-          <span className="border-b border-dotted border-[#0056D2]">{token}</span>
+          <span className="border-b border-dotted border-[var(--accent)]">{token}</span>
           <span className="absolute -top-7 left-1/2 -translate-x-1/2 bg-[#1F1F1F] text-white text-[10px] font-mono px-1.5 py-0.5 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
             /{ipa}/
           </span>
@@ -134,7 +134,7 @@ function renderNotation(text: string, fontSize: FontSize) {
           if (buf) { tokens.push(<span key={`b-${i}`}>{buf}</span>); buf = ""; }
           const word = chars.slice(i + 2, end);
           tokens.push(
-            <span key={`em-${i}`} className="font-bold text-[#0056D2] underline decoration-dotted">{word}</span>
+            <span key={`em-${i}`} className="font-bold text-[var(--accent)] underline decoration-dotted">{word}</span>
           );
           i = end + 2;
           continue;
@@ -435,15 +435,15 @@ export default function PracticePage() {
     <div className="max-w-6xl mx-auto space-y-5">
       {/* Full-screen reading / teleprompter overlay */}
       {fullscreen && (
-        <div className="fixed inset-0 z-50 bg-white flex flex-col">
-          <div className="flex flex-wrap items-center justify-between gap-3 px-5 py-3 border-b border-[#E0E0E0] shrink-0">
+        <div className="fixed inset-0 z-50 bg-[var(--bg-card)] flex flex-col">
+          <div className="flex flex-wrap items-center justify-between gap-3 px-5 py-3 border-b border-[var(--border)] shrink-0">
             <div className="flex items-center gap-3 flex-wrap">
-              <span className="text-sm font-bold text-[#1F1F1F]">{activeScript?.scenario ?? "Your Script"}</span>
-              <div className="flex items-center gap-1 border border-[#E0E0E0] rounded overflow-hidden">
-                <span className="px-2 text-xs text-[#636363]"><Type size={12} /></span>
+              <span className="text-sm font-bold text-[var(--text-primary)]">{activeScript?.scenario ?? "Your Script"}</span>
+              <div className="flex items-center gap-1 border border-[var(--border)] rounded overflow-hidden">
+                <span className="px-2 text-xs text-[var(--text-secondary)]"><Type size={12} /></span>
                 {(["sm","base","lg","xl"] as FontSize[]).map((s) => (
                   <button key={s} onClick={() => setFontSize(s)}
-                    className={`px-2 py-1 text-xs font-semibold transition-colors ${fontSize === s ? "bg-[#0056D2] text-white" : "text-[#636363] hover:bg-[#F5F5F5]"}`}>
+                    className={`px-2 py-1 text-xs font-semibold transition-colors ${fontSize === s ? "bg-[var(--accent)] text-white" : "text-[var(--text-secondary)] hover:bg-[var(--bg-hover)]"}`}>
                     {fontSizeLabel[s]}
                   </button>
                 ))}
@@ -453,27 +453,27 @@ export default function PracticePage() {
             {/* Teleprompter controls */}
             <div className="flex items-center gap-2 flex-wrap">
               <button onClick={() => setTelePlaying((v) => !v)}
-                className="flex items-center gap-1.5 text-xs font-semibold bg-[#0056D2] hover:bg-[#003B8E] text-white px-3 py-1.5 rounded transition-colors"
+                className="flex items-center gap-1.5 text-xs font-semibold bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white px-3 py-1.5 rounded transition-colors"
                 title={telePlaying ? "Pause auto-scroll" : "Start auto-scroll"}>
                 {telePlaying ? <Pause size={14} /> : <Play size={14} />}
                 {telePlaying ? "Pause" : "Auto-scroll"}
               </button>
               <button onClick={restartTeleprompter} title="Restart from top"
-                className="p-1.5 rounded border border-[#E0E0E0] text-[#636363] hover:bg-[#F5F5F5] transition-colors">
+                className="p-1.5 rounded border border-[var(--border)] text-[var(--text-secondary)] hover:bg-[var(--bg-hover)] transition-colors">
                 <RotateCcw size={14} />
               </button>
-              <div className="flex items-center gap-1 border border-[#E0E0E0] rounded">
-                <button onClick={() => setTeleSpeed((s) => Math.max(0.1, Math.round((s - 0.1) * 10) / 10))} className="px-1.5 py-1 text-[#636363] hover:bg-[#F5F5F5]" title="Slower"><Minus size={13} /></button>
-                <span className="text-[11px] font-semibold text-[#1F1F1F] w-12 text-center tabular-nums">{teleSpeed.toFixed(1)}×</span>
-                <button onClick={() => setTeleSpeed((s) => Math.min(6, Math.round((s + 0.1) * 10) / 10))} className="px-1.5 py-1 text-[#636363] hover:bg-[#F5F5F5]" title="Faster"><Plus size={13} /></button>
+              <div className="flex items-center gap-1 border border-[var(--border)] rounded">
+                <button onClick={() => setTeleSpeed((s) => Math.max(0.1, Math.round((s - 0.1) * 10) / 10))} className="px-1.5 py-1 text-[var(--text-secondary)] hover:bg-[var(--bg-hover)]" title="Slower"><Minus size={13} /></button>
+                <span className="text-[11px] font-semibold text-[var(--text-primary)] w-12 text-center tabular-nums">{teleSpeed.toFixed(1)}×</span>
+                <button onClick={() => setTeleSpeed((s) => Math.min(6, Math.round((s + 0.1) * 10) / 10))} className="px-1.5 py-1 text-[var(--text-secondary)] hover:bg-[var(--bg-hover)]" title="Faster"><Plus size={13} /></button>
               </div>
               <button onClick={() => setTeleMirror((v) => !v)}
-                className={`text-xs font-semibold px-2.5 py-1.5 rounded border transition-colors ${teleMirror ? "border-[#0056D2] text-[#0056D2] bg-[#E8F1FF]" : "border-[#E0E0E0] text-[#636363] hover:bg-[#F5F5F5]"}`}
+                className={`text-xs font-semibold px-2.5 py-1.5 rounded border transition-colors ${teleMirror ? "border-[var(--accent)] text-[var(--accent)] bg-[var(--accent-bg)]" : "border-[var(--border)] text-[var(--text-secondary)] hover:bg-[var(--bg-hover)]"}`}
                 title="Mirror horizontally (for beam-splitter rigs)">
                 Mirror
               </button>
               <button onClick={() => { setFullscreen(false); setTelePlaying(false); }}
-                className="flex items-center gap-1.5 text-sm font-semibold text-[#636363] hover:text-[#E53935] transition-colors ml-1">
+                className="flex items-center gap-1.5 text-sm font-semibold text-[var(--text-secondary)] hover:text-[#E53935] transition-colors ml-1">
                 <X size={18} /> Exit
               </button>
             </div>
@@ -487,8 +487,8 @@ export default function PracticePage() {
                   ? <div className="whitespace-pre-wrap leading-loose">{addPhonetics(stripNotation(scriptContent))}</div>
                   : renderNotation(scriptContent, fontSize)
                 : phoneticOn
-                  ? <div className="whitespace-pre-wrap text-[#1F1F1F] leading-loose">{addPhonetics(stripNotation(scriptContent))}</div>
-                  : <p className="whitespace-pre-wrap text-[#1F1F1F]">{stripNotation(scriptContent)}</p>
+                  ? <div className="whitespace-pre-wrap text-[var(--text-primary)] leading-loose">{addPhonetics(stripNotation(scriptContent))}</div>
+                  : <p className="whitespace-pre-wrap text-[var(--text-primary)]">{stripNotation(scriptContent)}</p>
               }
               {/* Tail space so the last lines can scroll into reading position */}
               <div style={{ height: "40vh" }} />
@@ -496,13 +496,13 @@ export default function PracticePage() {
           </div>
 
           {/* Reading guide line */}
-          <div className="pointer-events-none absolute left-0 right-0 top-1/3 h-px bg-[#0056D2]/20" />
+          <div className="pointer-events-none absolute left-0 right-0 top-1/3 h-px bg-[var(--accent)]/20" />
         </div>
       )}
 
       <div>
-        <h1 className="text-2xl font-bold text-[#1F1F1F]">Practice Recorder</h1>
-        <p className="text-sm text-[#636363] mt-1">Record your delivery — AI analyzes pronunciation, fluency, confidence and more.</p>
+        <h1 className="text-2xl font-bold text-[var(--text-primary)]">Practice Recorder</h1>
+        <p className="text-sm text-[var(--text-secondary)] mt-1">Record your delivery — AI analyzes pronunciation, fluency, confidence and more.</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 items-start">
@@ -510,22 +510,22 @@ export default function PracticePage() {
         <div className="order-2 lg:order-1 lg:col-span-2 space-y-5">
 
       {/* Script Panel — full width, enlarged */}
-      <div className="bg-white border border-[#E0E0E0] rounded-lg p-6">
+      <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-6">
         {/* Header row */}
         <div className="flex flex-wrap items-center gap-3 mb-4">
-          <h2 className="font-bold text-[#1F1F1F] flex-1">Your Script</h2>
-          <span className="text-xs bg-[#E8F1FF] text-[#0056D2] px-2 py-0.5 rounded font-semibold">
+          <h2 className="font-bold text-[var(--text-primary)] flex-1">Your Script</h2>
+          <span className="text-xs bg-[var(--accent-bg)] text-[var(--accent)] px-2 py-0.5 rounded font-semibold">
             {activeScript?.scenario ?? "Sample Script"}
           </span>
 
           {/* Font size selector */}
-          <div className="flex items-center gap-1 border border-[#E0E0E0] rounded overflow-hidden">
-            <span className="px-2 text-xs text-[#636363]"><Type size={12} /></span>
+          <div className="flex items-center gap-1 border border-[var(--border)] rounded overflow-hidden">
+            <span className="px-2 text-xs text-[var(--text-secondary)]"><Type size={12} /></span>
             {(["sm","base","lg","xl"] as FontSize[]).map((s) => (
               <button
                 key={s}
                 onClick={() => setFontSize(s)}
-                className={`px-2 py-1 text-xs font-semibold transition-colors ${fontSize === s ? "bg-[#0056D2] text-white" : "text-[#636363] hover:bg-[#F5F5F5]"}`}
+                className={`px-2 py-1 text-xs font-semibold transition-colors ${fontSize === s ? "bg-[var(--accent)] text-white" : "text-[var(--text-secondary)] hover:bg-[var(--bg-hover)]"}`}
               >
                 {fontSizeLabel[s]}
               </button>
@@ -535,39 +535,39 @@ export default function PracticePage() {
           {/* Notation toggle */}
           <button
             onClick={() => setNotationOn((v) => !v)}
-            className="flex items-center gap-1.5 text-xs font-semibold text-[#636363] hover:text-[#0056D2] transition-colors"
+            className="flex items-center gap-1.5 text-xs font-semibold text-[var(--text-secondary)] hover:text-[var(--accent)] transition-colors"
             title="Toggle speaking notation"
           >
             {notationOn
-              ? <ToggleRight size={18} className="text-[#0056D2]" />
+              ? <ToggleRight size={18} className="text-[var(--accent)]" />
               : <ToggleLeft size={18} />}
-            <span className={notationOn ? "text-[#0056D2]" : ""}>Notation</span>
+            <span className={notationOn ? "text-[var(--accent)]" : ""}>Notation</span>
           </button>
 
           {/* Phonetic toggle */}
           <button
             onClick={() => setPhoneticOn((v) => !v)}
-            className={`flex items-center gap-1.5 text-xs font-semibold transition-colors ${phoneticOn ? "text-[#0056D2]" : "text-[#636363] hover:text-[#0056D2]"}`}
+            className={`flex items-center gap-1.5 text-xs font-semibold transition-colors ${phoneticOn ? "text-[var(--accent)]" : "text-[var(--text-secondary)] hover:text-[var(--accent)]"}`}
             title="Show IPA phonetic hints on hover"
           >
-            <Languages size={15} className={phoneticOn ? "text-[#0056D2]" : ""} />
+            <Languages size={15} className={phoneticOn ? "text-[var(--accent)]" : ""} />
             <span>IPA</span>
           </button>
 
           {/* Webcam toggle */}
           <button
             onClick={toggleWebcam}
-            className={`flex items-center gap-1.5 text-xs font-semibold transition-colors ${webcamOn ? "text-[#0056D2]" : "text-[#636363] hover:text-[#0056D2]"}`}
+            className={`flex items-center gap-1.5 text-xs font-semibold transition-colors ${webcamOn ? "text-[var(--accent)]" : "text-[var(--text-secondary)] hover:text-[var(--accent)]"}`}
             title="Toggle webcam"
           >
-            {webcamOn ? <Video size={15} className="text-[#0056D2]" /> : <VideoOff size={15} />}
+            {webcamOn ? <Video size={15} className="text-[var(--accent)]" /> : <VideoOff size={15} />}
             <span>Webcam</span>
           </button>
 
           {/* Fullscreen toggle */}
           <button
             onClick={() => setFullscreen(true)}
-            className="flex items-center gap-1.5 text-xs font-semibold text-[#636363] hover:text-[#0056D2] transition-colors"
+            className="flex items-center gap-1.5 text-xs font-semibold text-[var(--text-secondary)] hover:text-[var(--accent)] transition-colors"
             title="Full screen reading view"
           >
             <Maximize2 size={15} />
@@ -577,7 +577,7 @@ export default function PracticePage() {
           {/* Teleprompter */}
           <button
             onClick={openTeleprompter}
-            className="flex items-center gap-1.5 text-xs font-semibold text-[#636363] hover:text-[#0056D2] transition-colors"
+            className="flex items-center gap-1.5 text-xs font-semibold text-[var(--text-secondary)] hover:text-[var(--accent)] transition-colors"
             title="Teleprompter — auto-scrolling full-screen reader"
           >
             <ScrollText size={15} />
@@ -586,37 +586,37 @@ export default function PracticePage() {
         </div>
 
         {/* Script body — fits to content length */}
-        <div className={`bg-[#F9FAFB] border border-[#E0E0E0] rounded-lg p-5 leading-relaxed ${fontSizeClass[fontSize]}`}>
+        <div className={`bg-[var(--bg-secondary)] border border-[var(--border)] rounded-lg p-5 leading-relaxed ${fontSizeClass[fontSize]}`}>
           {notationOn
             ? phoneticOn
               ? <div className="whitespace-pre-wrap leading-relaxed">{addPhonetics(stripNotation(scriptContent).replace(/\n/g, "\n"))}</div>
               : renderNotation(scriptContent, fontSize)
             : phoneticOn
-              ? <div className="whitespace-pre-wrap text-[#1F1F1F] leading-relaxed">{addPhonetics(stripNotation(scriptContent))}</div>
-              : <p className="whitespace-pre-wrap text-[#1F1F1F]">{stripNotation(scriptContent)}</p>
+              ? <div className="whitespace-pre-wrap text-[var(--text-primary)] leading-relaxed">{addPhonetics(stripNotation(scriptContent))}</div>
+              : <p className="whitespace-pre-wrap text-[var(--text-primary)]">{stripNotation(scriptContent)}</p>
           }
         </div>
 
         {/* Footer row */}
         <div className="flex flex-wrap items-center justify-between mt-3 gap-2">
           <div className="flex items-center gap-4">
-            <p className="text-xs text-[#636363]">{wordCount} words · ~{Math.max(1, Math.round(wordCount / 130))}m</p>
-            <Link href="/dashboard/script-writer" className="inline-flex items-center gap-1 text-xs text-[#0056D2] font-semibold hover:underline">
+            <p className="text-xs text-[var(--text-secondary)]">{wordCount} words · ~{Math.max(1, Math.round(wordCount / 130))}m</p>
+            <Link href="/dashboard/script-writer" className="inline-flex items-center gap-1 text-xs text-[var(--accent)] font-semibold hover:underline">
               <BookOpen size={11} />
               {activeScript ? "Change script" : "Use your own script"}
             </Link>
           </div>
           {phoneticOn && (
-            <p className="text-[10px] text-[#0056D2] font-medium">
+            <p className="text-[10px] text-[var(--accent)] font-medium">
               IPA hints on — hover underlined words to see pronunciation
             </p>
           )}
           {notationOn && !phoneticOn && (
-            <div className="flex flex-wrap items-center gap-2 text-[10px] text-[#9E9E9E]">
+            <div className="flex flex-wrap items-center gap-2 text-[10px] text-[var(--text-muted)]">
               <span className="inline-flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-[#F5A623] inline-block" /> short pause</span>
               <span className="inline-flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-[#F5A623] inline-block" /><span className="w-1.5 h-1.5 rounded-full bg-[#F5A623] inline-block" /> medium</span>
               <span className="inline-flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-[#F5A623] inline-block" /><span className="w-1.5 h-1.5 rounded-full bg-[#F5A623] inline-block" /><span className="w-1.5 h-1.5 rounded-full bg-[#F5A623] inline-block" /> long</span>
-              <span className="font-bold text-[#0056D2] underline decoration-dotted">emphasis</span>
+              <span className="font-bold text-[var(--accent)] underline decoration-dotted">emphasis</span>
               <span className="px-1.5 py-0.5 rounded bg-green-100 text-green-700 font-bold">DIRECTIVE</span>
             </div>
           )}
@@ -633,10 +633,10 @@ export default function PracticePage() {
 
       {/* Webcam preview */}
       {webcamOn && (
-        <div className="bg-white border border-[#E0E0E0] rounded-lg p-4 flex flex-col items-center gap-3">
+        <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-4 flex flex-col items-center gap-3">
           <div className="flex items-center justify-between w-full">
-            <p className="text-sm font-semibold text-[#1F1F1F] flex items-center gap-1.5"><Video size={14} className="text-[#0056D2]" /> Camera Preview</p>
-            <button onClick={toggleWebcam} className="text-xs text-[#636363] hover:text-red-500 transition-colors">Turn off</button>
+            <p className="text-sm font-semibold text-[var(--text-primary)] flex items-center gap-1.5"><Video size={14} className="text-[var(--accent)]" /> Camera Preview</p>
+            <button onClick={toggleWebcam} className="text-xs text-[var(--text-secondary)] hover:text-red-500 transition-colors">Turn off</button>
           </div>
           <video
             ref={videoRef}
@@ -645,21 +645,21 @@ export default function PracticePage() {
             playsInline
             className="rounded-lg w-full aspect-video bg-black object-cover"
           />
-          <p className="text-xs text-[#9E9E9E] text-center">Practice eye contact and expressions while reading your script</p>
+          <p className="text-xs text-[var(--text-muted)] text-center">Practice eye contact and expressions while reading your script</p>
         </div>
       )}
 
       {/* Recording Panel — "Ready to record" frame */}
-      <div className="bg-white border border-[#E0E0E0] rounded-lg p-6">
+      <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-6">
         {error && (
-          <div className="bg-[#FFEBEE] border border-[#FFCDD2] rounded-lg p-3 mb-5 text-xs text-[#E53935]">{error}</div>
+          <div className="bg-[var(--danger-bg)] border border-[var(--danger-border)] rounded-lg p-3 mb-5 text-xs text-[#E53935]">{error}</div>
         )}
 
         {state === "idle" && (
           <div className="flex flex-col items-center text-center gap-4">
             <button
               onClick={startRecording}
-              className="w-20 h-20 rounded-full bg-[#0056D2] hover:bg-[#003B8E] text-white flex items-center justify-center transition-colors shadow-lg pulse-ring shrink-0"
+              className="w-20 h-20 rounded-full bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white flex items-center justify-center transition-colors shadow-lg pulse-ring shrink-0"
             >
               <Mic size={34} />
             </button>
@@ -679,11 +679,11 @@ export default function PracticePage() {
               <div className="flex items-center gap-2 mb-2">
                 <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
                 <span className="text-xs font-bold text-red-500 uppercase tracking-wider">Recording</span>
-                <span className="text-2xl font-bold text-[#1F1F1F] font-mono ml-2">{timeStr}</span>
+                <span className="text-2xl font-bold text-[var(--text-primary)] font-mono ml-2">{timeStr}</span>
               </div>
               <div className="flex items-end gap-0.5 h-10">
                 {Array.from({ length: 24 }).map((_, i) => (
-                  <div key={i} className="wave-bar w-1 bg-[#0056D2] rounded-full flex-1" style={{ height: "28px" }} />
+                  <div key={i} className="wave-bar w-1 bg-[var(--accent)] rounded-full flex-1" style={{ height: "28px" }} />
                 ))}
               </div>
             </div>
@@ -692,19 +692,19 @@ export default function PracticePage() {
 
         {(state === "transcribing" || state === "analyzing") && (
           <div className="flex items-center gap-5">
-            <div className="w-14 h-14 rounded-full bg-[#E8F1FF] flex items-center justify-center shrink-0">
-              <BarChart2 size={28} className="text-[#0056D2] spin-slow" />
+            <div className="w-14 h-14 rounded-full bg-[var(--accent-bg)] flex items-center justify-center shrink-0">
+              <BarChart2 size={28} className="text-[var(--accent)] spin-slow" />
             </div>
             <div>
-              <p className="font-semibold text-[#1F1F1F] mb-1">
+              <p className="font-semibold text-[var(--text-primary)] mb-1">
                 {state === "transcribing" ? "Transcribing with Whisper..." : "Analyzing with GPT-4o..."}
               </p>
-              <p className="text-sm text-[#636363]">
+              <p className="text-sm text-[var(--text-secondary)]">
                 {state === "transcribing" ? "Converting your speech to text..." : "Scoring pronunciation, fluency, confidence, and more..."}
               </p>
               <div className="flex gap-1 mt-3">
                 {[0,1,2].map(i => (
-                  <div key={i} className="w-2 h-2 rounded-full bg-[#0056D2] animate-bounce" style={{ animationDelay: `${i * 0.15}s` }} />
+                  <div key={i} className="w-2 h-2 rounded-full bg-[var(--accent)] animate-bounce" style={{ animationDelay: `${i * 0.15}s` }} />
                 ))}
               </div>
             </div>
@@ -713,32 +713,32 @@ export default function PracticePage() {
 
         {state === "done" && (
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
-            <div className="w-14 h-14 rounded-full bg-[#E6F7F2] flex items-center justify-center shrink-0">
+            <div className="w-14 h-14 rounded-full bg-[var(--success-bg)] flex items-center justify-center shrink-0">
               <BarChart2 size={28} className="text-[#00B37D]" />
             </div>
             <div className="flex-1">
-              <p className="font-bold text-[#1F1F1F] text-lg mb-1">Analysis Complete!</p>
-              <p className="text-sm text-[#636363] mb-3">Your speech has been scored by AI.</p>
+              <p className="font-bold text-[var(--text-primary)] text-lg mb-1">Analysis Complete!</p>
+              <p className="text-sm text-[var(--text-secondary)] mb-3">Your speech has been scored by AI.</p>
               {transcript && (
-                <div className="bg-[#F5F5F5] rounded-lg p-3 mb-4 overflow-y-auto resize-y"
+                <div className="bg-[var(--bg-secondary)] rounded-lg p-3 mb-4 overflow-y-auto resize-y"
                   style={{ height: "160px", minHeight: "60px" }}>
-                  <p className="text-xs text-[#636363] font-semibold mb-1">Transcript:</p>
-                  <p className="text-xs text-[#1F1F1F] leading-relaxed">{transcript}</p>
+                  <p className="text-xs text-[var(--text-secondary)] font-semibold mb-1">Transcript:</p>
+                  <p className="text-xs text-[var(--text-primary)] leading-relaxed">{transcript}</p>
                 </div>
               )}
               <div className="flex flex-wrap gap-3">
-                <Link href="/dashboard/results" className="bg-[#0056D2] hover:bg-[#003B8E] text-white font-semibold px-5 py-2 rounded text-sm transition-colors">
+                <Link href="/dashboard/results" className="bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white font-semibold px-5 py-2 rounded text-sm transition-colors">
                   View My Results
                 </Link>
                 <button
                   onClick={() => { setState("idle"); setSeconds(0); setTranscript(""); }}
-                  className="border border-[#0056D2] text-[#0056D2] hover:bg-[#E8F1FF] font-semibold px-5 py-2 rounded text-sm transition-colors"
+                  className="border border-[var(--accent)] text-[var(--accent)] hover:bg-[var(--accent-bg)] font-semibold px-5 py-2 rounded text-sm transition-colors"
                 >
                   Practice Again
                 </button>
                 <button
                   onClick={() => window.print()}
-                  className="flex items-center gap-1.5 border border-[#E0E0E0] text-[#636363] hover:bg-[#F5F5F5] font-semibold px-4 py-2 rounded text-sm transition-colors"
+                  className="flex items-center gap-1.5 border border-[var(--border)] text-[var(--text-secondary)] hover:bg-[var(--bg-hover)] font-semibold px-4 py-2 rounded text-sm transition-colors"
                 >
                   <Printer size={14} /> Print
                 </button>

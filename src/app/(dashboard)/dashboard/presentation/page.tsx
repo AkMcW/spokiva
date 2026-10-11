@@ -118,55 +118,55 @@ export default function PresentationPage() {
   return (
     <div className="max-w-5xl mx-auto space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-[#1F1F1F]">Presentation Practice</h1>
-        <p className="text-sm text-[#636363] mt-1">Structure your presentation, then practice with real AI feedback.</p>
+        <h1 className="text-2xl font-bold text-[var(--text-primary)]">Presentation Practice</h1>
+        <p className="text-sm text-[var(--text-secondary)] mt-1">Structure your presentation, then practice with real AI feedback.</p>
       </div>
 
       {error && (
-        <div className="bg-[#FFEBEE] border border-[#FFCDD2] rounded-lg p-3 text-xs text-[#E53935]">{error}</div>
+        <div className="bg-[var(--danger-bg)] border border-[var(--danger-border)] rounded-lg p-3 text-xs text-[#E53935]">{error}</div>
       )}
 
       {stage === "setup" && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="bg-white border border-[#E0E0E0] rounded-lg p-6 space-y-5">
-            <h2 className="font-bold text-[#1F1F1F]">Configure your presentation</h2>
+          <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-6 space-y-5">
+            <h2 className="font-bold text-[var(--text-primary)]">Configure your presentation</h2>
             <div>
-              <label className="block text-sm font-semibold text-[#1F1F1F] mb-1.5">Presentation topic</label>
+              <label className="block text-sm font-semibold text-[var(--text-primary)] mb-1.5">Presentation topic</label>
               <input
                 type="text"
                 value={topic}
                 onChange={(e) => setTopic(e.target.value)}
                 placeholder="e.g. Q3 sales results and growth strategy"
-                className="w-full px-3 py-2.5 border border-[#E0E0E0] rounded text-sm text-[#1F1F1F] placeholder-[#9E9E9E] focus:outline-none focus:border-[#0056D2] focus:ring-1 focus:ring-[#0056D2]"
+                className="w-full px-3 py-2.5 border border-[var(--border)] rounded text-sm text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--accent)] focus:ring-1 focus:ring-[var(--accent)]"
               />
             </div>
             <div>
-              <label className="block text-sm font-semibold text-[#1F1F1F] mb-1.5">Audience type</label>
-              <select value={audience} onChange={(e) => setAudience(e.target.value)} className="w-full px-3 py-2.5 border border-[#E0E0E0] rounded text-sm text-[#1F1F1F] focus:outline-none focus:border-[#0056D2] focus:ring-1 focus:ring-[#0056D2]">
+              <label className="block text-sm font-semibold text-[var(--text-primary)] mb-1.5">Audience type</label>
+              <select value={audience} onChange={(e) => setAudience(e.target.value)} className="w-full px-3 py-2.5 border border-[var(--border)] rounded text-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent)] focus:ring-1 focus:ring-[var(--accent)]">
                 {audienceTypes.map((a) => <option key={a}>{a}</option>)}
               </select>
             </div>
             <div>
-              <label className="block text-sm font-semibold text-[#1F1F1F] mb-1.5">Target duration</label>
-              <select value={duration} onChange={(e) => setDuration(e.target.value)} className="w-full px-3 py-2.5 border border-[#E0E0E0] rounded text-sm text-[#1F1F1F] focus:outline-none focus:border-[#0056D2] focus:ring-1 focus:ring-[#0056D2]">
+              <label className="block text-sm font-semibold text-[var(--text-primary)] mb-1.5">Target duration</label>
+              <select value={duration} onChange={(e) => setDuration(e.target.value)} className="w-full px-3 py-2.5 border border-[var(--border)] rounded text-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent)] focus:ring-1 focus:ring-[var(--accent)]">
                 {durations.map((d) => <option key={d}>{d}</option>)}
               </select>
             </div>
             <button
               onClick={() => setStage("practice")}
-              className="w-full bg-[#0056D2] hover:bg-[#003B8E] text-white font-semibold py-2.5 rounded transition-colors flex items-center justify-center gap-2 text-sm"
+              className="w-full bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white font-semibold py-2.5 rounded transition-colors flex items-center justify-center gap-2 text-sm"
             >
               Generate Outline & Practice <ChevronRight size={16} />
             </button>
           </div>
 
-          <div className="bg-[#F5F5F5] border border-[#E0E0E0] rounded-lg p-6">
-            <p className="text-sm font-bold text-[#636363] mb-4 uppercase tracking-wider">Structure Preview</p>
+          <div className="bg-[var(--bg-secondary)] border border-[var(--border)] rounded-lg p-6">
+            <p className="text-sm font-bold text-[var(--text-secondary)] mb-4 uppercase tracking-wider">Structure Preview</p>
             <div className="space-y-3">
               {outline.map(({ section }, i) => (
                 <div key={section} className="flex items-center gap-3">
-                  <div className="w-6 h-6 rounded-full bg-[#E0E0E0] text-[#636363] flex items-center justify-center text-xs font-bold shrink-0">{i + 1}</div>
-                  <span className="text-sm text-[#636363]">{section}</span>
+                  <div className="w-6 h-6 rounded-full bg-[var(--border)] text-[var(--text-secondary)] flex items-center justify-center text-xs font-bold shrink-0">{i + 1}</div>
+                  <span className="text-sm text-[var(--text-secondary)]">{section}</span>
                 </div>
               ))}
             </div>
@@ -177,27 +177,27 @@ export default function PresentationPage() {
       {stage === "practice" && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 space-y-3">
-            <h2 className="font-bold text-[#1F1F1F]">Structure Outline</h2>
+            <h2 className="font-bold text-[var(--text-primary)]">Structure Outline</h2>
             {outline.map(({ section, content }, i) => (
-              <div key={section} className="bg-white border border-[#E0E0E0] rounded-lg p-4 flex gap-4">
-                <div className="w-8 h-8 rounded-full bg-[#0056D2] text-white flex items-center justify-center text-sm font-bold shrink-0">{i + 1}</div>
+              <div key={section} className="bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-4 flex gap-4">
+                <div className="w-8 h-8 rounded-full bg-[var(--accent)] text-white flex items-center justify-center text-sm font-bold shrink-0">{i + 1}</div>
                 <div>
-                  <p className="font-semibold text-[#1F1F1F] text-sm mb-1">{section}</p>
-                  <p className="text-xs text-[#636363] leading-relaxed">{content}</p>
+                  <p className="font-semibold text-[var(--text-primary)] text-sm mb-1">{section}</p>
+                  <p className="text-xs text-[var(--text-secondary)] leading-relaxed">{content}</p>
                 </div>
               </div>
             ))}
           </div>
 
-          <div className="bg-white border border-[#E0E0E0] rounded-lg p-6 flex flex-col items-center justify-center">
-            <p className="text-xs font-bold text-[#636363] uppercase tracking-wider mb-4">Recording</p>
+          <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-6 flex flex-col items-center justify-center">
+            <p className="text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-4">Recording</p>
             {!recording ? (
               <div className="text-center">
-                <button onClick={startRecording} className="w-20 h-20 rounded-full bg-[#0056D2] hover:bg-[#003B8E] text-white flex items-center justify-center mx-auto mb-3 transition-colors pulse-ring">
+                <button onClick={startRecording} className="w-20 h-20 rounded-full bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white flex items-center justify-center mx-auto mb-3 transition-colors pulse-ring">
                   <Mic size={30} />
                 </button>
-                <p className="text-sm text-[#636363]">Target: {duration}</p>
-                <p className="text-xs text-[#9E9E9E]">Audience: {audience}</p>
+                <p className="text-sm text-[var(--text-secondary)]">Target: {duration}</p>
+                <p className="text-xs text-[var(--text-muted)]">Audience: {audience}</p>
               </div>
             ) : (
               <div className="text-center">
@@ -205,10 +205,10 @@ export default function PresentationPage() {
                   <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
                   <span className="text-xs font-bold text-red-500">Recording</span>
                 </div>
-                <p className="text-3xl font-bold text-[#1F1F1F] mb-4 font-mono">{fmtTime(seconds)}</p>
+                <p className="text-3xl font-bold text-[var(--text-primary)] mb-4 font-mono">{fmtTime(seconds)}</p>
                 <div className="flex items-end gap-1 justify-center h-8 mb-4">
                   {Array.from({ length: 8 }).map((_, i) => (
-                    <div key={i} className="wave-bar w-1.5 bg-[#0056D2] rounded-full" style={{ height: "20px" }} />
+                    <div key={i} className="wave-bar w-1.5 bg-[var(--accent)] rounded-full" style={{ height: "20px" }} />
                   ))}
                 </div>
                 <button onClick={stopRecording} className="flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white font-semibold px-5 py-2 rounded transition-colors">
@@ -221,13 +221,13 @@ export default function PresentationPage() {
       )}
 
       {stage === "analyzing" && (
-        <div className="bg-white border border-[#E0E0E0] rounded-lg p-10 text-center">
-          <BarChart2 size={40} className="text-[#0056D2] mx-auto mb-4 spin-slow" />
-          <p className="font-semibold text-[#1F1F1F] mb-1">Analyzing your presentation...</p>
-          <p className="text-sm text-[#636363]">Scoring structure, delivery, clarity, and pace</p>
+        <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-10 text-center">
+          <BarChart2 size={40} className="text-[var(--accent)] mx-auto mb-4 spin-slow" />
+          <p className="font-semibold text-[var(--text-primary)] mb-1">Analyzing your presentation...</p>
+          <p className="text-sm text-[var(--text-secondary)]">Scoring structure, delivery, clarity, and pace</p>
           <div className="flex justify-center gap-1 mt-4">
             {[0, 1, 2].map((i) => (
-              <div key={i} className="w-2 h-2 rounded-full bg-[#0056D2] animate-bounce" style={{ animationDelay: `${i * 0.15}s` }} />
+              <div key={i} className="w-2 h-2 rounded-full bg-[var(--accent)] animate-bounce" style={{ animationDelay: `${i * 0.15}s` }} />
             ))}
           </div>
         </div>
@@ -235,10 +235,10 @@ export default function PresentationPage() {
 
       {stage === "done" && scores && (
         <div className="space-y-4">
-          <div className="bg-white border border-[#E0E0E0] rounded-lg p-6">
+          <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-6">
             <div className="flex items-center justify-between mb-5">
-              <h2 className="font-bold text-[#1F1F1F]">Presentation Scores</h2>
-              <span className="text-2xl font-bold text-[#0056D2]">{scores.overall}/100</span>
+              <h2 className="font-bold text-[var(--text-primary)]">Presentation Scores</h2>
+              <span className="text-2xl font-bold text-[var(--accent)]">{scores.overall}/100</span>
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
               {[
@@ -247,17 +247,17 @@ export default function PresentationPage() {
                 { label: "Clarity", score: scores.clarity },
                 { label: "Pace", score: scores.pace },
               ].map(({ label, score }) => (
-                <div key={label} className="text-center bg-[#F5F5F5] rounded-lg p-4">
-                  <p className="text-2xl font-bold text-[#0056D2]">{score}</p>
-                  <p className="text-xs text-[#636363] mt-1">{label}</p>
+                <div key={label} className="text-center bg-[var(--bg-secondary)] rounded-lg p-4">
+                  <p className="text-2xl font-bold text-[var(--accent)]">{score}</p>
+                  <p className="text-xs text-[var(--text-secondary)] mt-1">{label}</p>
                 </div>
               ))}
             </div>
 
             {scores.feedback && (
-              <div className="bg-[#E8F1FF] rounded-lg p-4 mb-4">
-                <p className="text-sm font-semibold text-[#0056D2] mb-1">AI Feedback</p>
-                <p className="text-xs text-[#636363] leading-relaxed">{scores.feedback}</p>
+              <div className="bg-[var(--accent-bg)] rounded-lg p-4 mb-4">
+                <p className="text-sm font-semibold text-[var(--accent)] mb-1">AI Feedback</p>
+                <p className="text-xs text-[var(--text-secondary)] leading-relaxed">{scores.feedback}</p>
               </div>
             )}
 
@@ -265,7 +265,7 @@ export default function PresentationPage() {
               <div className="mb-3">
                 <p className="text-xs font-bold text-[#00B37D] uppercase tracking-wider mb-2">Strengths</p>
                 <ul className="space-y-1">
-                  {scores.strengths.map((s, i) => <li key={i} className="text-xs text-[#636363] flex items-start gap-1.5"><span className="text-[#00B37D] font-bold">✓</span>{s}</li>)}
+                  {scores.strengths.map((s, i) => <li key={i} className="text-xs text-[var(--text-secondary)] flex items-start gap-1.5"><span className="text-[#00B37D] font-bold">✓</span>{s}</li>)}
                 </ul>
               </div>
             )}
@@ -274,16 +274,16 @@ export default function PresentationPage() {
               <div className="mb-4">
                 <p className="text-xs font-bold text-[#F5A623] uppercase tracking-wider mb-2">Improvements</p>
                 <ul className="space-y-1">
-                  {scores.improvements.map((s, i) => <li key={i} className="text-xs text-[#636363] flex items-start gap-1.5"><span className="text-[#F5A623] font-bold">›</span>{s}</li>)}
+                  {scores.improvements.map((s, i) => <li key={i} className="text-xs text-[var(--text-secondary)] flex items-start gap-1.5"><span className="text-[#F5A623] font-bold">›</span>{s}</li>)}
                 </ul>
               </div>
             )}
 
             <div className="flex gap-3">
-              <button onClick={() => setStage("practice")} className="bg-[#0056D2] hover:bg-[#003B8E] text-white font-semibold px-5 py-2 rounded text-sm transition-colors">
+              <button onClick={() => setStage("practice")} className="bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white font-semibold px-5 py-2 rounded text-sm transition-colors">
                 Practice Again
               </button>
-              <button onClick={() => { setStage("setup"); setScores(null); }} className="border border-[#E0E0E0] text-[#636363] hover:bg-[#F5F5F5] font-semibold px-5 py-2 rounded text-sm transition-colors">
+              <button onClick={() => { setStage("setup"); setScores(null); }} className="border border-[var(--border)] text-[var(--text-secondary)] hover:bg-[var(--bg-hover)] font-semibold px-5 py-2 rounded text-sm transition-colors">
                 New Presentation
               </button>
             </div>
