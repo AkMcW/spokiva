@@ -1,5 +1,7 @@
 "use client";
 import { useState, useRef } from "react";
+import DeliveryMetrics from "@/components/DeliveryMetrics";
+import type { SpeechMetrics } from "@/lib/speechMetrics";
 import {
   Mic, Square, ChevronRight, ChevronLeft, BarChart2,
   MessageSquare, Clock, Target, CheckCircle, AlertCircle,
@@ -82,15 +84,17 @@ interface Setup {
 interface PitchScores {
   clarity: number;
   structure: number;
-  confidence: number;
-  timing: number;
-  persuasiveness: number;
-  ctaStrength: number;
-  overall: number;
+  confidence: number | null;
+  timing: number | null;
+  persuasiveness: number | null;
+  ctaStrength: number | null;
+  overall: number | null;
 }
 
 interface PitchResult {
   scores: PitchScores;
+  measuredKeys?: string[];
+  metrics?: SpeechMetrics | null;
   fillerWords: { count: number; words: string[] };
   wpm: number;
   strengths: string[];
@@ -113,13 +117,15 @@ function fmt(s: number) {
   return `${m}:${sec.toString().padStart(2, "0")}`;
 }
 
-function scoreColor(score: number) {
+function scoreColor(score: number | null) {
+  if (score == null) return "#8A8F98";
   if (score >= 80) return "#00B37D";
   if (score >= 60) return "#F5A623";
   return "#E53935";
 }
 
-function scoreLabel(score: number) {
+function scoreLabel(score: number | null) {
+  if (score == null) return "Not enough speech to score";
   if (score >= 85) return "Excellent";
   if (score >= 70) return "Good";
   if (score >= 55) return "Developing";
@@ -128,17 +134,17 @@ function scoreLabel(score: number) {
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
 
-function ScoreBar({ label, score, color }: { label: string; score: number; color: string }) {
+function ScoreBar({ label, score, color }: { label: string; score: number | null; color: string }) {
   return (
     <div>
       <div className="flex justify-between items-center mb-1">
         <span className="text-xs font-medium" style={{ color: "var(--text-secondary)" }}>{label}</span>
-        <span className="text-xs font-bold" style={{ color }}>{score}/100</span>
+        <span className="text-xs font-bold" style={{ color }}>{score ?? "—"}/100</span>
       </div>
       <div className="h-2 rounded-full" style={{ background: "var(--border)" }}>
         <div
           className="h-2 rounded-full transition-all duration-700"
-          style={{ width: `${score}%`, background: color }}
+          style={{ width: `${score ?? 0}%`, background: color }}
         />
       </div>
     </div>
@@ -219,20 +225,21 @@ export default function PitchCoachPage() {
       if (!txRes.ok || !txData.transcript) throw new Error(txData.error ?? "Transcription failed");
       setTranscript(txData.transcript);
       setFlow("analyzing");
-      await analyzeTranscript(txData.transcript);
+      await analyzeTranscript(txData.transcript, txData.metrics ?? null);
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : "Something went wrong");
       setFlow("ready");
     }
   }
 
-  async function analyzeTranscript(tx: string) {
+  async function analyzeTranscript(tx: string, metrics: unknown = null) {
     try {
       const res = await fetch("/api/pitch/analyze", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           transcript: tx,
+          metrics,
           pitchType: setup.pitchTypeLabel,
           audience: setup.audience,
           ask: setup.ask,
@@ -714,7 +721,7 @@ Give 2-3 sentences of honest, specific feedback. Start with what works, then wha
           <div className="rounded-xl p-6 text-center" style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
             <div className="w-28 h-28 rounded-full flex flex-col items-center justify-center mx-auto mb-3"
               style={{ border: `6px solid ${scoreColor(result.scores.overall)}`, background: "var(--bg-secondary)" }}>
-              <span className="text-3xl font-black" style={{ color: scoreColor(result.scores.overall) }}>{result.scores.overall}</span>
+              <span className="text-3xl font-black" style={{ color: scoreColor(result.scores.overall) }}>{result.scores.overall ?? "—"}</span>
               <span className="text-[10px] font-semibold" style={{ color: "var(--text-secondary)" }}>/100</span>
             </div>
             <p className="font-bold text-lg" style={{ color: "var(--text-primary)" }}>
@@ -743,9 +750,11 @@ Give 2-3 sentences of honest, specific feedback. Start with what works, then wha
           <div className="rounded-xl p-5 space-y-3" style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
             <p className="text-xs font-bold uppercase tracking-wider mb-3" style={{ color: "var(--text-secondary)" }}>Score Breakdown</p>
             {Object.entries(result.scores).filter(([k]) => k !== "overall").map(([key, val]) => (
-              <ScoreBar key={key} label={SCORE_LABELS[key] ?? key} score={val as number} color={SCORE_COLORS[key] ?? "var(--accent)"} />
+              <ScoreBar key={key} label={`${SCORE_LABELS[key] ?? key}${result.measuredKeys?.includes(key) ? " · measured" : ""}`} score={val} color={SCORE_COLORS[key] ?? "var(--accent)"} />
             ))}
           </div>
+
+          <DeliveryMetrics metrics={result.metrics} />
 
           {/* Strengths & Improvements */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

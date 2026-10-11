@@ -249,3 +249,35 @@ export function compareToScript(script: string, transcript: string): ScriptCompa
     addedWords: uniq(added),
   };
 }
+
+// ── Shared helpers for analyzers ───────────────────────────────────────────────
+
+// Metrics come back from the browser, so validate the shape before trusting it.
+export function parseMetrics(raw: unknown): SpeechMetrics | null {
+  if (!raw || typeof raw !== "object") return null;
+  const m = raw as Partial<SpeechMetrics>;
+  if (typeof m.wordCount !== "number" || typeof m.fillerCount !== "number") return null;
+  return {
+    durationSec: num(m.durationSec), speakingSec: num(m.speakingSec), wordCount: m.wordCount, wpm: num(m.wpm),
+    pauseCount: num(m.pauseCount), longPauseCount: num(m.longPauseCount), longestPauseSec: num(m.longestPauseSec),
+    pauseRatio: num(m.pauseRatio), fillerCount: m.fillerCount,
+    fillerWords: Array.isArray(m.fillerWords) ? m.fillerWords.map(String).slice(0, 20) : [],
+    repetitionCount: num(m.repetitionCount) ?? 0, clarity: num(m.clarity),
+    unclearWords: Array.isArray(m.unclearWords) ? m.unclearWords.map(String).slice(0, 10) : [],
+    hasTiming: !!m.hasTiming,
+  };
+}
+function num(v: unknown): number | null { return typeof v === "number" && Number.isFinite(v) ? v : null; }
+
+// Facts block for an AI prompt, so feedback about pace/pauses/fillers/clarity
+// matches what was actually measured from the audio.
+export function deliveryFactsPrompt(metrics: SpeechMetrics | null): string {
+  if (!metrics) return "";
+  return `MEASURED DELIVERY (from the audio — treat as facts; base any judgement of pace, pauses, hesitation and clarity on them):
+- Words: ${metrics.wordCount}; speaking time: ${metrics.speakingSec ?? metrics.durationSec ?? "unknown"} s; pace: ${metrics.wpm ?? "unknown"} wpm
+- Pauses ≥0.4 s: ${metrics.pauseCount ?? "unknown"}; long pauses ≥1.2 s: ${metrics.longPauseCount ?? "unknown"}; longest: ${metrics.longestPauseSec ?? "unknown"} s
+- Hesitation fillers: ${metrics.fillerCount}${metrics.fillerWords.length ? ` (${metrics.fillerWords.join(", ")})` : ""}; stutter repeats: ${metrics.repetitionCount}
+- Recognition clarity: ${metrics.clarity != null ? Math.round(metrics.clarity * 100) + "%" : "unknown"}${metrics.unclearWords.length ? `; words the recogniser found hard to understand (likely mispronounced): ${metrics.unclearWords.join(", ")}` : ""}
+
+`;
+}

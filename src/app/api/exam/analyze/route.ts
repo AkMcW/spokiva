@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import OpenAI from "openai";
 import { CHAT_MODEL, budget } from "@/lib/ai";
+import { parseMetrics, deliveryFactsPrompt } from "@/lib/speechMetrics";
 
 // Per-exam scoring guidance so the model returns a score in the test's
 // native scale plus the criteria that exam actually grades on.
@@ -49,7 +50,8 @@ export async function POST(req: NextRequest) {
   const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
   try {
-    const { transcript, examId, examName, taskName, taskType, prompt } = await req.json();
+    const { transcript, examId, examName, taskName, taskType, prompt, metrics: rawMetrics } = await req.json();
+    const metrics = parseMetrics(rawMetrics);
     if (!transcript?.trim()) {
       return NextResponse.json({ error: "No speech detected. Please record again and speak clearly." }, { status: 400 });
     }
@@ -65,7 +67,7 @@ EXAM: ${examName}
 TASK: ${taskName} (${taskType})
 ${isRepeat ? `The candidate HEARD this sentence once and had to REPEAT it exactly (from memory):\n"""${prompt}"""\nScore primarily on how completely and accurately they reproduced it — every correct word in the right order matters. Also judge fluency and pronunciation.` : isReadAloud ? `The candidate was asked to READ THIS TEXT ALOUD:\n"""${prompt}"""\nJudge accuracy to the source, fluency, and pronunciation. Penalize skipped/changed words.` : `The candidate was responding to this prompt:\n"""${prompt}"""`}
 
-SCORING SCALE: ${rubric.scale}
+${deliveryFactsPrompt(metrics)}${metrics ? "Ground fluency, delivery and pronunciation criteria in these measurements; cite them in your comments.\n\n" : ""}SCORING SCALE: ${rubric.scale}
 SCORING GUIDE: ${rubric.guide}
 
 Return ONLY valid JSON:
@@ -95,7 +97,7 @@ Be honest and specific. Cite real words/phrases from the transcript. Do not infl
     });
 
     const data = JSON.parse(completion.choices[0]?.message?.content ?? "{}");
-    return NextResponse.json(data);
+    return NextResponse.json({ ...data, metrics });
   } catch (err) {
     console.error("Exam analyze error:", err);
     return NextResponse.json({ error: "Analysis failed. Please try again." }, { status: 500 });

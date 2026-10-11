@@ -1,5 +1,7 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
+import DeliveryMetrics from "@/components/DeliveryMetrics";
+import type { SpeechMetrics } from "@/lib/speechMetrics";
 import {
   Mic, Square, Loader2, GraduationCap, ArrowLeft, RotateCcw, Sparkles,
   CheckCircle, AlertCircle, TrendingUp, BookOpen, Volume2, Music, Zap,
@@ -152,6 +154,8 @@ interface C2Result {
   targetLevel: string;
   c2Readiness: number;
   scores: Record<string, number>;
+  measuredKeys?: string[];
+  metrics?: SpeechMetrics | null;
   fillerWords: { count: number; words: string[] };
   wpm: number;
   nativeRewrite: { original: string; c2Version: string; whyBetter: string[] };
@@ -417,19 +421,19 @@ export default function C2FluencyLabPage() {
       if (!txRes.ok || !txData.transcript?.trim()) throw new Error(txData.error ?? "Transcription failed");
       setTranscript(txData.transcript);
       setFlow("analyzing");
-      await analyze(txData.transcript);
+      await analyze(txData.transcript, txData.metrics ?? null);
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : "Something went wrong");
       setFlow("ready");
     }
   }
 
-  async function analyze(tx: string) {
+  async function analyze(tx: string, metrics: unknown) {
     try {
       const res = await fetch("/api/c2/analyze", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ transcript: tx, scenario: scenario?.label, prompt, challenge: challenge?.instruction }),
+        body: JSON.stringify({ transcript: tx, metrics, scenario: scenario?.label, prompt, challenge: challenge?.instruction }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Analysis failed");
@@ -1023,10 +1027,12 @@ export default function C2FluencyLabPage() {
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3">
             {SCORE_META.map((m) => (
-              <ScoreBar key={m.key} label={m.label} score={r.scores?.[m.key] ?? 0} color={m.color} />
+              <ScoreBar key={m.key} label={r.measuredKeys?.includes(m.key) ? `${m.label} · measured` : m.label} score={r.scores?.[m.key] ?? 0} color={m.color} />
             ))}
           </div>
         </Card>
+
+        <DeliveryMetrics metrics={r.metrics} />
 
         {/* Native-like rewrite */}
         {r.nativeRewrite && (

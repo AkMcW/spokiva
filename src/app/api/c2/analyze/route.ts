@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import OpenAI from "openai";
 import { CHAT_MODEL, budget } from "@/lib/ai";
+import { parseMetrics, scoreFromMetrics, deliveryFactsPrompt } from "@/lib/speechMetrics";
 
 export async function POST(req: NextRequest) {
   if (!process.env.OPENAI_API_KEY) {
@@ -9,7 +10,9 @@ export async function POST(req: NextRequest) {
   const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
   try {
-    const { transcript, scenario, prompt, challenge } = await req.json();
+    const { transcript, scenario, prompt, challenge, metrics: rawMetrics } = await req.json();
+    const metrics = parseMetrics(rawMetrics);
+    const measured = scoreFromMetrics(metrics);
     if (!transcript?.trim()) {
       return NextResponse.json({ error: "No speech detected. Please record again and speak clearly." }, { status: 400 });
     }
@@ -20,7 +23,7 @@ Be honest and demanding but constructive. C2 is rare: reserve 90+ for genuinely 
 
 Speaking scenario: ${scenario || "general advanced speaking"}.
 ${prompt ? `The speaker was responding to: "${prompt}".` : ""}
-${challenge ? `This was a focused CHALLENGE drill: ${challenge}. Weight your scoring and feedback heavily toward how well the speaker met this specific challenge, and reference it explicitly in "keepsBelowC2" and "didWell".` : ""}
+${deliveryFactsPrompt(metrics)}${challenge ? `This was a focused CHALLENGE drill: ${challenge}. Weight your scoring and feedback heavily toward how well the speaker met this specific challenge, and reference it explicitly in "keepsBelowC2" and "didWell".` : ""}
 
 Return ONLY valid JSON with this exact structure:
 {
@@ -79,7 +82,20 @@ Rules:
     });
 
     const data = JSON.parse(completion.choices[0]?.message?.content ?? "{}");
-    return NextResponse.json(data);
+    // Dimensions that can be measured from the audio replace the model's estimate.
+    const scores = { ...(data.scores ?? {}) };
+    const measuredKeys: string[] = [];
+    const put = (key: string, v: number | null) => { if (v != null) { scores[key] = v; measuredKeys.push(key); } };
+    put("fluency", measured.fluency);
+    put("confidence", measured.confidence);
+    put("pronunciationClarity", measured.pronunciation);
+    return NextResponse.json({
+      ...data,
+      scores,
+      measuredKeys,
+      metrics,
+      ...(metrics ? { fillerWords: { count: metrics.fillerCount, words: metrics.fillerWords }, wpm: metrics.wpm } : {}),
+    });
   } catch (err) {
     console.error("C2 analyze error:", err);
     return NextResponse.json({ error: "Analysis failed. Please try again." }, { status: 500 });

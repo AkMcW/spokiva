@@ -3,7 +3,7 @@ import OpenAI from "openai";
 import { CHAT_MODEL, budget } from "@/lib/ai";
 import {
   scoreFromMetrics, paceScore, overallScore, toBand, toScore, compareToScript,
-  tokenizeWords, MIN_WORDS, type SpeechMetrics,
+  tokenizeWords, MIN_WORDS, deliveryFactsPrompt, parseMetrics, type SpeechMetrics,
 } from "@/lib/speechMetrics";
 
 // Scoring model:
@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
   const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
   try {
     const { transcript, script, scenario, metrics: rawMetrics, durationSeconds } = await req.json();
-    const metrics: SpeechMetrics | null = rawMetrics && typeof rawMetrics === "object" ? rawMetrics : null;
+    const metrics: SpeechMetrics | null = parseMetrics(rawMetrics);
 
     if (!transcript || !transcript.trim()) {
       return NextResponse.json({ error: "No speech detected. Please check your microphone and try again." }, { status: 400 });
@@ -38,13 +38,7 @@ export async function POST(req: NextRequest) {
     const wpm = metrics?.wpm ?? (dur > 0 && wordCount ? Math.round(wordCount / (dur / 60)) : null);
     const scriptComparison = hasScript ? compareToScript(script, transcript) : null;
 
-    const deliveryFacts = metrics ? `MEASURED DELIVERY (from the audio — treat as facts, do not re-score these):
-- Words: ${metrics.wordCount}; speaking time: ${metrics.speakingSec ?? metrics.durationSec ?? "unknown"} s; pace: ${metrics.wpm ?? "unknown"} wpm
-- Pauses ≥0.4 s: ${metrics.pauseCount ?? "unknown"}; long pauses ≥1.2 s: ${metrics.longPauseCount ?? "unknown"}; longest: ${metrics.longestPauseSec ?? "unknown"} s
-- Hesitation fillers: ${metrics.fillerCount}${metrics.fillerWords.length ? ` (${metrics.fillerWords.join(", ")})` : ""}; stutter repeats: ${metrics.repetitionCount}
-- Recognition clarity: ${metrics.clarity != null ? Math.round(metrics.clarity * 100) + "%" : "unknown"}${metrics.unclearWords.length ? `; words the recogniser found hard to understand (likely mispronounced): ${metrics.unclearWords.join(", ")}` : ""}
-
-` : "";
+    const deliveryFacts = deliveryFactsPrompt(metrics);
 
     const prompt = `You are a highly experienced native English speech coach and language examiner. Your job is to evaluate speaking SKILL — not the quality of the content or script. Be direct, honest, and specific like a professional accent coach giving one-on-one feedback. Do not soften criticism. The user needs frank, actionable feedback to improve.
 

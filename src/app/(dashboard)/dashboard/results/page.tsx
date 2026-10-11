@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import ScoreRing from "@/components/ScoreRing";
+import DeliveryMetrics from "@/components/DeliveryMetrics";
 import { toScore, type SpeechMetrics } from "@/lib/speechMetrics";
 import {
   CheckCircle, Flag, ArrowRight, RotateCcw, Mic, Share2,
@@ -336,31 +337,7 @@ export default function ResultsPage() {
       )}
 
       {/* Delivery metrics */}
-      {analysis.metrics && (
-        <div className="rounded-lg p-5" style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
-          <h2 className="font-bold mb-4" style={{ color: "var(--text-primary)" }}>Delivery Metrics</h2>
-          <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
-            {[
-              { label: "Pace", value: analysis.metrics.wpm != null ? `${analysis.metrics.wpm} wpm` : "—", hint: "Aim for 130–160" },
-              { label: "Pauses", value: analysis.metrics.pauseCount ?? "—", hint: analysis.metrics.longPauseCount != null ? `${analysis.metrics.longPauseCount} over 1.2 s` : "" },
-              { label: "Longest pause", value: analysis.metrics.longestPauseSec != null ? `${analysis.metrics.longestPauseSec} s` : "—", hint: "" },
-              { label: "Fillers", value: analysis.metrics.fillerCount, hint: analysis.metrics.repetitionCount ? `${analysis.metrics.repetitionCount} repeat${analysis.metrics.repetitionCount !== 1 ? "s" : ""}` : "" },
-              { label: "Clarity", value: analysis.metrics.clarity != null ? `${Math.round(analysis.metrics.clarity * 100)}%` : "—", hint: "Words recognised clearly" },
-            ].map(({ label, value, hint }) => (
-              <div key={label} className="rounded-lg p-3 text-center" style={{ background: "var(--bg-secondary)" }}>
-                <p className="text-lg font-bold" style={{ color: "var(--text-primary)" }}>{value}</p>
-                <p className="text-xs font-semibold" style={{ color: "var(--text-secondary)" }}>{label}</p>
-                {hint && <p className="text-[10px] mt-0.5" style={{ color: "var(--text-muted)" }}>{hint}</p>}
-              </div>
-            ))}
-          </div>
-          {analysis.metrics.unclearWords.length > 0 && (
-            <p className="text-xs mt-4" style={{ color: "var(--text-secondary)" }}>
-              <strong>Hard to recognise:</strong> {analysis.metrics.unclearWords.join(", ")} — practise these words slowly and clearly.
-            </p>
-          )}
-        </div>
-      )}
+      <DeliveryMetrics metrics={analysis.metrics} />
 
       {/* Script accuracy */}
       {sc && (

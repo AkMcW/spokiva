@@ -1,6 +1,8 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
 import { EXAM_TRACKS, ExamTrack, ExamTask } from "@/data/examTracks";
+import DeliveryMetrics from "@/components/DeliveryMetrics";
+import type { SpeechMetrics } from "@/lib/speechMetrics";
 import {
   Mic, Square, Loader2, ClipboardCheck, ArrowLeft, RotateCcw, Clock,
   CheckCircle, AlertCircle, Lightbulb, Printer, Sparkles, BookOpen, Pause, Play, Volume2,
@@ -27,6 +29,7 @@ interface ExamResult {
   improvements: string[];
   modelAnswer: string;
   examinerTip: string;
+  metrics?: SpeechMetrics | null;
 }
 
 function fmt(s: number) {
@@ -366,6 +369,7 @@ export default function ExamSpeakingPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           transcript: txData.transcript,
+          metrics: txData.metrics ?? null,
           examId: track?.id, examName: track?.name,
           taskName: task?.name, taskType: task?.type, prompt,
         }),
@@ -721,6 +725,8 @@ export default function ExamSpeakingPage() {
             </div>
           </Card>
         )}
+
+        <DeliveryMetrics metrics={r.metrics} />
 
         {/* Strengths / improvements */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">

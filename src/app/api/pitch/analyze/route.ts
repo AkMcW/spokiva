@@ -1,13 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import OpenAI from "openai";
 import { CHAT_MODEL, budget } from "@/lib/ai";
+import { parseMetrics, scoreFromMetrics, deliveryFactsPrompt, toScore } from "@/lib/speechMetrics";
 
 export async function POST(req: NextRequest) {
   if (!process.env.OPENAI_API_KEY) {
     return NextResponse.json({ error: "OPENAI_API_KEY not configured" }, { status: 500 });
   }
   try {
-    const { transcript, pitchType, audience, ask, mode } = await req.json();
+    const { transcript, pitchType, audience, ask, mode, metrics: rawMetrics } = await req.json();
+    const metrics = parseMetrics(rawMetrics);
+    const measured = scoreFromMetrics(metrics);
     if (!transcript?.trim()) return NextResponse.json({ error: "No transcript provided" }, { status: 400 });
 
     const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
@@ -21,6 +24,7 @@ export async function POST(req: NextRequest) {
     const completion = await openai.chat.completions.create({
       model: CHAT_MODEL,
       response_format: { type: "json_object" },
+      max_completion_tokens: budget(1500),
       messages: [
         {
           role: "system",
@@ -28,6 +32,7 @@ export async function POST(req: NextRequest) {
 The speaker's main ask: "${ask || "not specified"}".
 Coaching mode: ${mode || "normal"}. ${modeInstructions}
 
+${deliveryFactsPrompt(metrics)}
 Analyze the pitch transcript and return JSON with this exact structure:
 {
   "scores": {
@@ -56,7 +61,27 @@ Analyze the pitch transcript and return JSON with this exact structure:
     });
 
     const data = JSON.parse(completion.choices[0]?.message?.content ?? "{}");
-    return NextResponse.json(data);
+    // confidence and timing are measured from the audio when possible; the rest is
+    // the coach's judgement. Overall is the average of the six dimensions.
+    const ai = data.scores ?? {};
+    const scores: Record<string, number | null> = {
+      clarity: toScore(ai.clarity),
+      structure: toScore(ai.structure),
+      confidence: measured.confidence ?? toScore(ai.confidence),
+      timing: measured.pace ?? toScore(ai.timing),
+      persuasiveness: toScore(ai.persuasiveness),
+      ctaStrength: toScore(ai.ctaStrength),
+    };
+    const vals = Object.values(scores).filter((v): v is number => v != null);
+    const overall = vals.length ? Math.round(vals.reduce((a, b) => a + b, 0) / vals.length) : null;
+    const measuredKeys = [measured.confidence != null && "confidence", measured.pace != null && "timing"].filter(Boolean);
+    return NextResponse.json({
+      ...data,
+      scores: { ...scores, overall },
+      measuredKeys,
+      metrics,
+      ...(metrics ? { fillerWords: { count: metrics.fillerCount, words: metrics.fillerWords }, wpm: metrics.wpm ?? data.wpm } : {}),
+    });
   } catch (err) {
     console.error("Pitch analyze error:", err);
     return NextResponse.json({ error: "Analysis failed" }, { status: 500 });
