@@ -1,6 +1,7 @@
-import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Link from "next/link";
+import type { Metadata, Viewport } from "next";
+import LandingHero from "@/components/landing/LandingHero";
 import { Mic2, BarChart2, FileText, Users, BookOpen, Briefcase, CheckCircle, ArrowRight, Star } from "lucide-react";
 
 const features = [
@@ -36,36 +37,22 @@ const useCasePills = [
   "Executive Updates", "Public Speaking", "Sales Pitches", "Team Meetings",
 ];
 
+export const metadata: Metadata = {
+  title: "Spokiva — Speak English with confidence",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+  themeColor: "#020816",
+};
+
 export default function HomePage() {
   return (
     <div className="flex flex-col min-h-screen">
-      <Navbar />
-      <main className="flex-1">
-        {/* Hero */}
-        <section className="bg-[#E8F1FF] py-20 px-4">
-          <div className="max-w-5xl mx-auto text-center">
-            <span className="inline-block bg-white border border-[#0056D2] text-[#0056D2] text-xs font-semibold px-3 py-1 rounded-full mb-6">
-              AI-Powered Communication Coach
-            </span>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-[#1F1F1F] mb-6 leading-tight">
-              Speak with confidence.<br />
-              <span className="text-[#0056D2]">Score higher. Get hired.</span>
-            </h1>
-            <p className="text-lg text-[#636363] mb-8 max-w-2xl mx-auto leading-relaxed">
-              Spokiva helps non-native English speakers practice speaking, improve pronunciation, and nail every scenario — from IELTS exams to boardroom presentations.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-10">
-              <Link href="/signup" className="inline-flex items-center justify-center gap-2 bg-[#0056D2] hover:bg-[#003B8E] text-white font-semibold px-8 py-3.5 rounded text-base transition-colors">
-                Start for Free <ArrowRight size={18} />
-              </Link>
-              <Link href="/features" className="inline-flex items-center justify-center gap-2 border border-[#0056D2] text-[#0056D2] hover:bg-[#E8F1FF] font-semibold px-8 py-3.5 rounded text-base transition-colors bg-white">
-                See How It Works
-              </Link>
-            </div>
-            <p className="text-xs text-[#636363]">No credit card required · Free plan available · 50,000+ speakers trained</p>
-          </div>
-        </section>
-
+      <LandingHero />
+      <div className="flex-1">
         {/* Use Case Pills */}
         <section className="bg-white py-10 px-4 border-b border-[#E0E0E0]">
           <div className="max-w-5xl mx-auto">
@@ -120,7 +107,7 @@ export default function HomePage() {
         </section>
 
         {/* How It Works */}
-        <section className="bg-[#F5F5F5] py-16 px-4">
+        <section id="how-it-works" className="bg-[#F5F5F5] py-16 px-4">
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-12">
               <h2 className="text-3xl font-bold text-[#1F1F1F] mb-3">How Spokiva works</h2>
@@ -211,7 +198,7 @@ export default function HomePage() {
             <p className="text-blue-200 text-sm mt-4">No credit card required · Cancel anytime</p>
           </div>
         </section>
-      </main>
+      </div>
       <Footer />
     </div>
   );
