@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import OpenAI from "openai";
+import { CHAT_MODEL, budget } from "@/lib/ai";
 
 export async function POST(req: NextRequest) {
   if (!process.env.OPENAI_API_KEY) {
@@ -117,11 +118,10 @@ wordErrors: include ALL errors found, not just a sample. If script has no errors
 pronunciationNotes: identify 2-4 sound patterns to work on. If speech is excellent, identify the subtlest remaining patterns.`;
 
     const completion = await openai.chat.completions.create({
-      model: "gpt-4o",
+      model: CHAT_MODEL,
       messages: [{ role: "user", content: prompt }],
-      temperature: 0.3,
       response_format: { type: "json_object" },
-      max_tokens: 2500,
+      max_completion_tokens: budget(2500),
     });
 
     const analysis = JSON.parse(completion.choices[0]?.message?.content ?? "{}");

@@ -343,7 +343,7 @@ export default function ScriptWriterPage() {
     <div className="max-w-6xl mx-auto space-y-5">
       <div>
         <h1 className="text-2xl font-bold text-[var(--text-primary)]">AI Script Writer</h1>
-        <p className="text-sm text-[var(--text-secondary)] mt-1">Generate a polished speaking script powered by GPT-4o.</p>
+        <p className="text-sm text-[var(--text-secondary)] mt-1">Generate a polished speaking script powered by GPT-6.1 Sol.</p>
       </div>
 
       {/* Presets */}
@@ -494,7 +494,7 @@ export default function ScriptWriterPage() {
             className="w-full bg-[var(--accent)] hover:bg-[var(--accent-hover)] disabled:opacity-60 text-white font-semibold py-3 rounded transition-colors flex items-center justify-center gap-2 text-sm"
           >
             <Wand2 size={16} />
-            {loading ? "Generating with GPT-4o..." : "Generate Script"}
+            {loading ? "Generating with GPT-6.1 Sol..." : "Generate Script"}
           </button>
         </div>
 
@@ -554,7 +554,7 @@ export default function ScriptWriterPage() {
                 <Wand2 size={40} className="text-[var(--text-muted)] mx-auto mb-3" />
                 <p className="text-sm text-[var(--text-secondary)] max-w-xs">
                   {loading
-                    ? "GPT-4o is writing your script..."
+                    ? "GPT-6.1 Sol is writing your script..."
                     : "Configure your script settings and click Generate Script."}
                 </p>
                 {loading && (

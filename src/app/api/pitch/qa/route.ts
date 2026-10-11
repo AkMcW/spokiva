@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import OpenAI from "openai";
+import { CHAT_MODEL, budget } from "@/lib/ai";
 
 export async function POST(req: NextRequest) {
   if (!process.env.OPENAI_API_KEY) {
@@ -14,10 +15,9 @@ export async function POST(req: NextRequest) {
     const tone = mode === "pressure" ? "very tough and skeptical" : mode === "beginner" ? "curious but fair" : "challenging but fair";
 
     const completion = await openai.chat.completions.create({
-      model: "gpt-4o",
+      model: CHAT_MODEL,
       response_format: { type: "json_object" },
-      temperature: 0.7,
-      max_tokens: 500,
+      max_completion_tokens: budget(500),
       messages: [
         {
           role: "system",

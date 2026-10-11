@@ -599,7 +599,7 @@ Give 2-3 sentences of honest, specific feedback. Start with what works, then wha
             {flow === "transcribing" ? "Transcribing your pitch..." : "Analyzing with AI..."}
           </p>
           <p className="text-sm mt-1" style={{ color: "var(--text-secondary)" }}>
-            {flow === "transcribing" ? "Converting speech to text via Whisper" : "Scoring clarity, structure, confidence, and more"}
+            {flow === "transcribing" ? "Converting speech to text" : "Scoring clarity, structure, confidence, and more"}
           </p>
         </div>
       )}

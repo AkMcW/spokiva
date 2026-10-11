@@ -269,7 +269,7 @@ export default function AICoachPage() {
           </div>
           <div>
             <h2 className="font-bold text-[var(--text-primary)] text-lg mb-1">Meet Coach Alex</h2>
-            <p className="text-sm text-[var(--text-secondary)]">Your AI speech coach powered by GPT-4o with natural voice replies. Choose a topic and start speaking.</p>
+            <p className="text-sm text-[var(--text-secondary)]">Your AI speech coach powered by GPT-6.1 Sol with natural voice replies. Choose a topic and start speaking.</p>
           </div>
 
           <div>
@@ -303,7 +303,7 @@ export default function AICoachPage() {
         <div className="grid grid-cols-3 gap-4 text-center text-xs text-[var(--text-secondary)]">
           {[
             { icon: "🎙️", label: "Speak naturally", desc: "Hold the mic button and talk" },
-            { icon: "🤖", label: "AI responds", desc: "GPT-4o generates coaching" },
+            { icon: "🤖", label: "AI responds", desc: "GPT-6.1 Sol generates coaching" },
             { icon: "🔊", label: "Hear feedback", desc: "The coach voices the reply" },
           ].map(({ icon, label, desc }) => (
             <div key={label} className="bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-4">

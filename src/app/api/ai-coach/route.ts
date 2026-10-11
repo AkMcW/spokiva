@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import OpenAI from "openai";
+import { CHAT_MODEL, budget } from "@/lib/ai";
 
 export async function POST(req: NextRequest) {
   if (!process.env.OPENAI_API_KEY) {
@@ -14,7 +15,8 @@ export async function POST(req: NextRequest) {
 
     // Get AI text response
     const completion = await openai.chat.completions.create({
-      model: "gpt-4o",
+      model: CHAT_MODEL,
+      reasoning_effort: "low",
       messages: [
         {
           role: "system",
@@ -27,8 +29,7 @@ Be encouraging, warm, and professional.`,
         },
         ...messages,
       ],
-      temperature: 0.7,
-      max_tokens: 200,
+      max_completion_tokens: budget(200, "low"),
     });
 
     const replyText = completion.choices[0]?.message?.content ?? "I didn't catch that. Could you try again?";

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import OpenAI from "openai";
+import { CHAT_MODEL, budget } from "@/lib/ai";
 
 export async function POST(req: NextRequest) {
   if (!process.env.OPENAI_API_KEY) {
@@ -68,10 +69,9 @@ Rules:
 - Cite real words/phrases from the transcript wherever possible. Do not invent errors the user didn't make.`;
 
     const completion = await openai.chat.completions.create({
-      model: "gpt-4o",
+      model: CHAT_MODEL,
       response_format: { type: "json_object" },
-      temperature: 0.35,
-      max_tokens: 2800,
+      max_completion_tokens: budget(2800),
       messages: [
         { role: "system", content: system },
         { role: "user", content: `Here is the spoken transcript to assess:\n\n"""\n${transcript}\n"""` },

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import OpenAI from "openai";
+import { CHAT_MODEL, budget } from "@/lib/ai";
 
 // Lightweight, fast feedback for "Think in English" rapid-fire drills.
 // Goal: train users to respond immediately and naturally without translating.
@@ -33,10 +34,10 @@ Return ONLY valid JSON:
 }`;
 
     const completion = await openai.chat.completions.create({
-      model: "gpt-4o",
+      model: CHAT_MODEL,
+      reasoning_effort: "low",
       response_format: { type: "json_object" },
-      temperature: 0.4,
-      max_tokens: 500,
+      max_completion_tokens: budget(500, "low"),
       messages: [
         { role: "system", content: system },
         { role: "user", content: `User's spoken answer:\n"""\n${transcript}\n"""` },

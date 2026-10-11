@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import OpenAI from "openai";
+import { CHAT_MODEL, budget } from "@/lib/ai";
 
 export async function POST(req: NextRequest) {
   if (!process.env.OPENAI_API_KEY) {
@@ -10,7 +11,7 @@ export async function POST(req: NextRequest) {
     const { script, instruction } = await req.json();
 
     const completion = await openai.chat.completions.create({
-      model: "gpt-4o",
+      model: CHAT_MODEL,
       messages: [
         {
           role: "system",
@@ -29,8 +30,7 @@ If the original has no notation, add appropriate markers throughout the rewritte
           content: `Instruction: ${instruction}\n\nOriginal script:\n${script}\n\nRewritten script:`,
         },
       ],
-      temperature: 0.7,
-      max_tokens: 1500,
+      max_completion_tokens: budget(1500),
     });
 
     const optimized = completion.choices[0]?.message?.content ?? script;

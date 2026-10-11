@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import OpenAI from "openai";
+import { CHAT_MODEL, budget } from "@/lib/ai";
 
 // Per-exam scoring guidance so the model returns a score in the test's
 // native scale plus the criteria that exam actually grades on.
@@ -84,10 +85,9 @@ ${rubric.criteria.map((c) => `    { "name": "${c}", "score": <0-100>, "comment":
 Be honest and specific. Cite real words/phrases from the transcript. Do not inflate scores.`;
 
     const completion = await openai.chat.completions.create({
-      model: "gpt-4o",
+      model: CHAT_MODEL,
       response_format: { type: "json_object" },
-      temperature: 0.35,
-      max_tokens: 1800,
+      max_completion_tokens: budget(1800),
       messages: [
         { role: "system", content: system },
         { role: "user", content: `Candidate's spoken transcript:\n"""\n${transcript}\n"""` },

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import OpenAI from "openai";
+import { CHAT_MODEL, budget } from "@/lib/ai";
 
 const NOTATION_SYSTEM = `You are an expert speech writer and communication coach. You write polished, natural-sounding speaking scripts that people can actually deliver confidently. Scripts should sound spoken, not written — use contractions, short punchy sentences, and natural transitions.
 
@@ -109,13 +110,12 @@ ${outputMode === "rich" ? `Return a JSON object with these fields:
 }` : "Write the full spoken script only. Include notation markers. No titles or headers."}`;
 
       const completion = await openai.chat.completions.create({
-        model: "gpt-4o",
+        model: CHAT_MODEL,
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: userPrompt },
         ],
-        temperature: 0.7,
-        max_tokens: maxTokensForDuration(duration, outputMode === "rich"),
+        max_completion_tokens: budget(maxTokensForDuration(duration, outputMode === "rich")),
         response_format: outputMode === "rich" ? { type: "json_object" } : undefined,
       });
 
@@ -157,13 +157,12 @@ Requirements:
 Write the script now:`;
 
     const completion = await openai.chat.completions.create({
-      model: "gpt-4o",
+      model: CHAT_MODEL,
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: userPrompt },
       ],
-      temperature: 0.7,
-      max_tokens: maxTokensForDuration(duration, false),
+      max_completion_tokens: budget(maxTokensForDuration(duration, false)),
     });
 
     return NextResponse.json({ script: completion.choices[0]?.message?.content ?? "" });

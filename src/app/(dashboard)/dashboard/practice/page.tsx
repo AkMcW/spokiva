@@ -697,7 +697,7 @@ export default function PracticePage() {
             </div>
             <div>
               <p className="font-semibold text-[var(--text-primary)] mb-1">
-                {state === "transcribing" ? "Transcribing with Whisper..." : "Analyzing with GPT-4o..."}
+                {state === "transcribing" ? "Transcribing your speech..." : "Analyzing with GPT-6.1 Sol..."}
               </p>
               <p className="text-sm text-[var(--text-secondary)]">
                 {state === "transcribing" ? "Converting your speech to text..." : "Scoring pronunciation, fluency, confidence, and more..."}

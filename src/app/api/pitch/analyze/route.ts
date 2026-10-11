@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import OpenAI from "openai";
+import { CHAT_MODEL, budget } from "@/lib/ai";
 
 export async function POST(req: NextRequest) {
   if (!process.env.OPENAI_API_KEY) {
@@ -18,9 +19,8 @@ export async function POST(req: NextRequest) {
       : "Be balanced. Score fairly. Give clear, actionable feedback.";
 
     const completion = await openai.chat.completions.create({
-      model: "gpt-4o",
+      model: CHAT_MODEL,
       response_format: { type: "json_object" },
-      temperature: 0.4,
       messages: [
         {
           role: "system",
