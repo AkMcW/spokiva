@@ -1,7 +1,10 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
-import { Mic, Download, Trash2, Play, Square, FileAudio, BarChart2 } from "lucide-react";
-import { getAllRecordings, deleteRecording, type SavedRecord } from "@/lib/recordings";
+import { useState, useEffect, useRef, useCallback } from "react";
+import { Mic, Download, Trash2, Play, Square, FileAudio, BarChart2, CloudUpload, Loader2, AlertCircle } from "lucide-react";
+import {
+  getAllRecordings, deleteRecording, uploadRecording,
+  type SavedRecord, type CloudRecording,
+} from "@/lib/recordings";
 
 function fmtDuration(s: number) {
   return `${String(Math.floor(s / 60)).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`;
@@ -18,51 +21,81 @@ function scoreColor(score: number) {
 }
 
 export default function RecordsPage() {
-  const [records, setRecords] = useState<SavedRecord[]>([]);
+  const [records, setRecords] = useState<CloudRecording[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const [playingId, setPlayingId] = useState<number | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const urlRef = useRef<string | null>(null);
+
+  // Recordings saved only in this browser (before cloud storage, or when an upload failed)
+  const [local, setLocal] = useState<SavedRecord[]>([]);
+  const [uploading, setUploading] = useState(false);
+  const [uploadMsg, setUploadMsg] = useState("");
+
+  const loadCloud = useCallback(async () => {
+    try {
+      const res = await fetch("/api/recordings");
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? "Failed to load recordings");
+      setRecords(data.recordings ?? []);
+      setError("");
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Failed to load recordings");
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
-    getAllRecordings().then((r) => { setRecords(r); setLoading(false); }).catch(() => setLoading(false));
-  }, []);
+    loadCloud();
+    getAllRecordings().then(setLocal).catch(() => setLocal([]));
+  }, [loadCloud]);
 
   function stopAudio() {
     if (audioRef.current) { audioRef.current.pause(); audioRef.current = null; }
-    if (urlRef.current) { URL.revokeObjectURL(urlRef.current); urlRef.current = null; }
     setPlayingId(null);
   }
 
-  function togglePlay(record: SavedRecord) {
+  function togglePlay(record: CloudRecording) {
     if (playingId === record.id) { stopAudio(); return; }
     stopAudio();
-    const url = URL.createObjectURL(record.audioBlob);
-    urlRef.current = url;
-    const audio = new Audio(url);
+    const audio = new Audio(`/api/recordings/${record.id}`);
     audioRef.current = audio;
-    audio.onended = () => { stopAudio(); };
-    audio.play();
+    audio.onended = () => stopAudio();
+    audio.onerror = () => { stopAudio(); setError("Couldn't play that recording."); };
+    audio.play().catch(() => stopAudio());
     setPlayingId(record.id);
-  }
-
-  function downloadRecord(record: SavedRecord) {
-    const ext = record.mimeType?.includes("mp4") ? "m4a"
-      : record.mimeType?.includes("ogg") ? "ogg"
-      : record.mimeType?.includes("wav") ? "wav"
-      : "webm";
-    const url = URL.createObjectURL(record.audioBlob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `spokiva-${record.scenario.replace(/[^a-z0-9]/gi, "-").toLowerCase()}-${new Date(record.createdAt).toISOString().slice(0, 10)}.${ext}`;
-    a.click();
-    URL.revokeObjectURL(url);
   }
 
   async function handleDelete(id: number) {
     if (playingId === id) stopAudio();
-    await deleteRecording(id);
-    setRecords((r) => r.filter((rec) => rec.id !== id));
+    const res = await fetch(`/api/recordings?id=${id}`, { method: "DELETE" });
+    if (res.ok) setRecords((r) => r.filter((rec) => rec.id !== id));
+    else setError("Failed to delete recording");
+  }
+
+  async function uploadLocal() {
+    setUploading(true);
+    setUploadMsg("");
+    let done = 0;
+    const failed: string[] = [];
+    for (const rec of local) {
+      try {
+        const { id, ...rest } = rec;
+        await uploadRecording(rest);
+        await deleteRecording(id);
+        done++;
+      } catch (e) {
+        failed.push(e instanceof Error ? e.message : "upload failed");
+      }
+    }
+    const remaining = await getAllRecordings().catch(() => []);
+    setLocal(remaining);
+    setUploading(false);
+    setUploadMsg(failed.length
+      ? `Uploaded ${done}. ${failed.length} couldn't be uploaded (${failed[0]}) and are still on this device.`
+      : `Uploaded ${done} recording${done !== 1 ? "s" : ""} to your account.`);
+    loadCloud();
   }
 
   // cleanup on unmount
@@ -74,10 +107,31 @@ export default function RecordsPage() {
         <div>
           <h1 className="text-2xl font-bold text-[var(--text-primary)]">Saved Recordings</h1>
           <p className="text-sm text-[var(--text-secondary)] mt-1">
-            {loading ? "Loading…" : `${records.length} recording${records.length !== 1 ? "s" : ""} saved locally`}
+            {loading ? "Loading…" : `${records.length} recording${records.length !== 1 ? "s" : ""} in your account`}
           </p>
         </div>
       </div>
+
+      {/* Local-only recordings → upload */}
+      {local.length > 0 && (
+        <div className="rounded-lg p-4 flex flex-col sm:flex-row sm:items-center gap-3 border" style={{ background: "var(--warning-bg)", borderColor: "var(--border)" }}>
+          <CloudUpload size={20} className="shrink-0" style={{ color: "var(--warning-text)" }} />
+          <p className="text-sm flex-1" style={{ color: "var(--warning-text)" }}>
+            {local.length} recording{local.length !== 1 ? "s are" : " is"} saved only in this browser. Upload {local.length !== 1 ? "them" : "it"} to keep {local.length !== 1 ? "them" : "it"} with your account on every device.
+          </p>
+          <button onClick={uploadLocal} disabled={uploading}
+            className="flex items-center justify-center gap-1.5 text-xs font-semibold px-4 py-2 rounded bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white transition-colors disabled:opacity-70 shrink-0">
+            {uploading ? <><Loader2 size={13} className="animate-spin" /> Uploading…</> : <><CloudUpload size={13} /> Upload to account</>}
+          </button>
+        </div>
+      )}
+      {uploadMsg && <p className="text-sm text-[var(--text-secondary)]">{uploadMsg}</p>}
+
+      {error && (
+        <div className="flex items-center gap-2 p-3 rounded-lg text-sm border" style={{ background: "var(--danger-bg)", borderColor: "var(--danger-border)", color: "#E53935" }}>
+          <AlertCircle size={15} className="shrink-0" /> {error}
+        </div>
+      )}
 
       {loading && (
         <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-10 text-center">
@@ -102,26 +156,24 @@ export default function RecordsPage() {
           {records.map((record) => (
             <div key={record.id} className="bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-5">
               <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-                {/* Icon */}
                 <div className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 ${playingId === record.id ? "bg-[var(--accent)]" : "bg-[var(--accent-bg)]"}`}>
                   <Mic size={18} className={playingId === record.id ? "text-white" : "text-[var(--accent)]"} />
                 </div>
 
-                {/* Info */}
                 <div className="flex-1 min-w-0">
                   <div className="flex flex-wrap items-center gap-2 mb-1">
                     <span className="text-xs font-semibold px-2 py-0.5 rounded bg-[var(--accent-bg)] text-[var(--accent)]">
-                      {record.scenario}
+                      {record.scenario || "Practice"}
                     </span>
-                    {record.overallScore > 0 && (
-                      <span className={`text-xs font-bold ${scoreColor(record.overallScore)}`}>
+                    {record.overall_score > 0 && (
+                      <span className={`text-xs font-bold ${scoreColor(record.overall_score)}`}>
                         <BarChart2 size={11} className="inline mr-0.5" />
-                        {record.overallScore}/100
+                        {record.overall_score}/100
                       </span>
                     )}
                   </div>
                   <div className="flex flex-wrap items-center gap-3 text-xs text-[var(--text-muted)]">
-                    <span>{fmtDate(record.createdAt)}</span>
+                    <span>{fmtDate(record.created_at)}</span>
                     <span>·</span>
                     <span>{fmtDuration(record.duration)}</span>
                     {record.wpm > 0 && <><span>·</span><span>{record.wpm} wpm</span></>}
@@ -131,7 +183,6 @@ export default function RecordsPage() {
                   )}
                 </div>
 
-                {/* Actions */}
                 <div className="flex items-center gap-2 shrink-0">
                   <button
                     onClick={() => togglePlay(record)}
@@ -144,15 +195,16 @@ export default function RecordsPage() {
                     {playingId === record.id ? <Square size={12} /> : <Play size={12} />}
                     {playingId === record.id ? "Stop" : "Play"}
                   </button>
-                  <button
-                    onClick={() => downloadRecord(record)}
+                  <a
+                    href={`/api/recordings/${record.id}?download=1`}
                     className="flex items-center gap-1 text-xs border border-[var(--border)] text-[var(--text-secondary)] hover:border-[var(--accent)] hover:text-[var(--accent)] px-3 py-1.5 rounded transition-colors font-medium"
                   >
                     <Download size={12} />
                     Download
-                  </button>
+                  </a>
                   <button
                     onClick={() => handleDelete(record.id)}
+                    title="Delete recording"
                     className="flex items-center gap-1 text-xs border border-[var(--border)] text-[var(--text-secondary)] hover:border-red-400 hover:text-red-500 px-3 py-1.5 rounded transition-colors font-medium"
                   >
                     <Trash2 size={12} />
@@ -160,7 +212,6 @@ export default function RecordsPage() {
                 </div>
               </div>
 
-              {/* Waveform / playing indicator */}
               {playingId === record.id && (
                 <div className="mt-3 flex items-center gap-1 justify-center h-6">
                   {Array.from({ length: 20 }).map((_, i) => (
@@ -175,7 +226,7 @@ export default function RecordsPage() {
 
       <div className="bg-[var(--bg-secondary)] rounded-lg p-4 text-xs text-[var(--text-secondary)]">
         <p className="font-semibold text-[var(--text-primary)] mb-1">About saved recordings</p>
-        Recordings are stored locally in your browser (IndexedDB) and never uploaded. Clearing browser data will remove them. Download to keep a permanent copy.
+        Recordings are saved to your Spokiva account, so they&apos;re available on any device you sign in to. If an upload ever fails (for example while offline), the recording is kept in this browser and you can upload it later from this page.
       </div>
     </div>
   );

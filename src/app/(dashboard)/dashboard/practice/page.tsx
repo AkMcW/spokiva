@@ -2,7 +2,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Mic, Square, BarChart2, BookOpen, Type, ToggleLeft, ToggleRight, Video, VideoOff, Languages, Printer, Maximize2, X, Play, Pause, RotateCcw, ScrollText, Minus, Plus } from "lucide-react";
 import Link from "next/link";
-import { saveRecording } from "@/lib/recordings";
+import { saveRecordingPreferCloud } from "@/lib/recordings";
 import PracticeListenShadow from "@/components/PracticeListenShadow";
 
 const DEFAULT_SCRIPT = `Good morning, everyone. Thank you for joining today's Q3 project update.
@@ -28,16 +28,32 @@ interface ActiveScript {
   wordCount: number;
 }
 
-type FontSize = "sm" | "base" | "lg" | "xl";
+type FontSize = "sm" | "base" | "lg" | "xl" | "2xl";
+
+const FONT_SIZES: FontSize[] = ["sm", "base", "lg", "xl", "2xl"];
 
 const fontSizeClass: Record<FontSize, string> = {
   sm: "text-sm",
   base: "text-base",
   lg: "text-lg",
   xl: "text-xl",
+  "2xl": "text-2xl",
 };
 
-const fontSizeLabel: Record<FontSize, string> = { sm: "S", base: "M", lg: "L", xl: "XL" };
+const fontSizeLabel: Record<FontSize, string> = { sm: "S", base: "M", lg: "L", xl: "XL", "2xl": "2XL" };
+
+// Easy-to-read typefaces for the script and teleprompter (loaded from Google Fonts below).
+const READING_FONTS = [
+  { id: "default", label: "Default", family: "inherit" },
+  { id: "atkinson", label: "Atkinson Hyperlegible", family: "'Atkinson Hyperlegible', sans-serif" },
+  { id: "lexend", label: "Lexend", family: "'Lexend', sans-serif" },
+  { id: "nunito", label: "Nunito", family: "'Nunito', sans-serif" },
+  { id: "literata", label: "Literata", family: "'Literata', serif" },
+  { id: "merriweather", label: "Merriweather", family: "'Merriweather', serif" },
+] as const;
+type ReadingFontId = (typeof READING_FONTS)[number]["id"];
+const READING_FONTS_CSS = "https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Lexend:wght@400;600&family=Literata:wght@400;600&family=Merriweather:wght@400;700&family=Nunito:wght@400;700&display=swap";
+const READING_FONT_KEY = "spokiva_reading_font";
 
 // Notation tokens
 const DIRECTIVES = ["SLOW","FAST","SMILE","QUIET","STRONG","STEP FORWARD","LOOK LEFT","LOOK RIGHT"];
@@ -197,7 +213,9 @@ export default function PracticePage() {
   const [webcamOn, setWebcamOn] = useState(false);
   const [fullscreen, setFullscreen] = useState(false);
   const [telePlaying, setTelePlaying] = useState(false);
-  const [teleSpeed, setTeleSpeed] = useState(1.4); // pixels per frame
+  const [teleSpeed, setTeleSpeed] = useState(0.1); // pixels per frame; slowest by default
+  const [teleFontSize, setTeleFontSize] = useState<FontSize>("xl");
+  const [readingFont, setReadingFontState] = useState<ReadingFontId>("default");
   const [teleMirror, setTeleMirror] = useState(false);
   const teleScrollRef = useRef<HTMLDivElement | null>(null);
   const teleRafRef = useRef<number | null>(null);
@@ -205,6 +223,18 @@ export default function PracticePage() {
   const secondsRef = useRef(0);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const videoStreamRef = useRef<MediaStream | null>(null);
+
+  useEffect(() => {
+    try {
+      const v = localStorage.getItem(READING_FONT_KEY);
+      if (READING_FONTS.some((f) => f.id === v)) setReadingFontState(v as ReadingFontId);
+    } catch { /* storage unavailable */ }
+  }, []);
+
+  function setReadingFont(id: ReadingFontId) {
+    setReadingFontState(id);
+    try { localStorage.setItem(READING_FONT_KEY, id); } catch { /* ignore */ }
+  }
 
   // Teleprompter auto-scroll loop
   useEffect(() => {
@@ -390,7 +420,7 @@ export default function PracticePage() {
           }),
         }).catch(() => {});
         try {
-          await saveRecording({
+          await saveRecordingPreferCloud({
             scenario: currentScenario,
             transcript: transcriptText,
             duration: secondsRef.current,
@@ -429,10 +459,25 @@ export default function PracticePage() {
   const timeStr = `${String(minutes).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
 
   const scriptContent = activeScript?.content ?? DEFAULT_SCRIPT;
+  const readingFontFamily = READING_FONTS.find((f) => f.id === readingFont)?.family ?? "inherit";
+  const fontSelect = (
+    <select
+      value={readingFont}
+      onChange={(e) => setReadingFont(e.target.value as ReadingFontId)}
+      title="Reading font"
+      aria-label="Reading font"
+      className="text-xs font-semibold border border-[var(--border)] rounded px-2 py-1 text-[var(--text-secondary)] bg-[var(--bg-card)] focus:outline-none focus:border-[var(--accent)]"
+    >
+      {READING_FONTS.map((f) => (
+        <option key={f.id} value={f.id} style={{ fontFamily: f.family }}>{f.label}</option>
+      ))}
+    </select>
+  );
   const wordCount = activeScript?.wordCount ?? 98;
 
   return (
     <div className="max-w-6xl mx-auto space-y-5">
+      <link rel="stylesheet" href={READING_FONTS_CSS} precedence="default" />
       {/* Full-screen reading / teleprompter overlay */}
       {fullscreen && (
         <div className="fixed inset-0 z-50 bg-[var(--bg-card)] flex flex-col">
@@ -441,13 +486,14 @@ export default function PracticePage() {
               <span className="text-sm font-bold text-[var(--text-primary)]">{activeScript?.scenario ?? "Your Script"}</span>
               <div className="flex items-center gap-1 border border-[var(--border)] rounded overflow-hidden">
                 <span className="px-2 text-xs text-[var(--text-secondary)]"><Type size={12} /></span>
-                {(["sm","base","lg","xl"] as FontSize[]).map((s) => (
-                  <button key={s} onClick={() => setFontSize(s)}
-                    className={`px-2 py-1 text-xs font-semibold transition-colors ${fontSize === s ? "bg-[var(--accent)] text-white" : "text-[var(--text-secondary)] hover:bg-[var(--bg-hover)]"}`}>
+                {FONT_SIZES.map((s) => (
+                  <button key={s} onClick={() => setTeleFontSize(s)}
+                    className={`px-2 py-1 text-xs font-semibold transition-colors ${teleFontSize === s ? "bg-[var(--accent)] text-white" : "text-[var(--text-secondary)] hover:bg-[var(--bg-hover)]"}`}>
                     {fontSizeLabel[s]}
                   </button>
                 ))}
               </div>
+              {fontSelect}
             </div>
 
             {/* Teleprompter controls */}
@@ -479,13 +525,13 @@ export default function PracticePage() {
             </div>
           </div>
 
-          <div ref={teleScrollRef} className={`flex-1 overflow-y-auto px-6 sm:px-12 py-8 leading-loose ${fontSizeClass[fontSize]}`}
-            style={teleMirror ? { transform: "scaleX(-1)" } : undefined}>
+          <div ref={teleScrollRef} className={`flex-1 overflow-y-auto px-6 sm:px-12 py-8 leading-loose ${fontSizeClass[teleFontSize]}`}
+            style={{ fontFamily: readingFontFamily, ...(teleMirror ? { transform: "scaleX(-1)" } : {}) }}>
             <div className="max-w-3xl mx-auto">
               {notationOn
                 ? phoneticOn
                   ? <div className="whitespace-pre-wrap leading-loose">{addPhonetics(stripNotation(scriptContent))}</div>
-                  : renderNotation(scriptContent, fontSize)
+                  : renderNotation(scriptContent, teleFontSize)
                 : phoneticOn
                   ? <div className="whitespace-pre-wrap text-[var(--text-primary)] leading-loose">{addPhonetics(stripNotation(scriptContent))}</div>
                   : <p className="whitespace-pre-wrap text-[var(--text-primary)]">{stripNotation(scriptContent)}</p>
@@ -521,7 +567,7 @@ export default function PracticePage() {
           {/* Font size selector */}
           <div className="flex items-center gap-1 border border-[var(--border)] rounded overflow-hidden">
             <span className="px-2 text-xs text-[var(--text-secondary)]"><Type size={12} /></span>
-            {(["sm","base","lg","xl"] as FontSize[]).map((s) => (
+            {FONT_SIZES.map((s) => (
               <button
                 key={s}
                 onClick={() => setFontSize(s)}
@@ -531,6 +577,9 @@ export default function PracticePage() {
               </button>
             ))}
           </div>
+
+          {/* Reading font */}
+          {fontSelect}
 
           {/* Notation toggle */}
           <button
@@ -586,7 +635,7 @@ export default function PracticePage() {
         </div>
 
         {/* Script body — fits to content length */}
-        <div className={`bg-[var(--bg-secondary)] border border-[var(--border)] rounded-lg p-5 leading-relaxed ${fontSizeClass[fontSize]}`}>
+        <div className={`bg-[var(--bg-secondary)] border border-[var(--border)] rounded-lg p-5 leading-relaxed ${fontSizeClass[fontSize]}`} style={{ fontFamily: readingFontFamily }}>
           {notationOn
             ? phoneticOn
               ? <div className="whitespace-pre-wrap leading-relaxed">{addPhonetics(stripNotation(scriptContent).replace(/\n/g, "\n"))}</div>

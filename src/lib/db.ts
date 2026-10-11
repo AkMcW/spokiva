@@ -123,3 +123,28 @@ export async function ensureExamSessionsTable() {
   await s`CREATE INDEX IF NOT EXISTS exam_sessions_user_id_idx ON exam_sessions(user_id)`;
   examTableReady = true;
 }
+
+let recordingsTableReady = false;
+
+// Practice recordings: audio is stored as bytea alongside its metadata.
+export async function ensureRecordingsTable() {
+  if (recordingsTableReady) return;
+  const s = getSql();
+  await s`
+    CREATE TABLE IF NOT EXISTS recordings (
+      id            SERIAL PRIMARY KEY,
+      user_id       TEXT NOT NULL,
+      scenario      TEXT NOT NULL DEFAULT '',
+      transcript    TEXT NOT NULL DEFAULT '',
+      duration      INTEGER NOT NULL DEFAULT 0,
+      wpm           INTEGER NOT NULL DEFAULT 0,
+      overall_score INTEGER NOT NULL DEFAULT 0,
+      mime_type     TEXT NOT NULL DEFAULT 'audio/webm',
+      size_bytes    INTEGER NOT NULL DEFAULT 0,
+      audio         BYTEA NOT NULL,
+      created_at    TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `;
+  await s`CREATE INDEX IF NOT EXISTS recordings_user_created_idx ON recordings(user_id, created_at DESC)`;
+  recordingsTableReady = true;
+}
