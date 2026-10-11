@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Mic, Square, Clock, BarChart2, Sparkles, Save, CheckCircle, Loader2, Mic2, Lightbulb } from "lucide-react";
+import { toBand } from "@/lib/speechMetrics";
 
 type Part = "1" | "2" | "3";
 type RecordState = "idle" | "prep" | "recording" | "transcribing" | "analyzing" | "done";
@@ -41,11 +42,11 @@ const part3Questions = [
 ];
 
 interface BandResult {
-  fluency: number;
-  lexical: number;
-  grammar: number;
-  pronunciation: number;
-  overall: number;
+  fluency: number | null;
+  lexical: number | null;
+  grammar: number | null;
+  pronunciation: number | null;
+  overall: number | null;
   feedback: string;
 }
 
@@ -130,6 +131,7 @@ export default function IELTSPage() {
     recorder.onstop = async () => {
       const blob = new Blob(chunksRef.current, { type: "audio/webm" });
       let transcript = "";
+      let speechMetrics: unknown = null;
 
       try {
         const form = new FormData();
@@ -137,6 +139,7 @@ export default function IELTSPage() {
         const res = await fetch("/api/practice/transcribe", { method: "POST", body: form });
         const data = await res.json();
         transcript = data.transcript || "";
+        speechMetrics = data.metrics ?? null;
       } catch {
         setError("Transcription failed.");
         setRecordState("idle");
@@ -151,16 +154,18 @@ export default function IELTSPage() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             transcript,
+            metrics: speechMetrics,
             scenario: `IELTS Speaking ${partLabel}`,
           }),
         });
         const data = await res.json();
         setResult({
-          fluency: data.scores?.fluency ?? 7.0,
-          lexical: data.scores?.vocabulary ?? 6.5,
-          grammar: data.scores?.structure ?? 6.5,
-          pronunciation: data.scores?.pronunciation ?? 7.0,
-          overall: data.bandScore ?? Math.round(((data.scores?.fluency ?? 7) + (data.scores?.vocabulary ?? 6.5) + (data.scores?.structure ?? 6.5) + (data.scores?.pronunciation ?? 7)) / 4 * 2) / 2,
+          // Scores arrive on a 0–100 scale; convert each to an IELTS band.
+          fluency: toBand(data.scores?.fluency),
+          lexical: toBand(data.scores?.vocabulary),
+          grammar: toBand(data.scores?.structure),
+          pronunciation: toBand(data.scores?.pronunciation),
+          overall: data.bandScore ?? toBand(data.scores?.overall),
           feedback: data.aiFeedback ?? "",
         });
         setUserTranscript(transcript);
@@ -345,13 +350,13 @@ export default function IELTSPage() {
               { label: "Pronunciation", val: result.pronunciation },
             ].map(({ label, val }) => (
               <div key={label} className="text-center bg-[var(--bg-secondary)] rounded-lg p-4">
-                <p className="text-2xl font-bold text-[var(--accent)]">{val.toFixed(1)}</p>
+                <p className="text-2xl font-bold text-[var(--accent)]">{val == null ? "—" : val.toFixed(1)}</p>
                 <p className="text-xs text-[var(--text-secondary)] mt-1">{label}</p>
               </div>
             ))}
           </div>
           <div className="bg-[var(--accent-bg)] rounded-lg p-4">
-            <p className="text-sm font-semibold text-[var(--accent)] mb-1">Overall Estimate: Band {result.overall.toFixed(1)}</p>
+            <p className="text-sm font-semibold text-[var(--accent)] mb-1">Overall Estimate: Band {result.overall == null ? "—" : result.overall.toFixed(1)}</p>
             {result.feedback && <p className="text-xs text-[var(--text-secondary)] leading-relaxed">{result.feedback}</p>}
           </div>
           <button onClick={reset} className="mt-4 text-xs border border-[var(--accent)] text-[var(--accent)] hover:bg-[var(--accent-bg)] px-4 py-1.5 rounded font-semibold transition-colors">

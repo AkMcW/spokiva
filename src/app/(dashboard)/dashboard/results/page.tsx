@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import ScoreRing from "@/components/ScoreRing";
+import { toScore, type SpeechMetrics } from "@/lib/speechMetrics";
 import {
   CheckCircle, Flag, ArrowRight, RotateCcw, Mic, Share2,
   TrendingUp, TrendingDown, Minus, AlertCircle, BookOpen, Zap,
@@ -38,14 +39,16 @@ interface ScriptComparison {
 
 interface Analysis {
   scores: {
-    pronunciation: number;
-    fluency: number;
-    confidence: number;
-    structure: number;
-    vocabulary: number;
-    pace: number;
-    overall: number;
+    pronunciation: number | null;
+    fluency: number | null;
+    confidence: number | null;
+    structure: number | null;
+    vocabulary: number | null;
+    pace: number | null;
+    overall: number | null;
   };
+  scoreBasis?: Record<string, string>;
+  metrics?: SpeechMetrics | null;
   fillerWords: { count: number; words: string[] };
   wpm: number;
   strengths: string[];
@@ -87,13 +90,14 @@ function parseAnalysis(raw: string | null): Analysis | null {
     const parsed = JSON.parse(raw);
     const scores = parsed.scores ?? {};
     parsed.scores = {
-      pronunciation: Number(scores.pronunciation) || 0,
-      fluency: Number(scores.fluency) || 0,
-      confidence: Number(scores.confidence) || 0,
-      structure: Number(scores.structure) || 0,
-      vocabulary: Number(scores.vocabulary) || 0,
-      pace: Number(scores.pace) || 0,
-      overall: Number(scores.overall) || 0,
+      // Missing = not measured. Keep it null so it shows as "—", not a false 0.
+      pronunciation: toScore(scores.pronunciation),
+      fluency: toScore(scores.fluency),
+      confidence: toScore(scores.confidence),
+      structure: toScore(scores.structure),
+      vocabulary: toScore(scores.vocabulary),
+      pace: toScore(scores.pace),
+      overall: toScore(scores.overall),
     };
     parsed.fillerWords = parsed.fillerWords ?? { count: 0, words: [] };
     parsed.strengths = Array.isArray(parsed.strengths) ? parsed.strengths : [];
@@ -105,13 +109,15 @@ function parseAnalysis(raw: string | null): Analysis | null {
   } catch { return null; }
 }
 
-function scoreColor(score: number) {
+function scoreColor(score: number | null) {
+  if (score == null) return "text-[var(--text-muted)]";
   if (score >= 80) return "text-[#00B37D]";
   if (score >= 60) return "text-[#F5A623]";
   return "text-red-500";
 }
 
-function scoreLabel(score: number) {
+function scoreLabel(score: number | null) {
+  if (score == null) return "Not enough speech to score";
   if (score >= 90) return "Excellent";
   if (score >= 80) return "Great";
   if (score >= 70) return "Good";
@@ -119,7 +125,8 @@ function scoreLabel(score: number) {
   return "Needs Work";
 }
 
-function Delta({ cur, prev }: { cur: number; prev: number }) {
+function Delta({ cur, prev }: { cur: number | null; prev: number | null }) {
+  if (cur == null || prev == null) return <Minus size={12} className="text-[var(--text-muted)]" />;
   const diff = cur - prev;
   if (Math.abs(diff) < 1) return <Minus size={12} className="text-[var(--text-muted)]" />;
   if (diff > 0) return <span className="flex items-center gap-0.5 text-[#00B37D] text-xs font-bold"><TrendingUp size={12} />+{Math.round(diff)}</span>;
@@ -262,11 +269,11 @@ export default function ResultsPage() {
       <div className="rounded-lg p-6 text-center" style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
         <p className="text-xs font-bold uppercase tracking-wider mb-4" style={{ color: "var(--text-secondary)" }}>Overall Score</p>
         <div className="flex items-center justify-center gap-4 mb-2">
-          <span className="text-6xl font-bold" style={{ color: "var(--text-primary)" }}>{analysis.scores.overall}</span>
+          <span className="text-6xl font-bold" style={{ color: "var(--text-primary)" }}>{analysis.scores.overall ?? "—"}</span>
           <span className="text-2xl font-light" style={{ color: "var(--text-secondary)" }}>/100</span>
           {showCompare && prev && (
             <div className="ml-4">
-              <p className="text-xs mb-1" style={{ color: "var(--text-secondary)" }}>vs last ({prev.scores.overall})</p>
+              <p className="text-xs mb-1" style={{ color: "var(--text-secondary)" }}>vs last ({prev.scores.overall ?? "—"})</p>
               <Delta cur={analysis.scores.overall} prev={prev.scores.overall} />
             </div>
           )}
@@ -303,8 +310,8 @@ export default function ResultsPage() {
                 {scoreRows.map(({ label, display }) => (
                   <tr key={label} className="border-b" style={{ borderColor: "var(--border)" }}>
                     <td className="py-2 font-medium" style={{ color: "var(--text-primary)" }}>{display}</td>
-                    <td className="py-2 text-center" style={{ color: "var(--text-secondary)" }}>{prev.scores[label]}</td>
-                    <td className={`py-2 text-center font-bold ${scoreColor(analysis.scores[label])}`}>{analysis.scores[label]}</td>
+                    <td className="py-2 text-center" style={{ color: "var(--text-secondary)" }}>{prev.scores[label] ?? "—"}</td>
+                    <td className={`py-2 text-center font-bold ${scoreColor(analysis.scores[label])}`}>{analysis.scores[label] ?? "—"}</td>
                     <td className="py-2 text-center"><div className="flex justify-center"><Delta cur={analysis.scores[label]} prev={prev.scores[label]} /></div></td>
                   </tr>
                 ))}
@@ -319,6 +326,41 @@ export default function ResultsPage() {
           </div>
         )}
       </div>
+
+      {/* How the scores were produced */}
+      {analysis.scoreBasis && (
+        <p className="text-xs -mt-3 px-1" style={{ color: "var(--text-muted)" }}>
+          Pronunciation, fluency, confidence and pace are measured from your audio (timing, pauses, hesitations and how clearly each word was recognised).
+          Structure and vocabulary are judged by AI from your transcript. Overall is a weighted average of the available scores; &ldquo;—&rdquo; means there wasn&apos;t enough speech to measure it.
+        </p>
+      )}
+
+      {/* Delivery metrics */}
+      {analysis.metrics && (
+        <div className="rounded-lg p-5" style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
+          <h2 className="font-bold mb-4" style={{ color: "var(--text-primary)" }}>Delivery Metrics</h2>
+          <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+            {[
+              { label: "Pace", value: analysis.metrics.wpm != null ? `${analysis.metrics.wpm} wpm` : "—", hint: "Aim for 130–160" },
+              { label: "Pauses", value: analysis.metrics.pauseCount ?? "—", hint: analysis.metrics.longPauseCount != null ? `${analysis.metrics.longPauseCount} over 1.2 s` : "" },
+              { label: "Longest pause", value: analysis.metrics.longestPauseSec != null ? `${analysis.metrics.longestPauseSec} s` : "—", hint: "" },
+              { label: "Fillers", value: analysis.metrics.fillerCount, hint: analysis.metrics.repetitionCount ? `${analysis.metrics.repetitionCount} repeat${analysis.metrics.repetitionCount !== 1 ? "s" : ""}` : "" },
+              { label: "Clarity", value: analysis.metrics.clarity != null ? `${Math.round(analysis.metrics.clarity * 100)}%` : "—", hint: "Words recognised clearly" },
+            ].map(({ label, value, hint }) => (
+              <div key={label} className="rounded-lg p-3 text-center" style={{ background: "var(--bg-secondary)" }}>
+                <p className="text-lg font-bold" style={{ color: "var(--text-primary)" }}>{value}</p>
+                <p className="text-xs font-semibold" style={{ color: "var(--text-secondary)" }}>{label}</p>
+                {hint && <p className="text-[10px] mt-0.5" style={{ color: "var(--text-muted)" }}>{hint}</p>}
+              </div>
+            ))}
+          </div>
+          {analysis.metrics.unclearWords.length > 0 && (
+            <p className="text-xs mt-4" style={{ color: "var(--text-secondary)" }}>
+              <strong>Hard to recognise:</strong> {analysis.metrics.unclearWords.join(", ")} — practise these words slowly and clearly.
+            </p>
+          )}
+        </div>
+      )}
 
       {/* Script accuracy */}
       {sc && (

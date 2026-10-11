@@ -8,10 +8,10 @@ type TaskType = "read-aloud" | "repeat-sentence" | "describe-image" | "retell-le
 type RecordState = "idle" | "prep" | "recording" | "transcribing" | "analyzing" | "done";
 
 interface PTEResult {
-  content: number;      // 0–5 (or n/a)
-  pronunciation: number; // 0–5 (or 0–90 scaled)
-  fluency: number;      // 0–5 (or 0–90 scaled)
-  overall: number;      // 0–90
+  content: number | null;       // 0–5
+  pronunciation: number | null; // 0–90 scaled
+  fluency: number | null;       // 0–90 scaled
+  overall: number | null;       // 0–90
   feedback: string;
 }
 
@@ -66,9 +66,9 @@ const ASQ_QUESTIONS = [
 
 // ─── Scoring helper ───────────────────────────────────────────────────────────
 
-function scaleTo90(score: number) {
-  // GPT scores are 0–100; PTE speaking subscores are 0–90
-  return Math.round((score / 100) * 90);
+function scaleTo90(score: number | null | undefined) {
+  // Scores are 0–100; PTE speaking subscores are 0–90. Unmeasured stays null.
+  return score == null ? null : Math.round((score / 100) * 90);
 }
 
 // ─── Main component ───────────────────────────────────────────────────────────
@@ -153,6 +153,7 @@ export default function PTEPage() {
       const mimeType = recorder.mimeType || "audio/webm";
       const blob = new Blob(chunksRef.current, { type: mimeType });
       let transcript = "";
+      let speechMetrics: unknown = null;
 
       try {
         const form = new FormData();
@@ -162,6 +163,7 @@ export default function PTEPage() {
         const data = await res.json();
         if (!res.ok || data.error) throw new Error(data.error ?? "Transcription failed");
         transcript = data.transcript ?? "";
+        speechMetrics = data.metrics ?? null;
         if (!transcript.trim()) throw new Error("No speech detected — please speak clearly and try again");
       } catch (e) {
         setError(e instanceof Error ? e.message : "Transcription failed");
@@ -175,15 +177,15 @@ export default function PTEPage() {
         const res = await fetch("/api/practice/analyze", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ transcript, scenario: `PTE Academic Speaking — ${taskLabel}` }),
+          body: JSON.stringify({ transcript, metrics: speechMetrics, scenario: `PTE Academic Speaking — ${taskLabel}` }),
         });
         const data = await res.json();
         if (!res.ok || data.error) throw new Error(data.error ?? "Analysis failed");
         setResult({
-          content: Math.round(((data.scores?.structure ?? 70) / 100) * 5 * 10) / 10,
-          pronunciation: scaleTo90(data.scores?.pronunciation ?? 70),
-          fluency: scaleTo90(data.scores?.fluency ?? 70),
-          overall: scaleTo90(data.scores?.overall ?? 70),
+          content: data.scores?.structure == null ? null : Math.round((data.scores.structure / 100) * 5 * 10) / 10,
+          pronunciation: scaleTo90(data.scores?.pronunciation),
+          fluency: scaleTo90(data.scores?.fluency),
+          overall: scaleTo90(data.scores?.overall),
           feedback: data.aiFeedback ?? "",
         });
         setRecordState("done");
@@ -340,7 +342,7 @@ export default function PTEPage() {
               { label: "Overall", val: result.overall, unit: "/90" },
             ].map(({ label, val, unit }) => (
               <div key={label} className="rounded-xl p-4 text-center" style={{ background: "var(--bg-secondary)" }}>
-                <p className="text-3xl font-bold" style={{ color: "var(--accent)" }}>{val}</p>
+                <p className="text-3xl font-bold" style={{ color: "var(--accent)" }}>{val ?? "—"}</p>
                 <p className="text-xs" style={{ color: "var(--text-muted)" }}>{unit}</p>
                 <p className="text-xs font-semibold mt-1" style={{ color: "var(--text-secondary)" }}>{label}</p>
               </div>
@@ -349,7 +351,7 @@ export default function PTEPage() {
           {(activeTask === "read-aloud" || activeTask === "describe-image" || activeTask === "retell-lecture") && (
             <div className="rounded-lg p-3 mb-4 flex items-center gap-3" style={{ background: "var(--bg-secondary)" }}>
               <div className="text-center">
-                <p className="text-2xl font-bold" style={{ color: "var(--accent)" }}>{result.content.toFixed(1)}</p>
+                <p className="text-2xl font-bold" style={{ color: "var(--accent)" }}>{result.content == null ? "—" : result.content.toFixed(1)}</p>
                 <p className="text-xs" style={{ color: "var(--text-muted)" }}>/5</p>
                 <p className="text-xs font-semibold" style={{ color: "var(--text-secondary)" }}>Content</p>
               </div>
@@ -361,7 +363,7 @@ export default function PTEPage() {
           {/* Score band */}
           <div className="rounded-lg p-4 mb-4" style={{ background: "var(--accent-bg)" }}>
             <p className="text-xs font-bold mb-1" style={{ color: "var(--accent)" }}>
-              {result.overall >= 79 ? "✓ Test-ready range (79+)" : result.overall >= 65 ? "⚡ Approaching test-ready" : "↑ More practice needed"}
+              {result.overall == null ? "Not enough speech to estimate a score" : result.overall >= 79 ? "✓ Test-ready range (79+)" : result.overall >= 65 ? "⚡ Approaching test-ready" : "↑ More practice needed"}
             </p>
             {result.feedback && <p className="text-xs leading-relaxed" style={{ color: "var(--text-secondary)" }}>{result.feedback}</p>}
           </div>

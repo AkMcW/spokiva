@@ -16,11 +16,11 @@ const buildOutline = (topic: string) => [
 type Stage = "setup" | "practice" | "analyzing" | "done";
 
 interface PresentationScores {
-  structure: number;
-  delivery: number;
-  clarity: number;
-  pace: number;
-  overall: number;
+  structure: number | null;
+  delivery: number | null;
+  clarity: number | null;
+  pace: number | null;
+  overall: number | null;
   feedback: string;
   strengths: string[];
   improvements: string[];
@@ -69,6 +69,7 @@ export default function PresentationPage() {
     recorder.onstop = async () => {
       const blob = new Blob(chunksRef.current, { type: "audio/webm" });
       let transcript = "";
+      let speechMetrics: unknown = null;
 
       try {
         const form = new FormData();
@@ -76,6 +77,7 @@ export default function PresentationPage() {
         const res = await fetch("/api/practice/transcribe", { method: "POST", body: form });
         const data = await res.json();
         transcript = data.transcript || "";
+        speechMetrics = data.metrics ?? null;
       } catch {
         setError("Transcription failed.");
         setStage("practice");
@@ -88,16 +90,17 @@ export default function PresentationPage() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             transcript,
+            metrics: speechMetrics,
             scenario: `Presentation — Topic: "${topic}", Audience: ${audience}, Duration: ${duration}`,
           }),
         });
         const data = await res.json();
         setScores({
-          structure: data.scores?.structure ?? 80,
-          delivery: data.scores?.confidence ?? 74,
-          clarity: data.scores?.fluency ?? 78,
-          pace: data.scores?.pace ?? 82,
-          overall: data.scores?.overall ?? 79,
+          structure: data.scores?.structure ?? null,
+          delivery: data.scores?.confidence ?? null,
+          clarity: data.scores?.pronunciation ?? null,
+          pace: data.scores?.pace ?? null,
+          overall: data.scores?.overall ?? null,
           feedback: data.aiFeedback ?? "",
           strengths: data.strengths ?? [],
           improvements: data.improvements ?? [],
@@ -238,7 +241,7 @@ export default function PresentationPage() {
           <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-6">
             <div className="flex items-center justify-between mb-5">
               <h2 className="font-bold text-[var(--text-primary)]">Presentation Scores</h2>
-              <span className="text-2xl font-bold text-[var(--accent)]">{scores.overall}/100</span>
+              <span className="text-2xl font-bold text-[var(--accent)]">{scores.overall ?? "—"}/100</span>
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
               {[
@@ -248,7 +251,7 @@ export default function PresentationPage() {
                 { label: "Pace", score: scores.pace },
               ].map(({ label, score }) => (
                 <div key={label} className="text-center bg-[var(--bg-secondary)] rounded-lg p-4">
-                  <p className="text-2xl font-bold text-[var(--accent)]">{score}</p>
+                  <p className="text-2xl font-bold text-[var(--accent)]">{score ?? "—"}</p>
                   <p className="text-xs text-[var(--text-secondary)] mt-1">{label}</p>
                 </div>
               ))}

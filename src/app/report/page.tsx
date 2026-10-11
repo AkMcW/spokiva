@@ -3,8 +3,8 @@ import { useEffect, useState } from "react";
 
 interface Analysis {
   scores: {
-    pronunciation: number; fluency: number; confidence: number;
-    structure: number; vocabulary: number; pace: number; overall: number;
+    pronunciation: number | null; fluency: number | null; confidence: number | null;
+    structure: number | null; vocabulary: number | null; pace: number | null; overall: number | null;
   };
   fillerWords: { count: number; words: string[] };
   wpm: number;
@@ -37,13 +37,15 @@ function parseAnalysis(raw: string | null): Analysis | null {
   } catch { return null; }
 }
 
-function scoreColor(score: number) {
+function scoreColor(score: number | null) {
+  if (score == null) return "#8A8F98";
   if (score >= 80) return "#00B37D";
   if (score >= 60) return "#F5A623";
   return "#E53935";
 }
 
-function scoreLabel(score: number) {
+function scoreLabel(score: number | null) {
+  if (score == null) return "Not enough speech to score";
   if (score >= 90) return "Excellent";
   if (score >= 80) return "Great";
   if (score >= 70) return "Good";
@@ -123,7 +125,7 @@ export default function PrintReportPage() {
             className="inline-flex flex-col items-center justify-center w-28 h-28 rounded-full border-8 mb-2"
             style={{ borderColor: scoreColor(data.scores.overall) }}
           >
-            <span className="text-4xl font-bold">{data.scores.overall}</span>
+            <span className="text-4xl font-bold">{data.scores.overall ?? "—"}</span>
             <span className="text-xs text-[var(--text-secondary)]">/100</span>
           </div>
           <p className="text-sm font-semibold" style={{ color: scoreColor(data.scores.overall) }}>
@@ -150,9 +152,9 @@ export default function PrintReportPage() {
               return (
                 <div key={key} className="border border-[var(--border)] rounded p-3 text-center">
                   <p className="text-xs text-[var(--text-secondary)] mb-1">{label}</p>
-                  <p className="text-2xl font-bold" style={{ color: scoreColor(score) }}>{score}</p>
+                  <p className="text-2xl font-bold" style={{ color: scoreColor(score) }}>{score ?? "—"}</p>
                   <div className="mt-1 h-1.5 bg-[var(--bg-secondary)] rounded-full overflow-hidden">
-                    <div className="h-full rounded-full" style={{ width: `${score}%`, backgroundColor: scoreColor(score) }} />
+                    <div className="h-full rounded-full" style={{ width: `${score ?? 0}%`, backgroundColor: scoreColor(score) }} />
                   </div>
                 </div>
               );

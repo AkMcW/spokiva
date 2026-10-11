@@ -21,8 +21,8 @@ type Difficulty = "Medium" | "High" | "Very High";
 type Phase = "idle" | "prep" | "recording" | "transcribing" | "ai-thinking" | "round2-prep" | "round2-rec" | "round2-tx" | "analyzing" | "done";
 
 interface ChallengeResult {
-  scores: Record<string, number>;
-  overall: number;
+  scores: Record<string, number | null>;
+  overall: number | null;
   strengths: string[];
   improvements: string[];
   feedback: string;
@@ -197,7 +197,7 @@ const DIFF_COLOR: Record<Difficulty, { text: string; bg: string }> = {
 
 // ─── Helper ───────────────────────────────────────────────────────────────────
 
-async function transcribeBlob(blob: Blob, mimeType: string): Promise<string> {
+async function transcribeBlob(blob: Blob, mimeType: string): Promise<{ text: string; metrics: unknown }> {
   const ext = mimeType.includes("mp4") ? "m4a" : mimeType.includes("ogg") ? "ogg" : "webm";
   const form = new FormData();
   form.append("audio", new File([blob], `rec.${ext}`, { type: mimeType }));
@@ -205,14 +205,14 @@ async function transcribeBlob(blob: Blob, mimeType: string): Promise<string> {
   const data = await res.json();
   if (!res.ok || data.error) throw new Error(data.error ?? "Transcription failed");
   if (!data.transcript?.trim()) throw new Error("No speech detected — please speak clearly");
-  return data.transcript;
+  return { text: data.transcript, metrics: data.metrics ?? null };
 }
 
-async function analyzeTranscript(transcript: string, scenario: string) {
+async function analyzeTranscript(transcript: string, scenario: string, metrics: unknown) {
   const res = await fetch("/api/practice/analyze", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ transcript, scenario }),
+    body: JSON.stringify({ transcript, scenario, metrics }),
   });
   const data = await res.json();
   if (!res.ok || data.error) throw new Error(data.error ?? "Analysis failed");
@@ -289,6 +289,8 @@ export default function ChallengesPage() {
   const [result, setResult] = useState<ChallengeResult | null>(null);
   const [aiChallenge, setAiChallenge] = useState("");
   const [round1Transcript, setRound1Transcript] = useState("");
+  // Delivery metrics from round 1 (the uninterrupted answer)
+  const round1MetricsRef = useRef<unknown>(null);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
 
@@ -378,7 +380,8 @@ export default function ChallengesPage() {
     setPhase("transcribing");
     const blob = await recorder.stop();
     try {
-      const tx = await transcribeBlob(blob, recorder.getMime());
+      const { text: tx, metrics } = await transcribeBlob(blob, recorder.getMime());
+      round1MetricsRef.current = metrics;
       setRound1Transcript(tx);
 
       if (challenge.twoPhase) {
@@ -401,7 +404,7 @@ export default function ChallengesPage() {
     setPhase("round2-tx");
     const blob = await recorder.stop();
     try {
-      const tx2 = await transcribeBlob(blob, recorder.getMime());
+      const { text: tx2 } = await transcribeBlob(blob, recorder.getMime());
       await runAnalysis(round1Transcript, tx2);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Something went wrong");
@@ -414,21 +417,22 @@ export default function ChallengesPage() {
     const fullTranscript = tx2 ? `Round 1: ${tx1}\n\nChallenge: "${aiChallenge}"\n\nRound 2 Response: ${tx2}` : tx1;
     const scenarioCtx = `${challenge.label} — ${scenario!.title}. ${scenario!.prompt}`;
     try {
-      const data = await analyzeTranscript(fullTranscript, scenarioCtx);
+      const data = await analyzeTranscript(fullTranscript, scenarioCtx, round1MetricsRef.current);
       const s = data.scores ?? {};
       // Map generic scores to challenge-specific labels
       const labels = challenge.scoreLabels;
+      const num = (v: unknown) => (typeof v === "number" && Number.isFinite(v) ? v : null);
       const vals = [
-        Number(s.confidence ?? s.fluency ?? 70),
-        Number(s.structure ?? s.vocabulary ?? 70),
-        Number(s.pronunciation ?? 70),
-        Number(s.pace ?? 70),
+        num(s.confidence) ?? num(s.fluency),
+        num(s.structure) ?? num(s.vocabulary),
+        num(s.pronunciation),
+        num(s.pace),
       ];
-      const mapped: Record<string, number> = {};
-      labels.forEach((l, i) => { mapped[l] = vals[i] ?? 70; });
+      const mapped: Record<string, number | null> = {};
+      labels.forEach((l, i) => { mapped[l] = vals[i] ?? null; });
       setResult({
         scores: mapped,
-        overall: Number(s.overall ?? 70),
+        overall: num(s.overall),
         strengths: Array.isArray(data.strengths) ? data.strengths : [],
         improvements: Array.isArray(data.improvements) ? data.improvements : [],
         feedback: data.aiFeedback ?? "",
@@ -730,7 +734,7 @@ export default function ChallengesPage() {
           <div className="flex items-center justify-between">
             <h2 className="font-bold" style={{ color: "var(--text-primary)" }}>Your Challenge Score</h2>
             <div className="text-center">
-              <span className="text-3xl font-bold" style={{ color: challenge.color }}>{result.overall}</span>
+              <span className="text-3xl font-bold" style={{ color: challenge.color }}>{result.overall ?? "—"}</span>
               <span className="text-sm" style={{ color: "var(--text-muted)" }}>/100</span>
             </div>
           </div>
@@ -739,10 +743,10 @@ export default function ChallengesPage() {
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             {Object.entries(result.scores).map(([label, val]) => (
               <div key={label} className="rounded-xl p-3 text-center" style={{ background: "var(--bg-secondary)" }}>
-                <p className="text-2xl font-bold" style={{ color: challenge.color }}>{val}</p>
+                <p className="text-2xl font-bold" style={{ color: challenge.color }}>{val ?? "—"}</p>
                 <p className="text-[10px] mt-0.5 font-semibold" style={{ color: "var(--text-secondary)" }}>{label}</p>
                 <div className="mt-2 h-1 rounded-full overflow-hidden" style={{ background: "var(--border)" }}>
-                  <div className="h-full rounded-full" style={{ width: `${val}%`, background: challenge.color }} />
+                  <div className="h-full rounded-full" style={{ width: `${val ?? 0}%`, background: challenge.color }} />
                 </div>
               </div>
             ))}

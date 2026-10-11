@@ -370,13 +370,16 @@ export default function PracticePage() {
       const audioBlob = new Blob(chunksRef.current, { type: mimeType });
 
       let transcriptText = "";
+      let speechMetrics: unknown = null;
       try {
         const formData = new FormData();
         formData.append("audio", audioBlob, "recording.webm");
+        formData.append("duration", String(secondsRef.current));
         const res = await fetch("/api/practice/transcribe", { method: "POST", body: formData });
         const data = await res.json();
         if (!res.ok || data.error) throw new Error(data.error ?? "Transcription failed");
         transcriptText = data.transcript || "";
+        speechMetrics = data.metrics ?? null;
         if (!transcriptText.trim()) throw new Error("No speech detected — please check your microphone and speak clearly");
         setTranscript(transcriptText);
       } catch (err) {
@@ -394,7 +397,10 @@ export default function PracticePage() {
         const res = await fetch("/api/practice/analyze", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ transcript: transcriptText, script: currentScript, scenario: currentScenario }),
+          body: JSON.stringify({
+            transcript: transcriptText, script: currentScript, scenario: currentScenario,
+            metrics: speechMetrics, durationSeconds: secondsRef.current,
+          }),
         });
         const analysis = await res.json();
         if (!res.ok || analysis.error || !analysis.scores) throw new Error(analysis.error ?? "No scores returned");

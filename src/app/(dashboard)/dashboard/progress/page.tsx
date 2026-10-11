@@ -82,7 +82,7 @@ export default function ProgressPage() {
 
   const totalMinutes = Math.round(sessions.reduce((sum, s) => sum + (s.duration_seconds ?? 0), 0) / 60);
   const avgScore = sessions.length
-    ? Math.round(sessions.reduce((sum, s) => sum + (s.scores?.overall ?? 0), 0) / sessions.length)
+    ? Math.round(sessions.reduce((sum, s) => sum + (s.scores?.overall ?? 0), 0) / Math.max(1, sessions.filter((s) => s.scores?.overall).length))
     : 0;
 
   // Streak: count consecutive days with at least one session ending today

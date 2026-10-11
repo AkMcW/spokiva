@@ -2,14 +2,15 @@
 import { getScoreColor } from "@/lib/utils";
 
 interface ScoreRingProps {
-  score: number;
+  score: number | null;  // null = not measured, shown as "—"
   size?: number;
   strokeWidth?: number;
   label?: string;
 }
 
 export default function ScoreRing({ score, size = 80, strokeWidth = 7, label }: ScoreRingProps) {
-  const safeScore = Number.isFinite(score) ? Math.max(0, Math.min(100, score)) : 0;
+  const measured = typeof score === "number" && Number.isFinite(score);
+  const safeScore = measured ? Math.max(0, Math.min(100, Math.round(score))) : 0;
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
   const offset = circumference - (safeScore / 100) * circumference;
@@ -41,7 +42,7 @@ export default function ScoreRing({ score, size = 80, strokeWidth = 7, label }: 
           />
         </svg>
         <div className="absolute inset-0 flex items-center justify-center">
-          <span className="text-base font-bold text-[var(--text-primary)]">{safeScore}</span>
+          <span className="text-base font-bold text-[var(--text-primary)]">{measured ? safeScore : "—"}</span>
         </div>
       </div>
       {label && <span className="text-xs text-[var(--text-secondary)] font-medium text-center">{label}</span>}

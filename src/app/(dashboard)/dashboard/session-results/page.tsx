@@ -24,7 +24,7 @@ interface SessionRow {
   id: number;
   scenario: string;
   transcript: string;
-  scores: Record<string, number>;
+  scores: Record<string, number | null>;
   filler_words: { count?: number; words?: string[] };
   wpm: number;
   duration_seconds: number;
@@ -48,7 +48,8 @@ const ISSUE_LABELS: Record<string, { label: string; color: string; bg: string }>
   repeated:     { label: "Repeated",     color: "var(--text-secondary)", bg: "var(--bg-secondary)" },
 };
 
-function scoreColor(score: number) {
+function scoreColor(score: number | null) {
+  if (score == null) return "#8A8F98";
   if (score >= 80) return "#00B37D";
   if (score >= 60) return "#F5A623";
   return "#E53935";
@@ -185,7 +186,7 @@ export default function SessionResultsPage() {
       {/* Session list */}
       {!loading && filtered.map(session => {
         const isOpen = expanded === session.id;
-        const overall = session.scores?.overall ?? 0;
+        const overall = session.scores?.overall ?? null;
         const wordErrors = session.analysis?.wordErrors ?? [];
         const pronNotes = session.analysis?.pronunciationNotes ?? [];
         const sc = session.analysis?.scriptComparison;
@@ -200,7 +201,7 @@ export default function SessionResultsPage() {
                 {/* Score badge */}
                 <div className="flex flex-col items-center justify-center w-14 h-14 rounded-full shrink-0"
                   style={{ background: `${scoreColor(overall)}1A`, border: `2px solid ${scoreColor(overall)}` }}>
-                  <span className="text-lg font-bold leading-none" style={{ color: scoreColor(overall) }}>{overall}</span>
+                  <span className="text-lg font-bold leading-none" style={{ color: scoreColor(overall) }}>{overall ?? "—"}</span>
                   <span className="text-[9px] mt-0.5" style={{ color: "var(--text-secondary)" }}>/100</span>
                 </div>
 
@@ -233,10 +234,10 @@ export default function SessionResultsPage() {
                 {/* Score breakdown */}
                 <div className="grid grid-cols-3 sm:grid-cols-6 gap-3 pt-4">
                   {["pronunciation", "fluency", "confidence", "structure", "vocabulary", "pace"].map(key => {
-                    const v = session.scores?.[key] ?? 0;
+                    const v = session.scores?.[key] ?? null;
                     return (
                       <div key={key} className="text-center">
-                        <p className="text-lg font-bold" style={{ color: scoreColor(v) }}>{v}</p>
+                        <p className="text-lg font-bold" style={{ color: scoreColor(v) }}>{v ?? "—"}</p>
                         <p className="text-[10px] capitalize" style={{ color: "var(--text-secondary)" }}>{key}</p>
                       </div>
                     );

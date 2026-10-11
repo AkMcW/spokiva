@@ -1,6 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
 import OpenAI from "openai";
 import { CHAT_MODEL, budget } from "@/lib/ai";
+import {
+  scoreFromMetrics, paceScore, overallScore, toBand, toScore, compareToScript,
+  tokenizeWords, MIN_WORDS, type SpeechMetrics,
+} from "@/lib/speechMetrics";
+
+// Scoring model:
+//  - pace, fluency, confidence, pronunciation are MEASURED from the audio
+//    (word timings + recognition confidence, computed in /api/practice/transcribe)
+//  - structure and vocabulary are judged by the AI from the transcript
+//  - script accuracy is an exact word alignment, not an AI estimate
+//  - overall is a weighted average of whatever was actually available
+// A dimension that couldn't be measured is null (shown as "—"), never 0.
 
 export async function POST(req: NextRequest) {
   if (!process.env.OPENAI_API_KEY) {
@@ -8,13 +20,31 @@ export async function POST(req: NextRequest) {
   }
   const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
   try {
-    const { transcript, script, scenario } = await req.json();
+    const { transcript, script, scenario, metrics: rawMetrics, durationSeconds } = await req.json();
+    const metrics: SpeechMetrics | null = rawMetrics && typeof rawMetrics === "object" ? rawMetrics : null;
 
     if (!transcript || !transcript.trim()) {
       return NextResponse.json({ error: "No speech detected. Please check your microphone and try again." }, { status: 400 });
     }
 
     const hasScript = script && script.trim();
+    const measured = scoreFromMetrics(metrics);
+    // No audio metrics (older client): at least pace can come from the recording length.
+    const wordCount = tokenizeWords(transcript).length;
+    const dur = Number(durationSeconds);
+    if (measured.pace == null && !metrics && dur > 0 && wordCount >= MIN_WORDS) {
+      measured.pace = paceScore(Math.round(wordCount / (dur / 60)));
+    }
+    const wpm = metrics?.wpm ?? (dur > 0 && wordCount ? Math.round(wordCount / (dur / 60)) : null);
+    const scriptComparison = hasScript ? compareToScript(script, transcript) : null;
+
+    const deliveryFacts = metrics ? `MEASURED DELIVERY (from the audio — treat as facts, do not re-score these):
+- Words: ${metrics.wordCount}; speaking time: ${metrics.speakingSec ?? metrics.durationSec ?? "unknown"} s; pace: ${metrics.wpm ?? "unknown"} wpm
+- Pauses ≥0.4 s: ${metrics.pauseCount ?? "unknown"}; long pauses ≥1.2 s: ${metrics.longPauseCount ?? "unknown"}; longest: ${metrics.longestPauseSec ?? "unknown"} s
+- Hesitation fillers: ${metrics.fillerCount}${metrics.fillerWords.length ? ` (${metrics.fillerWords.join(", ")})` : ""}; stutter repeats: ${metrics.repetitionCount}
+- Recognition clarity: ${metrics.clarity != null ? Math.round(metrics.clarity * 100) + "%" : "unknown"}${metrics.unclearWords.length ? `; words the recogniser found hard to understand (likely mispronounced): ${metrics.unclearWords.join(", ")}` : ""}
+
+` : "";
 
     const prompt = `You are a highly experienced native English speech coach and language examiner. Your job is to evaluate speaking SKILL — not the quality of the content or script. Be direct, honest, and specific like a professional accent coach giving one-on-one feedback. Do not soften criticism. The user needs frank, actionable feedback to improve.
 
@@ -30,13 +60,10 @@ ${transcript}
 
 Scenario: ${scenario || "General speech practice"}
 
-Evaluate the user's SPEAKING ABILITY across these dimensions:
-- Pronunciation: How accurately they produce English sounds, stress, and intonation
-- Fluency: Smoothness of speech, absence of unnatural pauses, flow between words
-- Confidence: Vocal strength, commitment to the delivery, absence of hesitation
-- Structure: Whether ideas were delivered in a logical spoken order
+${deliveryFacts}Pronunciation, fluency, confidence and pace are scored separately from audio measurements. You score ONLY these two, from the transcript:
+- Structure: Whether ideas were delivered in a logical spoken order${hasScript ? " (reading a script: judge how faithfully and coherently it was delivered)" : ""}
 - Vocabulary: Accuracy and range of words used in speech
-- Pace: Whether speaking speed was appropriate (ideal: 120–160 wpm for presentations)
+Use the measured delivery facts above when writing feedback about pace, pauses, fillers and pronunciation.
 
 ${hasScript ? `WORD-BY-WORD COMPARISON INSTRUCTIONS:
 Compare the transcript against the original script word by word. Identify:
@@ -51,19 +78,9 @@ For each error found, provide the IPA of the correct word, a plain-English expla
 ` : ""}Return ONLY valid JSON with this exact structure (no extra text):
 {
   "scores": {
-    "pronunciation": <0-100>,
-    "fluency": <0-100>,
-    "confidence": <0-100>,
     "structure": <0-100>,
-    "vocabulary": <0-100>,
-    "pace": <0-100>,
-    "overall": <0-100>
+    "vocabulary": <0-100>
   },
-  "fillerWords": {
-    "count": <number>,
-    "words": [<exact filler words found, e.g. "um", "uh", "like">]
-  },
-  "wpm": <estimated words per minute as integer>,
   "strengths": [
     "<specific speaking strength — cite the actual word or phrase from the transcript>",
     "<second specific strength>",
@@ -96,18 +113,10 @@ For each error found, provide the IPA of the correct word, a plain-English expla
       "commonMistake": "<what non-native speakers typically do wrong with this sound>",
       "nativeExample": "<how it sounds in connected natural speech>"
     }
-  ],
-  ${hasScript ? `"scriptComparison": {
-    "wordsInScript": <integer>,
-    "wordsCovered": <integer — how many script words the user actually said>,
-    "accuracyPercent": <0-100>,
-    "missedWords": [<important words from script the user skipped>],
-    "addedWords": [<words user added that weren't in the script>]
-  },` : `"scriptComparison": null,`}
-  "bandScore": <IELTS estimated band 1-9 or null>
+  ]
 }
 
-SCORING GUIDE — be strict:
+SCORING GUIDE for structure and vocabulary — be strict:
 - 90-100: Native-like. Rare. Award only if genuinely impressive.
 - 75-89: Strong non-native speaker. Clear, fluent, minor accent only.
 - 60-74: Competent but noticeable issues with one or more dimensions.
@@ -124,8 +133,36 @@ pronunciationNotes: identify 2-4 sound patterns to work on. If speech is excelle
       max_completion_tokens: budget(2500),
     });
 
-    const analysis = JSON.parse(completion.choices[0]?.message?.content ?? "{}");
-    return NextResponse.json(analysis);
+    const ai = JSON.parse(completion.choices[0]?.message?.content ?? "{}");
+    const scores = {
+      pronunciation: measured.pronunciation,
+      fluency: measured.fluency,
+      confidence: measured.confidence,
+      pace: measured.pace,
+      structure: toScore(ai.scores?.structure),
+      vocabulary: toScore(ai.scores?.vocabulary),
+      overall: null as number | null,
+    };
+    scores.overall = overallScore(scores);
+
+    return NextResponse.json({
+      scores,
+      scoreBasis: {
+        pronunciation: "measured", fluency: "measured", confidence: "measured", pace: "measured",
+        structure: "ai", vocabulary: "ai", overall: "weighted",
+      },
+      metrics,
+      fillerWords: { count: metrics?.fillerCount ?? 0, words: metrics?.fillerWords ?? [] },
+      wpm,
+      strengths: Array.isArray(ai.strengths) ? ai.strengths : [],
+      improvements: Array.isArray(ai.improvements) ? ai.improvements : [],
+      aiFeedback: typeof ai.aiFeedback === "string" ? ai.aiFeedback : "",
+      nativeTip: typeof ai.nativeTip === "string" ? ai.nativeTip : "",
+      wordErrors: Array.isArray(ai.wordErrors) ? ai.wordErrors : [],
+      pronunciationNotes: Array.isArray(ai.pronunciationNotes) ? ai.pronunciationNotes : [],
+      scriptComparison,
+      bandScore: toBand(scores.overall),
+    });
   } catch (err) {
     console.error("Analysis error:", err);
     return NextResponse.json({ error: "Analysis failed" }, { status: 500 });

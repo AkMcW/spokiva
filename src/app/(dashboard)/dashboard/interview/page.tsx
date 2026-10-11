@@ -40,7 +40,7 @@ const starTips: Record<string, string[]> = {
 };
 
 interface Feedback {
-  score: number;
+  score: number | null;
   structure: string;
   delivery: string;
   vocab: string;
@@ -88,6 +88,7 @@ export default function InterviewPage() {
     recorder.onstop = async () => {
       const blob = new Blob(chunksRef.current, { type: "audio/webm" });
       let transcript = "";
+      let speechMetrics: unknown = null;
 
       try {
         const form = new FormData();
@@ -95,6 +96,7 @@ export default function InterviewPage() {
         const res = await fetch("/api/practice/transcribe", { method: "POST", body: form });
         const data = await res.json();
         transcript = data.transcript || "";
+        speechMetrics = data.metrics ?? null;
       } catch {
         setError("Transcription failed.");
         setRecordState("idle");
@@ -108,12 +110,13 @@ export default function InterviewPage() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             transcript,
+            metrics: speechMetrics,
             scenario: `${scenario} — Question: "${questions[scenario][qIndex]}"`,
           }),
         });
         const data = await res.json();
         setFeedback({
-          score: data.scores?.overall ?? 75,
+          score: data.scores?.overall ?? null,
           structure: data.strengths?.[0] ?? "Good answer structure.",
           delivery: `${data.fillerWords?.count ? `${data.fillerWords.count} filler word(s) detected. ` : ""}${data.aiFeedback?.split(".")[0] ?? "Good delivery."}`,
           vocab: data.strengths?.[2] ?? "Appropriate vocabulary used.",
@@ -229,7 +232,7 @@ export default function InterviewPage() {
               <div className="w-full">
                 <div className="flex items-center justify-between mb-4">
                   <p className="font-bold text-[var(--text-primary)]">AI Feedback</p>
-                  <span className="text-2xl font-bold text-[var(--accent)]">{feedback.score}/100</span>
+                  <span className="text-2xl font-bold text-[var(--accent)]">{feedback.score ?? "—"}/100</span>
                 </div>
                 <div className="space-y-3">
                   {[
