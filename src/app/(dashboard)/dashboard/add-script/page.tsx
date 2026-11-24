@@ -1,4 +1,5 @@
 "use client";
+import ScriptsTabs from "@/components/scripts/ScriptsTabs";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import {
@@ -94,9 +95,10 @@ export default function AddScriptPage() {
 
   return (
     <div className="max-w-4xl mx-auto space-y-5">
+      <ScriptsTabs />
       <div>
         <h1 className="text-2xl font-bold flex items-center gap-2" style={{ color: "var(--text-primary)" }}>
-          <FilePlus2 size={24} style={{ color: "var(--accent)" }} /> Add Your Own Script
+          <FilePlus2 size={24} style={{ color: "var(--accent)" }} /> Paste your own script
         </h1>
         <p className="text-sm mt-1" style={{ color: "var(--text-secondary)" }}>
           Paste a script from anywhere and save it to your library. Optionally, let AI review it — correcting the writing and adding speaking notation and pronunciation (IPA) hints.

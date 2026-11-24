@@ -1,4 +1,5 @@
 "use client";
+import ScriptsTabs from "@/components/scripts/ScriptsTabs";
 import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { PRACTICE_SCRIPTS, PracticeScript } from "@/data/practiceScripts";
@@ -86,10 +87,11 @@ export default function ScriptLibraryPage() {
 
   return (
     <div style={{ maxWidth: 1100, margin: "0 auto", padding: "2rem 1rem" }}>
+      <ScriptsTabs />
       {/* Header */}
       <div style={{ marginBottom: "2rem" }}>
         <h1 style={{ fontSize: "1.75rem", fontWeight: 700, color: "var(--text-primary)", marginBottom: "0.5rem" }}>
-          Script Library
+          Ready-made scripts
         </h1>
         <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem" }}>
           {PRACTICE_SCRIPTS.length} ready-to-use practice scripts — pick one and start speaking.

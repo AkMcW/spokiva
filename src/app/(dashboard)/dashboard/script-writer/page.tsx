@@ -1,214 +1,13 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Wand2, Copy, RotateCcw, Save, CheckCircle, ChevronDown, ChevronUp, Sparkles, Zap, Mic, Shuffle } from "lucide-react";
-
-// ─── 46 Scenarios ───────────────────────────────────────────────
-const SCENARIOS = [
-  // Business
-  "Business Meeting Update",
-  "Executive Summary Presentation",
-  "Board Room Update",
-  "Quarterly Business Review",
-  "Budget Proposal",
-  "Risk & Issues Update",
-  "Project Kickoff",
-  "Product Launch Announcement",
-  "Team Briefing",
-  "Performance Review (Self)",
-  "Difficult Conversation",
-  "Crisis Communication",
-  "Customer Complaint Response",
-  "Negotiation Opening",
-  "Sales Pitch",
-  "Cold Call Introduction",
-  "Product Demo",
-  "Investor Pitch",
-  // Presentations & Public Speaking
-  "Conference Keynote",
-  "Technical Presentation",
-  "Training Presentation",
-  "TED-style Talk",
-  "Wedding Speech",
-  "Award Acceptance Speech",
-  "Toast / Tribute",
-  "Graduation Speech",
-  "Fundraising Appeal",
-  // Career
-  "Job Interview: Tell Me About Yourself",
-  "Job Interview: Strengths & Weaknesses",
-  "Job Interview: STAR Method Answer",
-  "Job Promotion Pitch",
-  "MBA Interview",
-  "Scholarship Interview",
-  "University Admission Interview",
-  "LinkedIn Professional Intro",
-  // Exam Prep
-  "IELTS Speaking Part 1",
-  "IELTS Speaking Part 2 (Cue Card)",
-  "IELTS Speaking Part 3 (Discussion)",
-  "TOEFL Independent Speaking",
-  "TOEFL Integrated Speaking",
-  "PTE Retell Lecture",
-  "TOEIC Picture Description",
-  "Cambridge C1 Long Turn",
-  // Social
-  "Media Interview Response",
-  "Podcast Introduction",
-];
-
-// ─── 10 Presets ─────────────────────────────────────────────────
-const PRESETS = [
-  {
-    label: "Tell Me About Yourself",
-    icon: "🎯",
-    form: { scenario: "Job Interview: Tell Me About Yourself", goal: "A compelling 90-second personal introduction covering my background, key strengths, and why I am the right fit for this role.", audience: "Interview Panel", tone: "Professional", duration: "1min", style: "" },
-  },
-  {
-    label: "IELTS Part 2 Cue Card",
-    icon: "📚",
-    form: { scenario: "IELTS Speaking Part 2 (Cue Card)", goal: "Describe a memorable trip I took. Include where I went, who I went with, what I did, and why it was memorable.", audience: "IELTS Examiner", tone: "Conversational", duration: "2min", style: "" },
-  },
-  {
-    label: "Q3 Project Status Update",
-    icon: "📊",
-    form: { scenario: "Business Meeting Update", goal: "Give a concise Q3 status update covering: progress against targets, two current blockers, and the plan for the next sprint.", audience: "Senior Management", tone: "Professional", duration: "2min", style: "" },
-  },
-  {
-    label: "Investor Pitch Intro",
-    icon: "💡",
-    form: { scenario: "Investor Pitch", goal: "Open an investor pitch for a B2B SaaS startup. Cover the problem we solve, our solution, traction, and the ask.", audience: "Investors", tone: "Persuasive", duration: "3min", style: "" },
-  },
-  {
-    label: "Executive Board Update",
-    icon: "🏢",
-    form: { scenario: "Board Room Update", goal: "Present a strategic update to the board covering key business metrics, risks, and the decision needed from the board today.", audience: "Board of Directors", tone: "Formal", duration: "3min", style: "" },
-  },
-  {
-    label: "Sales Discovery Opening",
-    icon: "💼",
-    form: { scenario: "Sales Pitch", goal: "Open a discovery call with a new prospect. Build rapport, explain our value proposition, and transition into discovery questions.", audience: "Potential Client", tone: "Conversational", duration: "1min", style: "" },
-  },
-  {
-    label: "TOEFL Independent Task",
-    icon: "🌍",
-    form: { scenario: "TOEFL Independent Speaking", goal: "Respond to: 'Some people prefer to work in teams. Others prefer to work alone. Which do you prefer and why?' Give a structured 45-second response.", audience: "TOEFL Examiner", tone: "Formal", duration: "30s", style: "" },
-  },
-  {
-    label: "Conference Keynote Opener",
-    icon: "🎤",
-    form: { scenario: "Conference Keynote", goal: "Open a technology conference keynote. Start with a powerful hook, establish credibility, introduce the theme, and preview the talk.", audience: "Tech Professionals", tone: "Inspirational", duration: "3min", style: "" },
-  },
-  {
-    label: "MBA Interview Why MBA",
-    icon: "🎓",
-    form: { scenario: "MBA Interview", goal: "Answer 'Why do you want an MBA and why now?' Connect my professional experience, career goals, and what the MBA will unlock for me.", audience: "MBA Admissions Panel", tone: "Professional", duration: "2min", style: "" },
-  },
-  {
-    label: "Wedding Toast",
-    icon: "🥂",
-    form: { scenario: "Wedding Speech", goal: "Give a heartfelt and funny best man / maid of honor wedding toast. Share a story about the couple, express love, and raise a toast.", audience: "Wedding Guests", tone: "Warm & Humorous", duration: "2min", style: "" },
-  },
-  {
-    label: "Product Demo Opener",
-    icon: "🖥️",
-    form: { scenario: "Product Demo", goal: "Open a live product demo. Hook the audience with the core problem, show empathy, and transition smoothly into the live demonstration.", audience: "Potential Clients", tone: "Conversational", duration: "1min", style: "" },
-  },
-  {
-    label: "Crisis Communication",
-    icon: "🚨",
-    form: { scenario: "Crisis Communication", goal: "Address a service outage or product issue to customers. Acknowledge the problem, take ownership, explain what happened, and outline the fix.", audience: "Customers", tone: "Empathetic", duration: "2min", style: "" },
-  },
-  {
-    label: "Scholarship Interview",
-    icon: "🏅",
-    form: { scenario: "Scholarship Interview", goal: "Introduce myself and explain why I deserve this scholarship. Cover academic achievements, community involvement, and future goals.", audience: "Scholarship Panel", tone: "Confident", duration: "2min", style: "" },
-  },
-  {
-    label: "Team Motivational Briefing",
-    icon: "💪",
-    form: { scenario: "Team Briefing", goal: "Motivate the team at the start of a challenging project. Acknowledge the difficulty ahead, remind them of past wins, and build excitement for what's coming.", audience: "Team Members", tone: "Inspirational", duration: "2min", style: "" },
-  },
-  {
-    label: "Negotiation Opening",
-    icon: "🤝",
-    form: { scenario: "Negotiation Opening", goal: "Open a high-stakes contract negotiation. Set a collaborative tone, state our position confidently, and invite a productive dialogue.", audience: "Business Partner", tone: "Professional", duration: "1min", style: "" },
-  },
-  {
-    label: "TED-style Talk Intro",
-    icon: "💬",
-    form: { scenario: "TED-style Talk", goal: "Open a TED-style talk with a personal story that reveals a surprising truth about human behaviour. Hook the audience in the first 30 seconds.", audience: "General Public", tone: "Inspirational", duration: "3min", style: "Simon Sinek — Start With Why framework, conceptual, repeating core ideas, simple powerful language" },
-  },
-  {
-    label: "Performance Self-Review",
-    icon: "📋",
-    form: { scenario: "Performance Review (Self)", goal: "Deliver a confident self-appraisal covering my top three achievements this year, one area I am actively improving, and my goals for next year.", audience: "Line Manager", tone: "Professional", duration: "2min", style: "" },
-  },
-  {
-    label: "Cold Call Introduction",
-    icon: "📞",
-    form: { scenario: "Cold Call Introduction", goal: "Deliver a 30-second cold call opener that earns a conversation. State who I am, the specific reason for calling, and end with a permission question.", audience: "Prospect", tone: "Conversational", duration: "30s", style: "" },
-  },
-  {
-    label: "Fundraising Appeal",
-    icon: "❤️",
-    form: { scenario: "Fundraising Appeal", goal: "Make an emotional fundraising appeal for a children's education charity. Tell a beneficiary story, share the impact of donations, and issue a clear call to action.", audience: "Donors", tone: "Empathetic", duration: "3min", style: "" },
-  },
-];
-
-// ─── Famous Speaking Styles ─────────────────────────────────────
-const STYLES = [
-  { label: "No specific style", value: "" },
-  { label: "Steve Jobs", value: "Steve Jobs — simple, storytelling, dramatic pauses, 'one more thing' suspense, minimalist language", emoji: "🍎" },
-  { label: "Barack Obama", value: "Barack Obama — measured cadence, inclusive 'we' language, inspirational, hopeful, oratorical rhythm", emoji: "🇺🇸" },
-  { label: "Simon Sinek", value: "Simon Sinek — Start With Why framework, conceptual, repeating core ideas, simple powerful language", emoji: "💡" },
-  { label: "Brené Brown", value: "Brené Brown — vulnerable, story-driven, academic research woven with personal anecdotes, warm and authentic", emoji: "❤️" },
-  { label: "Elon Musk", value: "Elon Musk — direct, data-driven, bold vision, matter-of-fact delivery, future-focused, blunt honesty", emoji: "🚀" },
-  { label: "Oprah Winfrey", value: "Oprah Winfrey — warm, empowering, emotional connection, personal stories, uplifting and energizing", emoji: "✨" },
-  { label: "Winston Churchill", value: "Winston Churchill — powerful rhetorical questions, tricolon (rule of three), dramatic pauses, historic gravitas", emoji: "🎖️" },
-  { label: "Martin Luther King Jr.", value: "Martin Luther King Jr. — repetition (anaphora), vivid imagery, moral urgency, rhythmic and poetic cadence", emoji: "🕊️" },
-  { label: "Tony Robbins", value: "Tony Robbins — high energy, pattern interrupts, direct commands, empowering questions, bold certainty", emoji: "🔥" },
-  { label: "Sheryl Sandberg", value: "Sheryl Sandberg — data-backed, authentic personal stories, leadership-focused, empowering professional tone", emoji: "👩‍💼" },
-  { label: "Richard Feynman", value: "Richard Feynman — explain complex ideas simply, curious and playful, analogies, step-by-step reasoning", emoji: "🔬" },
-  { label: "Malala Yousafzai", value: "Malala Yousafzai — calm moral courage, personal narrative, universal values, simple direct language, quiet yet powerful conviction", emoji: "📖" },
-  { label: "Jordan Peterson", value: "Jordan Peterson — precise vocabulary, archetypal references, structured arguments, building complexity step-by-step, serious intellectual tone", emoji: "🦞" },
-  { label: "Gary Vaynerchuk", value: "Gary Vaynerchuk — raw and direct, high energy, street-smart authenticity, no-fluff hustle mindset, casual but urgent", emoji: "⚡" },
-  { label: "Satya Nadella", value: "Satya Nadella — empathetic leadership, growth mindset language, cultural transformation, humble and visionary, strategic clarity", emoji: "🌐" },
-  { label: "Nelson Mandela", value: "Nelson Mandela — dignified and measured, moral authority, reconciliation and unity, long-view perspective, quiet gravitas", emoji: "✊" },
-  { label: "Amy Cuddy", value: "Amy Cuddy — research-backed storytelling, personal vulnerability, accessible science, empowering and practical, relatable examples", emoji: "🧠" },
-  { label: "Seth Godin", value: "Seth Godin — short punchy sentences, counterintuitive insight, marketing philosophy, memorable metaphors, challenges assumptions", emoji: "🟣" },
-  { label: "Chimamanda Ngozi Adichie", value: "Chimamanda Ngozi Adichie — rich storytelling, literary precision, cultural depth, warm wit, challenges single narratives with nuance", emoji: "🌍" },
-  { label: "Jocko Willink", value: "Jocko Willink — extreme ownership, military directness, no excuses, short declarative sentences, disciplined and commanding tone", emoji: "🪖" },
-  { label: "Yuval Noah Harari", value: "Yuval Noah Harari — sweeping historical perspective, clear analytical prose, thought-provoking questions, connects big ideas across disciplines", emoji: "📚" },
-];
-
-const AUDIENCES = [
-  "Colleagues", "Senior Management", "Board of Directors", "Clients", "Investors",
-  "Interview Panel", "MBA Admissions Panel", "IELTS Examiner", "TOEFL Examiner",
-  "General Public", "Tech Professionals", "Students", "Media / Press", "Wedding Guests",
-];
-
-const TONES = [
-  "Professional", "Conversational", "Formal", "Persuasive", "Inspirational",
-  "Warm & Humorous", "Confident", "Academic", "Executive", "Empathetic",
-];
-
-const DURATIONS = ["30s", "1min", "2min", "3min", "5min", "10min"];
-
-const OPTIMIZE_OPTIONS = [
-  { label: "More Professional", instruction: "Make this script more professional and executive-level" },
-  { label: "Simplify", instruction: "Simplify the language so it's easier to understand and more conversational" },
-  { label: "More Persuasive", instruction: "Make this script more persuasive and compelling" },
-  { label: "Add Storytelling", instruction: "Add a brief personal story or analogy to make this more engaging" },
-  { label: "Add Q&A Section", instruction: "Add 3 likely questions the audience might ask, with strong answers" },
-  { label: "Stronger Opening", instruction: "Rewrite the opening to be more powerful and attention-grabbing" },
-  { label: "Stronger Closing", instruction: "Rewrite the closing to be more memorable and impactful" },
-  { label: "Make Shorter", instruction: "Make this script shorter and more concise without losing the key messages" },
-  { label: "Make Longer", instruction: "Expand this script with more detail, examples, and supporting points" },
-  { label: "Add Transitions", instruction: "Add smooth transitional phrases between sections" },
-  { label: "More Confident Tone", instruction: "Rewrite with a more confident, assertive tone" },
-  { label: "Bullet Points", instruction: "Convert this to speaker notes in bullet point format" },
-];
+import { Wand2, Shuffle, Sparkles, ArrowLeft, ArrowRight, Check, Loader2, SlidersHorizontal, ListChecks, Lightbulb } from "lucide-react";
+import ScriptsTabs from "@/components/scripts/ScriptsTabs";
+import ScriptResult, { useScriptHistory, stripMarks } from "@/components/scripts/ScriptResult";
+import {
+  OCCASION_GROUPS, ALL_AUDIENCES, TONES, DURATIONS, STYLES, PRESETS,
+  groupForScenario, type Preset,
+} from "@/lib/scriptOptions";
 
 interface FormState {
   scenario: string;
@@ -218,382 +17,533 @@ interface FormState {
   duration: string;
   style: string;
 }
+interface GuideQuestion { question: string; example: string }
+type Mode = "guided" | "advanced";
+
+const DRAFT_KEY = "spokiva_writer_draft";
+const MODE_KEY = "spokiva_writer_mode";
+const EMPTY_FORM: FormState = { scenario: "", goal: "", audience: "", tone: "Professional", duration: "2min", style: "" };
+const STEPS = ["Occasion", "Listeners", "Your details", "Length"];
+
+// ─── Small UI helpers ──────────────────────────────────────────────────────────
+function Chip({ selected, onClick, children, title }: { selected: boolean; onClick: () => void; children: React.ReactNode; title?: string }) {
+  return (
+    <button type="button" onClick={onClick} title={title} aria-pressed={selected}
+      className="px-3 py-2 rounded-lg text-sm border transition-colors text-left"
+      style={selected
+        ? { background: "var(--accent-bg)", borderColor: "var(--accent)", color: "var(--accent)", fontWeight: 600 }
+        : { borderColor: "var(--border)", color: "var(--text-primary)" }}>
+      {children}
+    </button>
+  );
+}
+
+function StepHeading({ title, help }: { title: string; help: string }) {
+  return (
+    <div className="mb-4">
+      <h2 className="text-lg font-bold" style={{ color: "var(--text-primary)" }}>{title}</h2>
+      <p className="text-sm" style={{ color: "var(--text-secondary)" }}>{help}</p>
+    </div>
+  );
+}
+
+const field = "w-full px-3 py-2.5 border rounded-lg text-sm focus:outline-none focus:border-[var(--accent)] focus:ring-1 focus:ring-[var(--accent)]";
+const fieldStyle = { borderColor: "var(--border)", background: "var(--bg-card)", color: "var(--text-primary)" };
 
 export default function ScriptWriterPage() {
   const router = useRouter();
+  const [mode, setMode] = useState<Mode>("guided");
+  const [step, setStep] = useState(0);
+  const [form, setForm] = useState<FormState>(EMPTY_FORM);
+  const [groupId, setGroupId] = useState<string | null>(null);
+  const [customAudience, setCustomAudience] = useState(false);
+
+  const [questions, setQuestions] = useState<GuideQuestion[] | null>(null);
+  const [questionsFor, setQuestionsFor] = useState("");
+  const [loadingQuestions, setLoadingQuestions] = useState(false);
+  const [answers, setAnswers] = useState<string[]>(["", "", ""]);
+  const [extra, setExtra] = useState("");
+
   const [generated, setGenerated] = useState(false);
-  const [script, setScript] = useState("");
-  const [copied, setCopied] = useState(false);
-  const [saved, setSaved] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [optimizing, setOptimizing] = useState<string | null>(null);
   const [error, setError] = useState("");
-  const [showPresets, setShowPresets] = useState(false);
-  const [wordCount, setWordCount] = useState(0);
+  const [savedTitle, setSavedTitle] = useState("");
+  const history = useScriptHistory("");
+  const loaded = useRef(false);
+  const resultRef = useRef<HTMLDivElement>(null);
 
-  const [form, setForm] = useState<FormState>({
-    scenario: "Business Meeting Update",
-    goal: "",
-    audience: "Colleagues",
-    tone: "Professional",
-    duration: "2min",
-    style: "",
-  });
+  // ── Restore: a script sent from "My scripts" → Edit wins over the saved draft ──
+  useEffect(() => {
+    try {
+      const m = localStorage.getItem(MODE_KEY);
+      if (m === "guided" || m === "advanced") setMode(m);
+      const edit = localStorage.getItem("spokiva_edit_script");
+      if (edit) {
+        localStorage.removeItem("spokiva_edit_script");
+        const s = JSON.parse(edit);
+        if (s?.content) {
+          history.reset(String(s.content));
+          setForm((f) => ({ ...f, scenario: s.scenario || f.scenario, duration: s.duration || f.duration }));
+          setSavedTitle(String(s.title ?? ""));
+          setGenerated(true);
+          loaded.current = true;
+          return;
+        }
+      }
+      const d = JSON.parse(localStorage.getItem(DRAFT_KEY) ?? "null");
+      if (d) {
+        if (d.form) setForm({ ...EMPTY_FORM, ...d.form });
+        if (typeof d.step === "number") setStep(Math.min(3, Math.max(0, d.step)));
+        if (d.groupId) setGroupId(d.groupId);
+        if (Array.isArray(d.questions)) { setQuestions(d.questions); setQuestionsFor(d.questionsFor ?? ""); }
+        if (Array.isArray(d.answers)) setAnswers(d.answers);
+        if (typeof d.extra === "string") setExtra(d.extra);
+        if (d.script) { history.reset(d.script); setGenerated(true); }
+        if (d.savedTitle) setSavedTitle(d.savedTitle);
+      }
+    } catch {}
+    loaded.current = true;
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  function applyPreset(preset: typeof PRESETS[0]) {
-    setForm(preset.form);
-    setShowPresets(false);
+  // ── Autosave the draft ──
+  useEffect(() => {
+    if (!loaded.current) return;
+    const t = setTimeout(() => {
+      try {
+        localStorage.setItem(DRAFT_KEY, JSON.stringify({
+          form, step, groupId, questions, questionsFor, answers, extra, savedTitle,
+          script: generated ? history.value : "",
+        }));
+      } catch {}
+    }, 400);
+    return () => clearTimeout(t);
+  }, [form, step, groupId, questions, questionsFor, answers, extra, generated, history.value, savedTitle]);
+
+  useEffect(() => { try { localStorage.setItem(MODE_KEY, mode); } catch {} }, [mode]);
+
+  const group = OCCASION_GROUPS.find((g) => g.id === groupId) ?? groupForScenario(form.scenario);
+  const set = (patch: Partial<FormState>) => setForm((f) => ({ ...f, ...patch }));
+
+  // ── Wizard step 3: fetch tailored questions ──
+  async function loadQuestions() {
+    const key = `${form.scenario}|${form.audience}`;
+    if (questions && questionsFor === key) return;
+    setLoadingQuestions(true);
+    try {
+      const res = await fetch("/api/scripts/questions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ scenario: form.scenario, audience: form.audience }),
+      });
+      const data = await res.json();
+      setQuestions(data.questions);
+      setQuestionsFor(key);
+      setAnswers(["", "", ""]);
+    } catch {
+      setQuestions([
+        { question: "What is the main thing you want your listeners to remember?", example: "" },
+        { question: "What facts, names or numbers should be included?", example: "" },
+        { question: "What do you want people to do or feel at the end?", example: "" },
+      ]);
+      setQuestionsFor(key);
+    } finally {
+      setLoadingQuestions(false);
+    }
   }
 
-  function handleShuffle() {
-    const p = PRESETS[Math.floor(Math.random() * PRESETS.length)];
-    setForm(p.form);
-    setGenerated(false);
-    setSaved(false);
+  function guidedGoal(): string {
+    const qa = (questions ?? [])
+      .map((q, i) => (answers[i]?.trim() ? `${q.question}\n→ ${answers[i].trim()}` : ""))
+      .filter(Boolean);
+    if (extra.trim()) qa.push(`Anything else:\n→ ${extra.trim()}`);
+    return qa.join("\n\n");
   }
 
-  async function handleGenerate() {
+  const hasDetails = answers.some((a) => a.trim()) || extra.trim().length > 0;
+  const canNext = [!!form.scenario, !!form.audience.trim(), true, !!form.duration][step];
+
+  function next() {
+    if (!canNext) return;
+    if (step === 1) loadQuestions();
+    if (step < 3) setStep(step + 1);
+    else generate();
+  }
+
+  async function generate() {
     setLoading(true);
     setError("");
-    setGenerated(false);
-    setSaved(false);
+    const payload = mode === "guided" ? { ...form, goal: guidedGoal() } : form;
     try {
       const res = await fetch("/api/scripts/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify(payload),
       });
-      const data = await res.json();
-      if (data.error) throw new Error(data.error);
-      setScript(data.script);
-      setWordCount(data.script.split(/\s+/).filter(Boolean).length);
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || data.error || !data.script) throw new Error(data.error ?? "The AI couldn't write the script.");
+      history.reset(String(data.script).trim());
+      setSavedTitle("");
       setGenerated(true);
+      setTimeout(() => resultRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 50);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to generate script.");
+      setError(`${err instanceof Error ? err.message : "Something went wrong."} Please try again.`);
     } finally {
       setLoading(false);
     }
   }
 
-  async function handleOptimize(opt: typeof OPTIMIZE_OPTIONS[0]) {
-    setOptimizing(opt.label);
-    try {
-      const res = await fetch("/api/scripts/optimize", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ script, instruction: opt.instruction }),
-      });
-      const data = await res.json();
-      if (data.script) {
-        setScript(data.script);
-        setWordCount(data.script.split(/\s+/).filter(Boolean).length);
-        setSaved(false);
-      }
-    } catch {
-      // silent fail on optimize
-    } finally {
-      setOptimizing(null);
+  function applyPreset(p: Preset) {
+    setForm(p.form);
+    setGroupId(groupForScenario(p.form.scenario)?.id ?? null);
+    setCustomAudience(!ALL_AUDIENCES.includes(p.form.audience));
+    setMode("advanced");
+  }
+
+  function startOver() {
+    history.reset("");
+    setGenerated(false);
+    setSavedTitle("");
+    setStep(0);
+    setForm(EMPTY_FORM);
+    setGroupId(null);
+    setQuestions(null);
+    setAnswers(["", "", ""]);
+    setExtra("");
+    try { localStorage.removeItem(DRAFT_KEY); } catch {}
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  const wordsOf = (t: string) => stripMarks(t).split(/\s+/).filter(Boolean).length;
+
+  async function save() {
+    const content = history.value;
+    const title = savedTitle
+      || (mode === "guided" ? answers.find((a) => a.trim())?.slice(0, 60) : form.goal?.slice(0, 60))
+      || form.scenario || "My script";
+    const res = await fetch("/api/scripts/saved", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ title, scenario: form.scenario || "Custom", content, wordCount: wordsOf(content), duration: form.duration }),
+    });
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      throw new Error(data.error ?? "Couldn't save the script. Please try again.");
     }
+    setSavedTitle(title);
   }
 
-  function handleCopy() {
-    navigator.clipboard.writeText(script).catch(() => {});
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  }
-
-  function handleSendToPractice() {
-    localStorage.setItem("spokiva_active_script", JSON.stringify({
-      content: script,
-      scenario: form.scenario,
-      wordCount,
-    }));
+  function practise() {
+    const content = history.value;
+    localStorage.setItem("spokiva_active_script", JSON.stringify({ content, scenario: form.scenario || "Custom", wordCount: wordsOf(content) }));
     router.push("/dashboard/practice");
   }
 
-  async function handleSave() {
-    if (!script.trim()) return;
-    setSaved(false);
-    try {
-      const res = await fetch("/api/scripts/saved", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          title: form.goal?.slice(0, 60) || form.scenario,
-          scenario: form.scenario,
-          content: script,
-          wordCount,
-          duration: form.duration,
-        }),
-      });
-      if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.error ?? "Save failed");
-      }
-      setSaved(true);
-      setTimeout(() => setSaved(false), 3000);
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "Failed to save script");
-    }
+  const targetWords = DURATIONS.find((d) => d.value === form.duration)?.words;
+
+  // ── Result view ──
+  if (generated) {
+    return (
+      <div className="w-full max-w-4xl mx-auto" ref={resultRef}>
+        <ScriptsTabs />
+        <div className="mb-5">
+          <h1 className="text-2xl font-bold" style={{ color: "var(--text-primary)" }}>{savedTitle || "Your script is ready"}</h1>
+          <p className="text-sm mt-1" style={{ color: "var(--text-secondary)" }}>
+            {form.scenario && <>{form.scenario}{form.audience && <> · for {form.audience}</>} · </>}
+            Read it out loud once. If something doesn&apos;t sound like you, change it.
+          </p>
+        </div>
+        <div className="rounded-xl p-5 sm:p-6 border" style={{ background: "var(--bg-card)", borderColor: "var(--border)" }}>
+          <ScriptResult history={history} targetWords={targetWords} onSave={save} onPractice={practise} onStartOver={startOver} />
+        </div>
+      </div>
+    );
   }
 
-  const estimatedDuration = Math.round(wordCount / 130);
-
+  // ── Create view ──
   return (
-    <div className="max-w-6xl mx-auto space-y-5">
-      <div>
-        <h1 className="text-2xl font-bold text-[var(--text-primary)]">AI Script Writer</h1>
-        <p className="text-sm text-[var(--text-secondary)] mt-1">Generate a polished speaking script powered by GPT-6.1 Sol.</p>
+    <div className="w-full max-w-4xl mx-auto">
+      <ScriptsTabs />
+      <div className="flex flex-wrap items-end justify-between gap-3 mb-5">
+        <div>
+          <h1 className="text-2xl font-bold" style={{ color: "var(--text-primary)" }}>Write a script with AI</h1>
+          <p className="text-sm mt-1" style={{ color: "var(--text-secondary)" }}>
+            {mode === "guided" ? "Answer 4 quick steps. The AI writes a script you can practise." : "Set every option yourself, or start from an example."}
+          </p>
+        </div>
+        <div className="inline-flex rounded-lg p-0.5" style={{ background: "var(--bg-secondary)" }} role="tablist" aria-label="Writing mode">
+          {([
+            { id: "guided", label: "Step by step", icon: ListChecks },
+            { id: "advanced", label: "All options", icon: SlidersHorizontal },
+          ] as const).map(({ id, label, icon: Icon }) => (
+            <button key={id} role="tab" aria-selected={mode === id} onClick={() => setMode(id)}
+              className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-md transition-colors"
+              style={mode === id ? { background: "var(--bg-card)", color: "var(--text-primary)", boxShadow: "0 1px 2px rgba(0,0,0,.08)" } : { color: "var(--text-secondary)" }}>
+              <Icon size={13} /> {label}
+            </button>
+          ))}
+        </div>
       </div>
 
-      {/* Presets */}
-      <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-lg overflow-hidden">
-        <div className="w-full flex items-center justify-between px-5 py-3 hover:bg-[var(--bg-hover)] transition-colors">
-          <button
-            onClick={() => setShowPresets(!showPresets)}
-            className="flex items-center gap-2 text-sm font-bold text-[var(--text-primary)] flex-1 text-left"
-          >
-            <Zap size={15} className="text-[#F5A623]" />
-            Quick Presets — start from a template
-          </button>
-          <div className="flex items-center gap-3">
-            <button
-              onClick={handleShuffle}
-              title="Shuffle — fill the form with a random preset"
-              className="flex items-center gap-1.5 text-xs font-semibold text-[var(--accent)] hover:text-[var(--accent-hover)] transition-colors"
-            >
-              <Shuffle size={14} /> Shuffle
-            </button>
-            <button onClick={() => setShowPresets(!showPresets)} aria-label="Toggle presets">
-              {showPresets ? <ChevronUp size={16} className="text-[var(--text-secondary)]" /> : <ChevronDown size={16} className="text-[var(--text-secondary)]" />}
-            </button>
-          </div>
-        </div>
-        {showPresets && (
-          <div className="px-5 pb-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 border-t border-[var(--border)] pt-4">
-            {PRESETS.map((p) => (
-              <button
-                key={p.label}
-                onClick={() => applyPreset(p)}
-                className="flex flex-col items-start gap-1 p-3 border border-[var(--border)] rounded-lg hover:border-[var(--accent)] hover:bg-[var(--accent-bg)] transition-all text-left"
-              >
-                <span className="text-lg">{p.icon}</span>
-                <span className="text-xs font-semibold text-[var(--text-primary)] leading-tight">{p.label}</span>
-              </button>
+      {mode === "guided" ? (
+        <div className="rounded-xl border" style={{ background: "var(--bg-card)", borderColor: "var(--border)" }}>
+          {/* Progress */}
+          <ol className="flex border-b" style={{ borderColor: "var(--border)" }}>
+            {STEPS.map((label, i) => (
+              <li key={label} className="flex-1">
+                <button type="button" onClick={() => i < step && setStep(i)} disabled={i > step}
+                  className="w-full flex items-center justify-center gap-1.5 py-3 text-xs font-semibold border-b-2 -mb-px"
+                  style={{ borderColor: i === step ? "var(--accent)" : "transparent", color: i <= step ? "var(--text-primary)" : "var(--text-muted)" }}
+                  aria-current={i === step ? "step" : undefined}>
+                  <span className="w-5 h-5 rounded-full flex items-center justify-center text-[10px] shrink-0"
+                    style={i < step ? { background: "var(--accent)", color: "var(--on-accent, #fff)" } : i === step ? { border: "2px solid var(--accent)", color: "var(--accent)" } : { border: "1px solid var(--border)" }}>
+                    {i < step ? <Check size={11} /> : i + 1}
+                  </span>
+                  <span className="hidden sm:inline">{label}</span>
+                </button>
+              </li>
             ))}
-          </div>
-        )}
-      </div>
+          </ol>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-        {/* Left: Form */}
-        <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-6 space-y-4">
-          <h2 className="font-bold text-[var(--text-primary)]">Configure your script</h2>
-
-          {/* Scenario */}
-          <div>
-            <label className="block text-sm font-semibold text-[var(--text-primary)] mb-1.5">Scenario <span className="text-[var(--text-secondary)] font-normal">({SCENARIOS.length} options)</span></label>
-            <select
-              value={form.scenario}
-              onChange={(e) => setForm({ ...form, scenario: e.target.value })}
-              className="w-full px-3 py-2.5 border border-[var(--border)] rounded text-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent)] focus:ring-1 focus:ring-[var(--accent)] bg-[var(--bg-card)]"
-            >
-              {SCENARIOS.map((s) => <option key={s}>{s}</option>)}
-            </select>
-          </div>
-
-          {/* Goal */}
-          <div>
-            <label className="block text-sm font-semibold text-[var(--text-primary)] mb-1.5">Speaking goal <span className="text-[var(--text-secondary)] font-normal">(optional — describe what you want to say)</span></label>
-            <textarea
-              value={form.goal}
-              onChange={(e) => setForm({ ...form, goal: e.target.value })}
-              placeholder="e.g. Give a Q3 project status update covering progress, blockers, and next steps for my engineering team."
-              rows={3}
-              className="w-full px-3 py-2.5 border border-[var(--border)] rounded text-sm text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--accent)] focus:ring-1 focus:ring-[var(--accent)] resize-none"
-            />
-          </div>
-
-          {/* Audience & Tone */}
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="block text-sm font-semibold text-[var(--text-primary)] mb-1.5">Audience</label>
-              <select
-                value={form.audience}
-                onChange={(e) => setForm({ ...form, audience: e.target.value })}
-                className="w-full px-3 py-2.5 border border-[var(--border)] rounded text-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent)] focus:ring-1 focus:ring-[var(--accent)] bg-[var(--bg-card)]"
-              >
-                {AUDIENCES.map((a) => <option key={a}>{a}</option>)}
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-semibold text-[var(--text-primary)] mb-1.5">Tone</label>
-              <select
-                value={form.tone}
-                onChange={(e) => setForm({ ...form, tone: e.target.value })}
-                className="w-full px-3 py-2.5 border border-[var(--border)] rounded text-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent)] focus:ring-1 focus:ring-[var(--accent)] bg-[var(--bg-card)]"
-              >
-                {TONES.map((t) => <option key={t}>{t}</option>)}
-              </select>
-            </div>
-          </div>
-
-          {/* Duration */}
-          <div>
-            <label className="block text-sm font-semibold text-[var(--text-primary)] mb-1.5">Duration</label>
-            <div className="flex gap-2 flex-wrap">
-              {DURATIONS.map((d) => (
-                <button
-                  key={d}
-                  onClick={() => setForm({ ...form, duration: d })}
-                  className={`px-3 py-1.5 rounded text-xs font-semibold border transition-colors ${
-                    form.duration === d
-                      ? "bg-[var(--accent)] text-white border-[var(--accent)]"
-                      : "border-[var(--border)] text-[var(--text-secondary)] hover:border-[var(--accent)] hover:text-[var(--accent)]"
-                  }`}
-                >
-                  {d}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Speaking Style */}
-          <div>
-            <label className="block text-sm font-semibold text-[var(--text-primary)] mb-1.5">
-              <Sparkles size={13} className="inline mr-1 text-[#F5A623]" />
-              Speaking style
-            </label>
-            <select
-              value={form.style}
-              onChange={(e) => setForm({ ...form, style: e.target.value })}
-              className="w-full px-3 py-2.5 border border-[var(--border)] rounded text-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent)] focus:ring-1 focus:ring-[var(--accent)] bg-[var(--bg-card)]"
-            >
-              {STYLES.map((s) => (
-                <option key={s.value} value={s.value}>
-                  {s.emoji ? `${s.emoji} ${s.label}` : s.label}
-                </option>
-              ))}
-            </select>
-            {form.style && (
-              <p className="text-xs text-[var(--accent)] mt-1 font-medium">
-                AI will write in the style of {STYLES.find(s => s.value === form.style)?.label}
-              </p>
-            )}
-          </div>
-
-          {error && (
-            <div className="bg-[var(--danger-bg)] border border-[var(--danger-border)] rounded-lg p-3">
-              <p className="text-xs text-[#E53935] font-medium">{error}</p>
-            </div>
-          )}
-
-          <button
-            onClick={handleGenerate}
-            disabled={loading}
-            className="w-full bg-[var(--accent)] hover:bg-[var(--accent-hover)] disabled:opacity-60 text-white font-semibold py-3 rounded transition-colors flex items-center justify-center gap-2 text-sm"
-          >
-            <Wand2 size={16} />
-            {loading ? "Generating with GPT-6.1 Sol..." : "Generate Script"}
-          </button>
-        </div>
-
-        {/* Right: Output */}
-        <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-6 flex flex-col">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h2 className="font-bold text-[var(--text-primary)]">Generated Script</h2>
-              {generated && (
-                <p className="text-xs text-[var(--text-secondary)] mt-0.5">
-                  {wordCount} words · ~{estimatedDuration} min read
-                </p>
-              )}
-            </div>
-            {generated && (
-              <div className="flex gap-2">
-                <button
-                  onClick={handleCopy}
-                  className="flex items-center gap-1 text-xs border border-[var(--border)] text-[var(--text-secondary)] hover:bg-[var(--bg-hover)] px-2.5 py-1.5 rounded transition-colors"
-                >
-                  <Copy size={12} />
-                  {copied ? "Copied!" : "Copy"}
-                </button>
-                <button
-                  onClick={handleSave}
-                  disabled={saved}
-                  className={`flex items-center gap-1 text-xs px-2.5 py-1.5 rounded transition-colors font-semibold ${
-                    saved
-                      ? "bg-[var(--success-bg)] text-[#00B37D] border border-[#00B37D]"
-                      : "bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white"
-                  }`}
-                >
-                  {saved ? <CheckCircle size={12} /> : <Save size={12} />}
-                  {saved ? "Saved!" : "Save Script"}
-                </button>
-                <button
-                  onClick={handleSendToPractice}
-                  className="flex items-center gap-1 text-xs bg-[#00B37D] hover:bg-[#009066] text-white px-2.5 py-1.5 rounded transition-colors font-semibold"
-                >
-                  <Mic size={12} />
-                  Practice This
-                </button>
-                <button
-                  onClick={() => { setScript(""); setGenerated(false); setSaved(false); }}
-                  className="flex items-center gap-1 text-xs border border-[var(--border)] text-[var(--text-secondary)] hover:bg-[var(--bg-hover)] px-2.5 py-1.5 rounded transition-colors"
-                >
-                  <RotateCcw size={12} />
-                  Reset
-                </button>
-              </div>
-            )}
-          </div>
-
-          {!generated ? (
-            <div className="flex-1 flex items-center justify-center text-center py-16 border-2 border-dashed border-[var(--border)] rounded-lg">
-              <div>
-                <Wand2 size={40} className="text-[var(--text-muted)] mx-auto mb-3" />
-                <p className="text-sm text-[var(--text-secondary)] max-w-xs">
-                  {loading
-                    ? "GPT-6.1 Sol is writing your script..."
-                    : "Configure your script settings and click Generate Script."}
-                </p>
-                {loading && (
-                  <div className="flex justify-center gap-1 mt-4">
-                    {[0,1,2].map(i => (
-                      <div key={i} className="w-2 h-2 rounded-full bg-[var(--accent)] animate-bounce" style={{ animationDelay: `${i * 0.15}s` }} />
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
-          ) : (
-            <>
-              <div className="flex-1 bg-[var(--bg-secondary)] rounded-lg p-4 mb-4 overflow-y-auto max-h-96">
-                <pre className="text-sm text-[var(--text-primary)] leading-relaxed whitespace-pre-wrap font-sans">{script}</pre>
-              </div>
-
-              {/* Optimize Buttons */}
-              <div>
-                <p className="text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-2">Optimize with AI</p>
-                <div className="flex flex-wrap gap-2">
-                  {OPTIMIZE_OPTIONS.map((opt) => (
-                    <button
-                      key={opt.label}
-                      onClick={() => handleOptimize(opt)}
-                      disabled={!!optimizing}
-                      className={`text-xs border border-[var(--accent)] text-[var(--accent)] hover:bg-[var(--accent-bg)] px-3 py-1.5 rounded transition-colors font-medium disabled:opacity-50 ${
-                        optimizing === opt.label ? "bg-[var(--accent-bg)]" : ""
-                      }`}
-                    >
-                      {optimizing === opt.label ? "..." : opt.label}
+          <div className="p-5 sm:p-6 min-h-[22rem]">
+            {step === 0 && (
+              <>
+                <StepHeading title="What are you preparing for?" help="Pick the closest match. You can add your own details later." />
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 mb-5">
+                  {OCCASION_GROUPS.map((g) => (
+                    <button key={g.id} type="button" onClick={() => { setGroupId(g.id); if (!g.scenarios.includes(form.scenario)) set({ scenario: "", audience: "" }); }}
+                      aria-pressed={group?.id === g.id}
+                      className="flex flex-col items-start gap-0.5 p-3 rounded-xl border text-left transition-colors"
+                      style={group?.id === g.id ? { borderColor: "var(--accent)", background: "var(--accent-bg)" } : { borderColor: "var(--border)" }}>
+                      <span className="text-xl">{g.emoji}</span>
+                      <span className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>{g.label}</span>
+                      <span className="text-[11px]" style={{ color: "var(--text-secondary)" }}>{g.hint}</span>
                     </button>
                   ))}
                 </div>
-              </div>
-            </>
-          )}
+                {group && (
+                  <>
+                    <p className="text-sm font-semibold mb-2" style={{ color: "var(--text-primary)" }}>Which one exactly?</p>
+                    <div className="flex flex-wrap gap-2">
+                      {group.scenarios.map((s) => (
+                        <Chip key={s} selected={form.scenario === s} onClick={() => set({ scenario: s, audience: group.audiences.includes(form.audience) ? form.audience : "" })}>{s}</Chip>
+                      ))}
+                    </div>
+                  </>
+                )}
+              </>
+            )}
+
+            {step === 1 && (
+              <>
+                <StepHeading title="Who will be listening?" help="The AI uses the right words and level of detail for them." />
+                <div className="flex flex-wrap gap-2 mb-3">
+                  {(group?.audiences ?? ALL_AUDIENCES).map((a) => (
+                    <Chip key={a} selected={!customAudience && form.audience === a} onClick={() => { setCustomAudience(false); set({ audience: a }); }}>{a}</Chip>
+                  ))}
+                  <Chip selected={customAudience} onClick={() => { setCustomAudience(true); set({ audience: "" }); }}>Someone else…</Chip>
+                </div>
+                {customAudience && (
+                  <input autoFocus value={form.audience} onChange={(e) => set({ audience: e.target.value })}
+                    placeholder="e.g. My child's school parents" className={`${field} mb-4`} style={fieldStyle} />
+                )}
+                <p className="text-sm font-semibold mt-5 mb-2" style={{ color: "var(--text-primary)" }}>How do you want to sound?</p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {TONES.slice(0, 8).map((t) => (
+                    <Chip key={t.value} selected={form.tone === t.value} onClick={() => set({ tone: t.value })}>
+                      <span className="block">{t.value}</span>
+                      <span className="block text-[11px] font-normal" style={{ color: "var(--text-secondary)" }}>{t.hint}</span>
+                    </Chip>
+                  ))}
+                </div>
+              </>
+            )}
+
+            {step === 2 && (
+              <>
+                <StepHeading title="Tell us a little about your situation" help="Short answers are fine. The more real details you give, the more the script sounds like you." />
+                {loadingQuestions || !questions ? (
+                  <div className="flex items-center gap-2 text-sm py-10 justify-center" style={{ color: "var(--text-secondary)" }}>
+                    <Loader2 size={16} className="animate-spin" /> Preparing a few questions for you…
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {questions.map((q, i) => (
+                      <div key={i}>
+                        <label className="block text-sm font-semibold mb-1.5" style={{ color: "var(--text-primary)" }} htmlFor={`q${i}`}>{i + 1}. {q.question}</label>
+                        <textarea id={`q${i}`} rows={2} value={answers[i] ?? ""} onChange={(e) => setAnswers((a) => a.map((v, j) => (j === i ? e.target.value : v)))}
+                          placeholder={q.example ? `e.g. ${q.example}` : "Type your answer"} className={`${field} resize-none`} style={fieldStyle} />
+                      </div>
+                    ))}
+                    <div>
+                      <label className="block text-sm font-semibold mb-1.5" style={{ color: "var(--text-primary)" }} htmlFor="extra">
+                        Anything else? <span className="font-normal" style={{ color: "var(--text-secondary)" }}>(optional)</span>
+                      </label>
+                      <textarea id="extra" rows={2} value={extra} onChange={(e) => setExtra(e.target.value)}
+                        placeholder="e.g. Keep it simple — English is my second language." className={`${field} resize-none`} style={fieldStyle} />
+                    </div>
+                    {!hasDetails && (
+                      <p className="text-xs flex items-start gap-1.5 rounded-lg p-2.5" style={{ background: "var(--warning-bg)", color: "var(--warning-text)" }}>
+                        <Lightbulb size={13} className="shrink-0 mt-0.5" /> You can skip this, but the script will be general rather than about you.
+                      </p>
+                    )}
+                  </div>
+                )}
+              </>
+            )}
+
+            {step === 3 && (
+              <>
+                <StepHeading title="How long should it be?" help="How long you'll speak for. You can make it shorter or longer afterwards." />
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 mb-6">
+                  {DURATIONS.map((d) => (
+                    <Chip key={d.value} selected={form.duration === d.value} onClick={() => set({ duration: d.value })}>
+                      <span className="block">{d.label}</span>
+                      <span className="block text-[11px] font-normal" style={{ color: "var(--text-secondary)" }}>{d.hint}</span>
+                    </Chip>
+                  ))}
+                </div>
+                <details className="rounded-lg border p-3" style={{ borderColor: "var(--border)" }} open={!!form.style}>
+                  <summary className="text-sm font-semibold cursor-pointer flex items-center gap-1.5" style={{ color: "var(--text-primary)" }}>
+                    <Sparkles size={13} style={{ color: "#F5A623" }} /> Sound like a famous speaker? <span className="font-normal" style={{ color: "var(--text-secondary)" }}>(optional)</span>
+                  </summary>
+                  <select value={form.style} onChange={(e) => set({ style: e.target.value })} className={`${field} mt-3`} style={fieldStyle}>
+                    {STYLES.map((s) => <option key={s.value} value={s.value}>{s.emoji ? `${s.emoji} ${s.label}` : s.label}</option>)}
+                  </select>
+                </details>
+
+                <div className="mt-6 rounded-lg p-4 text-sm" style={{ background: "var(--bg-secondary)", color: "var(--text-secondary)" }}>
+                  <p className="font-semibold mb-1" style={{ color: "var(--text-primary)" }}>Summary</p>
+                  {form.scenario} · for {form.audience} · {form.tone} · {DURATIONS.find((d) => d.value === form.duration)?.label}
+                  {form.style && <> · in the style of {STYLES.find((s) => s.value === form.style)?.label}</>}
+                  {hasDetails ? " · with your details" : " · no personal details"}
+                </div>
+              </>
+            )}
+
+            {error && <p className="mt-4 text-sm rounded-lg p-3" style={{ background: "var(--danger-bg)", color: "#E53935" }}>{error}</p>}
+          </div>
+
+          {/* Footer navigation */}
+          <div className="flex items-center justify-between gap-3 px-5 sm:px-6 py-4 border-t" style={{ borderColor: "var(--border)" }}>
+            <button type="button" onClick={() => setStep(Math.max(0, step - 1))} disabled={step === 0 || loading}
+              className="flex items-center gap-1 text-sm font-medium px-3 py-2 rounded-lg disabled:opacity-0" style={{ color: "var(--text-secondary)" }}>
+              <ArrowLeft size={15} /> Back
+            </button>
+            <span className="text-xs" style={{ color: "var(--text-muted)" }}>Step {step + 1} of {STEPS.length}</span>
+            <button type="button" onClick={next} disabled={!canNext || loading || (step === 2 && loadingQuestions)}
+              className="flex items-center gap-1.5 text-sm font-semibold px-5 py-2.5 rounded-lg text-white disabled:opacity-50 transition-colors"
+              style={{ background: "var(--accent)" }}>
+              {step < 3 ? <>{step === 2 && !hasDetails ? "Skip" : "Next"} <ArrowRight size={15} /></>
+                : loading ? <><Loader2 size={15} className="animate-spin" /> Writing your script…</>
+                : <><Wand2 size={15} /> Write my script</>}
+            </button>
+          </div>
+          {loading && <p className="text-xs text-center pb-4" style={{ color: "var(--text-secondary)" }}>This usually takes 10–30 seconds.</p>}
         </div>
+      ) : (
+        <AdvancedForm form={form} set={set} onPreset={applyPreset} onGenerate={generate} loading={loading} error={error} />
+      )}
+    </div>
+  );
+}
+
+// ─── "All options" form (for confident users) ──────────────────────────────────
+function AdvancedForm({ form, set, onPreset, onGenerate, loading, error }: {
+  form: FormState;
+  set: (p: Partial<FormState>) => void;
+  onPreset: (p: Preset) => void;
+  onGenerate: () => void;
+  loading: boolean;
+  error: string;
+}) {
+  const label = "block text-sm font-semibold mb-1.5";
+  return (
+    <div className="space-y-5">
+      <div className="rounded-xl border p-4" style={{ background: "var(--bg-card)", borderColor: "var(--border)" }}>
+        <div className="flex items-center justify-between mb-3">
+          <p className="text-sm font-bold" style={{ color: "var(--text-primary)" }}>Start from an example</p>
+          <button type="button" onClick={() => onPreset(PRESETS[Math.floor(Math.random() * PRESETS.length)])}
+            className="flex items-center gap-1 text-xs font-semibold" style={{ color: "var(--accent)" }}>
+            <Shuffle size={13} /> Surprise me
+          </button>
+        </div>
+        <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
+          {PRESETS.map((p) => (
+            <button key={p.label} type="button" onClick={() => onPreset(p)}
+              className="flex flex-col items-start gap-1 p-2.5 border rounded-lg hover:border-[var(--accent)] hover:bg-[var(--accent-bg)] transition-colors text-left"
+              style={{ borderColor: "var(--border)" }}>
+              <span className="text-base">{p.icon}</span>
+              <span className="text-xs font-semibold leading-tight" style={{ color: "var(--text-primary)" }}>{p.label}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="rounded-xl border p-5 sm:p-6 space-y-4" style={{ background: "var(--bg-card)", borderColor: "var(--border)" }}>
+        <div>
+          <label className={label} style={{ color: "var(--text-primary)" }}>Occasion</label>
+          <select value={form.scenario} onChange={(e) => set({ scenario: e.target.value })} className={field} style={fieldStyle}>
+            <option value="">Choose…</option>
+            {OCCASION_GROUPS.map((g) => (
+              <optgroup key={g.id} label={`${g.emoji} ${g.label}`}>
+                {g.scenarios.map((s) => <option key={s} value={s}>{s}</option>)}
+              </optgroup>
+            ))}
+          </select>
+        </div>
+        <div>
+          <label className={label} style={{ color: "var(--text-primary)" }}>
+            What do you want to say? <span className="font-normal" style={{ color: "var(--text-secondary)" }}>(recommended — the more detail, the better)</span>
+          </label>
+          <textarea value={form.goal} onChange={(e) => set({ goal: e.target.value })} rows={4}
+            placeholder="e.g. Update my manager on the website project: 8 of 10 pages done, we're waiting for photos, launch is 14 March."
+            className={`${field} resize-y`} style={fieldStyle} />
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label className={label} style={{ color: "var(--text-primary)" }}>Listeners</label>
+            <input list="audiences" value={form.audience} onChange={(e) => set({ audience: e.target.value })}
+              placeholder="Pick or type, e.g. Colleagues" className={field} style={fieldStyle} />
+            <datalist id="audiences">{ALL_AUDIENCES.map((a) => <option key={a} value={a} />)}</datalist>
+          </div>
+          <div>
+            <label className={label} style={{ color: "var(--text-primary)" }}>Tone</label>
+            <select value={form.tone} onChange={(e) => set({ tone: e.target.value })} className={field} style={fieldStyle}>
+              {TONES.map((t) => <option key={t.value} value={t.value}>{t.value} — {t.hint}</option>)}
+            </select>
+          </div>
+        </div>
+        <div>
+          <label className={label} style={{ color: "var(--text-primary)" }}>Length</label>
+          <div className="flex gap-2 flex-wrap">
+            {DURATIONS.map((d) => (
+              <button key={d.value} type="button" onClick={() => set({ duration: d.value })} title={d.hint}
+                className="px-3 py-1.5 rounded-lg text-xs font-semibold border transition-colors"
+                style={form.duration === d.value ? { background: "var(--accent)", color: "var(--on-accent, #fff)", borderColor: "var(--accent)" } : { borderColor: "var(--border)", color: "var(--text-secondary)" }}>
+                {d.label}
+              </button>
+            ))}
+          </div>
+        </div>
+        <div>
+          <label className={label} style={{ color: "var(--text-primary)" }}>
+            <Sparkles size={13} className="inline mr-1" style={{ color: "#F5A623" }} />Sound like a famous speaker <span className="font-normal" style={{ color: "var(--text-secondary)" }}>(optional)</span>
+          </label>
+          <select value={form.style} onChange={(e) => set({ style: e.target.value })} className={field} style={fieldStyle}>
+            {STYLES.map((s) => <option key={s.value} value={s.value}>{s.emoji ? `${s.emoji} ${s.label}` : s.label}</option>)}
+          </select>
+        </div>
+
+        {error && <p className="text-sm rounded-lg p-3" style={{ background: "var(--danger-bg)", color: "#E53935" }}>{error}</p>}
+
+        <button type="button" onClick={onGenerate} disabled={loading || !form.scenario}
+          className="w-full text-white font-semibold py-3 rounded-lg transition-colors flex items-center justify-center gap-2 text-sm disabled:opacity-50"
+          style={{ background: "var(--accent)" }}>
+          {loading ? <><Loader2 size={16} className="animate-spin" /> Writing your script… (10–30 seconds)</> : <><Wand2 size={16} /> Write my script</>}
+        </button>
+        {!form.scenario && <p className="text-xs text-center -mt-2" style={{ color: "var(--text-muted)" }}>Choose an occasion first.</p>}
       </div>
     </div>
   );
 }
+

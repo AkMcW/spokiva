@@ -1,4 +1,5 @@
 "use client";
+import ScriptsTabs from "@/components/scripts/ScriptsTabs";
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { Search, FileText, Mic, Trash2, Loader2 } from "lucide-react";
@@ -74,9 +75,10 @@ export default function SavedScriptsPage() {
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
+      <ScriptsTabs />
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold" style={{ color: "var(--text-primary)" }}>Saved Scripts</h1>
+          <h1 className="text-2xl font-bold" style={{ color: "var(--text-primary)" }}>My scripts</h1>
           <p className="text-sm mt-1" style={{ color: "var(--text-secondary)" }}>
             {loading ? "Loading…" : `${scripts.length} script${scripts.length !== 1 ? "s" : ""} saved`}
           </p>

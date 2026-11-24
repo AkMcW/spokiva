@@ -1,4 +1,5 @@
 "use client";
+import ScriptsTabs from "@/components/scripts/ScriptsTabs";
 import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { SCRIPT_MENU_OPTIONS, ScriptMenuOption } from "@/data/scriptMenuOptions";
@@ -221,9 +222,10 @@ export default function ScriptGeneratorPage() {
   if (stage === "menu") {
     return (
       <div style={{ maxWidth: 1100, margin: "0 auto", padding: "2rem 1rem" }}>
+        <ScriptsTabs />
         <div style={{ marginBottom: "2rem" }}>
           <h1 style={{ fontSize: "1.75rem", fontWeight: 700, color: "var(--text-primary)", marginBottom: "0.5rem" }}>
-            Script Generator
+            Make a script from a link or file
           </h1>
           <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem" }}>
             Turn any content — YouTube videos, articles, ideas — into polished speaking scripts.
@@ -348,6 +350,7 @@ export default function ScriptGeneratorPage() {
 
     return (
       <div style={{ maxWidth: 720, margin: "0 auto", padding: "2rem 1rem" }}>
+        <ScriptsTabs />
         <button onClick={() => setStage("menu")}
           style={{ display: "flex", alignItems: "center", gap: 6, background: "none", border: "none", color: "var(--text-secondary)", cursor: "pointer", fontSize: "0.85rem", marginBottom: "1.5rem", padding: 0 }}>
           <ArrowLeft size={15} /> Back to menu
@@ -471,6 +474,7 @@ export default function ScriptGeneratorPage() {
   if (stage === "generating") {
     return (
       <div style={{ maxWidth: 600, margin: "6rem auto", textAlign: "center", padding: "2rem 1rem" }}>
+        <ScriptsTabs />
         <Loader2 size={48} style={{ color: "var(--accent)", animation: "spin 1s linear infinite", margin: "0 auto 1rem" }} />
         <h2 style={{ fontSize: "1.3rem", fontWeight: 600, color: "var(--text-primary)", marginBottom: "0.5rem" }}>Generating your script...</h2>
         <p style={{ color: "var(--text-secondary)", fontSize: "0.9rem" }}>
@@ -485,6 +489,7 @@ export default function ScriptGeneratorPage() {
   if (stage === "result" && script && selected) {
     return (
       <div style={{ maxWidth: 800, margin: "0 auto", padding: "2rem 1rem" }}>
+        <ScriptsTabs />
         <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
 
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1.5rem", flexWrap: "wrap", gap: "0.75rem" }}>

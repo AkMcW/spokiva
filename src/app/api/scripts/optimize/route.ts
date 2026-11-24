@@ -9,6 +9,7 @@ export async function POST(req: NextRequest) {
   const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
   try {
     const { script, instruction } = await req.json();
+    if (!script?.trim() || !instruction) return NextResponse.json({ error: "Nothing to rewrite." }, { status: 400 });
 
     const completion = await openai.chat.completions.create({
       model: CHAT_MODEL,
@@ -33,10 +34,11 @@ If the original has no notation, add appropriate markers throughout the rewritte
       max_completion_tokens: budget(1500),
     });
 
-    const optimized = completion.choices[0]?.message?.content ?? script;
+    const optimized = completion.choices[0]?.message?.content?.trim();
+    if (!optimized) return NextResponse.json({ error: "The AI didn't return a new version." }, { status: 502 });
     return NextResponse.json({ script: optimized });
   } catch (err) {
     console.error("Optimize error:", err);
-    return NextResponse.json({ error: "Failed to optimize" }, { status: 500 });
+    return NextResponse.json({ error: "The AI couldn't rewrite the script." }, { status: 500 });
   }
 }
