@@ -10,17 +10,8 @@ const isPublicRoute = createRouteMatcher([
   "/business(.*)",
   "/interview-coach(.*)",
   "/api/webhook(.*)",
-  "/api/scripts/generate(.*)",
-  "/api/scripts/optimize(.*)",
-  "/api/scripts/extract(.*)",
-  "/api/scripts/enhance(.*)",
-  "/api/practice/(.*)",
-  "/api/ai-coach(.*)",
-  "/api/pitch/(.*)",
-  "/api/c2/(.*)",
-  "/api/exam/(.*)",
-  "/api/ielts/(.*)",
-  "/api/tts(.*)",
+  // AI endpoints (scripts, practice, coach, tts, …) are NOT listed here: they
+  // spend OpenAI credit, so only signed-in users may call them.
   "/report(.*)",
 ]);
 
