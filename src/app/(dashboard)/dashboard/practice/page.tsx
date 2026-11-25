@@ -29,9 +29,9 @@ interface ActiveScript {
   wordCount: number;
 }
 
-type FontSize = "sm" | "base" | "lg" | "xl" | "2xl";
+type FontSize = "sm" | "base" | "lg" | "xl" | "2xl" | "3xl" | "4xl";
 
-const FONT_SIZES: FontSize[] = ["sm", "base", "lg", "xl", "2xl"];
+const FONT_SIZES: FontSize[] = ["sm", "base", "lg", "xl", "2xl", "3xl", "4xl"];
 
 const fontSizeClass: Record<FontSize, string> = {
   sm: "text-sm",
@@ -39,9 +39,11 @@ const fontSizeClass: Record<FontSize, string> = {
   lg: "text-lg",
   xl: "text-xl",
   "2xl": "text-2xl",
+  "3xl": "text-3xl",
+  "4xl": "text-4xl",
 };
 
-const fontSizeLabel: Record<FontSize, string> = { sm: "S", base: "M", lg: "L", xl: "XL", "2xl": "2XL" };
+const fontSizeLabel: Record<FontSize, string> = { sm: "S", base: "M", lg: "L", xl: "XL", "2xl": "2XL", "3xl": "3XL", "4xl": "4XL" };
 
 // Easy-to-read typefaces for the script and teleprompter (loaded from Google Fonts below).
 const READING_FONTS = [

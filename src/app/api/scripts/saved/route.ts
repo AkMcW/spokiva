@@ -77,8 +77,12 @@ export async function PATCH(req: NextRequest) {
     const { userId } = await auth();
     if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-    const { id, title, content, wordCount } = await req.json();
+    const { id, title: rawTitle, content, wordCount } = await req.json();
     if (!id) return NextResponse.json({ error: "Missing id" }, { status: 400 });
+    const title = rawTitle === undefined ? undefined : String(rawTitle).trim().slice(0, 120);
+    if (title !== undefined && !title) return NextResponse.json({ error: "The name can't be empty" }, { status: 400 });
+
+    await ensureScriptsTable();
 
     const [row] = await db
       .update(scripts)
@@ -89,6 +93,7 @@ export async function PATCH(req: NextRequest) {
       })
       .where(and(eq(scripts.id, id), eq(scripts.userId, userId)))
       .returning();
+    if (!row) return NextResponse.json({ error: "Script not found" }, { status: 404 });
 
     return NextResponse.json({ script: row });
   } catch (err) {

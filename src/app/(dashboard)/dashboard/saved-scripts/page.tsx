@@ -2,7 +2,7 @@
 import ScriptsTabs from "@/components/scripts/ScriptsTabs";
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
-import { Search, FileText, Mic, Trash2, Loader2 } from "lucide-react";
+import { Search, FileText, Mic, Trash2, Loader2, Pencil, Check, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 interface SavedScript {
@@ -22,6 +22,9 @@ export default function SavedScriptsPage() {
   const [loading, setLoading] = useState(true);
   const [deletingId, setDeletingId] = useState<number | null>(null);
   const [error, setError] = useState("");
+  const [renamingId, setRenamingId] = useState<number | null>(null);
+  const [draftTitle, setDraftTitle] = useState("");
+  const [savingTitle, setSavingTitle] = useState(false);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -50,6 +53,34 @@ export default function SavedScriptsPage() {
       setError("Failed to delete script");
     } finally {
       setDeletingId(null);
+    }
+  }
+
+  function startRename(script: SavedScript) {
+    setRenamingId(script.id);
+    setDraftTitle(script.title);
+    setError("");
+  }
+
+  async function saveRename(id: number) {
+    const title = draftTitle.trim();
+    const current = scripts.find((s) => s.id === id)?.title;
+    if (!title || title === current) { setRenamingId(null); return; }
+    setSavingTitle(true);
+    try {
+      const res = await fetch("/api/scripts/saved", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, title }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error ?? "Rename failed");
+      setScripts((prev) => prev.map((s) => (s.id === id ? { ...s, title: data.script?.title ?? title } : s)));
+      setRenamingId(null);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Couldn't rename the script");
+    } finally {
+      setSavingTitle(false);
     }
   }
 
@@ -149,9 +180,39 @@ export default function SavedScriptsPage() {
               </div>
 
               <div className="flex-1 min-w-0">
-                <h3 className="font-semibold text-sm truncate mb-1" style={{ color: "var(--text-primary)" }}>
-                  {script.title}
-                </h3>
+                {renamingId === script.id ? (
+                  <form className="flex items-center gap-1.5 mb-1" onSubmit={(e) => { e.preventDefault(); saveRename(script.id); }}>
+                    <input
+                      autoFocus
+                      value={draftTitle}
+                      onChange={(e) => setDraftTitle(e.target.value)}
+                      onKeyDown={(e) => { if (e.key === "Escape") setRenamingId(null); }}
+                      onFocus={(e) => e.currentTarget.select()}
+                      maxLength={120}
+                      aria-label="Script name"
+                      className="flex-1 min-w-0 px-2 py-1 text-sm font-semibold rounded border focus:outline-none focus:border-[var(--accent)]"
+                      style={{ borderColor: "var(--border)", background: "var(--bg-card)", color: "var(--text-primary)" }}
+                    />
+                    <button type="submit" disabled={savingTitle || !draftTitle.trim()} title="Save name"
+                      className="p-1.5 rounded text-white disabled:opacity-50" style={{ background: "var(--accent)" }}>
+                      {savingTitle ? <Loader2 size={13} className="animate-spin" /> : <Check size={13} />}
+                    </button>
+                    <button type="button" onClick={() => setRenamingId(null)} title="Cancel"
+                      className="p-1.5 rounded border" style={{ borderColor: "var(--border)", color: "var(--text-secondary)" }}>
+                      <X size={13} />
+                    </button>
+                  </form>
+                ) : (
+                  <div className="flex items-center gap-1.5 mb-1 min-w-0">
+                    <h3 className="font-semibold text-sm truncate" style={{ color: "var(--text-primary)" }}>
+                      {script.title}
+                    </h3>
+                    <button onClick={() => startRename(script)} title="Rename" aria-label={`Rename ${script.title}`}
+                      className="shrink-0 p-1 rounded hover:bg-[var(--bg-hover)]" style={{ color: "var(--text-muted)" }}>
+                      <Pencil size={12} />
+                    </button>
+                  </div>
+                )}
                 <div className="flex flex-wrap items-center gap-2 text-xs">
                   <span className="font-semibold px-2 py-0.5 rounded-full" style={{ background: "var(--accent-bg)", color: "var(--accent)" }}>
                     {script.scenario}
